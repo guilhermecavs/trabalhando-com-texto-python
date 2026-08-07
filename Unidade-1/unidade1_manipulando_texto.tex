@@ -1,0 +1,610 @@
+% !TEX program = pdflatex
+% ============================================================================
+%  Unidade 1 - Manipulando texto com Python
+%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
+%
+%  COMPILAR COM:  pdflatex unidade1_manipulando_texto.tex   (rodar 2x)
+%
+%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
+%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry,
+%    listings, tcolorbox, titlesec, enumitem, hyperref, microtype
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+% -------------------------------------------------------------- paleta ------
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{codebg}{HTML}{1E2430}
+\definecolor{codetext}{HTML}{E6E9EF}
+\definecolor{ccomment}{HTML}{7FD18B}
+\definecolor{cstring}{HTML}{F0B866}
+\definecolor{ckw}{HTML}{C792EA}
+\definecolor{cbuiltin}{HTML}{82AAFF}
+\definecolor{outbg}{HTML}{F0F2F7}
+\definecolor{outtext}{HTML}{2F3646}
+\definecolor{outframe}{HTML}{9AA4B8}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+\definecolor{inlink}{HTML}{5A34D6}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
+  pdftitle={Manipulando texto com Python},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
+
+% --------------------------------------------------- estilo do codigo -------
+\lstset{
+  extendedchars=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  keepspaces=true,
+  columns=fullflexible,
+  tabsize=4,
+  showstringspaces=false,
+  literate=%
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
+    {—}{{---}}1 {–}{{--}}1
+    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+}
+
+\lstdefinestyle{pystyle}{
+  language=Python,
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{ckw}\bfseries,
+  keywordstyle=[2]\color{cbuiltin},
+  morekeywords=[2]{open,print,list,type,read,split,pop,join,replace,compile,
+    sub,exists,is_dir,is_file,glob,read_text,write_text,Path},
+  commentstyle=\color{ccomment}\itshape,
+  stringstyle=\color{cstring},
+}
+\lstdefinestyle{outstyle}{
+  basicstyle=\ttfamily\small\color{outtext},
+}
+
+% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
+\newtcblisting{pybox}{
+  breakable, enhanced,
+  listing only, listing options={style=pystyle},
+  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
+  borderline west={3pt}{0pt}{accent},
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+% caixa de saida (fundo claro)
+\newtcblisting{outbox}{
+  breakable, enhanced,
+  listing only, listing options={style=outstyle},
+  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+
+% ------------------------------------------------------ caixas de aviso -----
+\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
+  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
+  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
+  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
+  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
+
+% ------------------------------------------------------ titulos de secao ----
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
+  {\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+
+% codigo em linha (verbatim, colorido) via atalho @...@
+\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\begin{document}
+
+% --------------------------------------------------------------- capa -------
+\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
+  before skip=0pt, after skip=20pt]
+  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
+  {\Huge\bfseries Manipulando texto com Python}\\[8pt]
+  {\large Trabalhando com Texto em Python I \ --- \ Unidade 1}\\[6pt]
+  {\normalsize Do texto simples às expressões regulares e ao processamento de múltiplos arquivos.}\\[10pt]
+  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
+\end{tcolorbox}
+
+\begin{objbox}
+Ao final desta unidade, você deverá ser capaz de:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item compreender a diferença entre texto formatado (\textit{rich text}), estruturado (\textit{structured text}) e simples (\textit{plain text});
+  \item entender o conceito de codificação de caracteres (\textit{text encoding});
+  \item carregar arquivos de texto simples no Python e manipular o seu conteúdo;
+  \item definir padrões flexíveis de busca com expressões regulares;
+  \item processar vários arquivos de uma só vez e salvar os resultados.
+\end{itemize}
+\end{objbox}
+
+% =========================================================== 1 ==============
+\section{Computadores e texto}
+
+Os computadores podem armazenar e representar texto em formatos diferentes. Conhecer a distinção entre esses tipos é \textbf{fundamental} para processá-los programaticamente, porque cada formato traz consigo informações (ou ruídos) distintos.
+
+\subsection{O que é texto formatado (\textit{rich text})?}
+Processadores de texto, como o Microsoft Word, produzem \textbf{texto formatado} (\textit{rich text}): texto cuja aparência foi estilizada de alguma maneira específica. É possível definir estilos visuais para os elementos do documento --- títulos com fontes próprias, trechos em itálico ou negrito para dar ênfase, além de imagens e tabelas. Esse é o formato padrão dos editores modernos do tipo \textit{WYSIWYG} (\textit{what you see is what you get}).
+
+\subsection{O que é texto simples (\textit{plain text})?}
+Diferentemente do texto formatado, o \textbf{texto simples} (\textit{plain text}) não contém nenhuma informação sobre a aparência visual: ele é feito \textbf{apenas de caracteres} --- letras, números, sinais de pontuação, espaços e quebras de linha. A definição é flexível, mas, em geral, refere-se a texto sem qualquer formatação ou estilo.
+
+\subsection{O que é texto estruturado (\textit{structured text})?}
+O \textbf{texto estruturado} pode ser entendido como um caso especial de texto simples que inclui sequências de caracteres usadas para \textbf{formatar o texto para exibição}. São exemplos os textos descritos por linguagens de marcação como XML, Markdown ou HTML. Abaixo, uma frase em texto simples envolvida por marcadores (\textit{tags}) HTML de parágrafo @<p>@. A marca de abertura @<p>@ e a de fechamento @</p>@ informam ao computador que o conteúdo entre elas forma um parágrafo:
+
+\begin{pybox}
+<p>This is an example sentence.</p>
+\end{pybox}
+
+\subsection{Por que isso importa?}
+Ao reunir textos para formar um \textbf{corpus}, é provável que parte deles tenha origem em formato formatado ou estruturado:
+\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
+  \item Documentos impressos digitalizados por \textbf{reconhecimento óptico de caracteres} (\textit{OCR}) e convertidos para texto simples tendem a acumular \textbf{erros}. Esse OCR ``sujo'' pode afetar a análise textual (Hill \& Hengchen, 2019).
+  \item Documentos raspados de fóruns ou sites costumam trazer vestígios de marcadores de marcação, arrastados para o texto simples durante a conversão.
+\end{itemize}
+O texto simples é, de longe, o formato \textbf{mais interoperável}, por ser fácil de ler para os computadores --- por isso as linguagens de programação trabalham com ele.
+
+\begin{notebox}[Em resumo]
+Ao trabalhar com texto simples, muitas vezes será preciso lidar com os vestígios deixados pela conversão a partir de texto formatado ou estruturado.
+\end{notebox}
+
+% =========================================================== 2 ==============
+\section{Codificação de texto \textnormal{\textit{(text encoding)}}}
+
+Para serem lidos pelos computadores, os textos simples precisam ser \textbf{codificados}. A \textbf{codificação de caracteres} mapeia cada caractere (letras, números, pontuação, espaços\ldots) para uma representação numérica compreendida pela máquina. O ideal seria não termos de lidar com isso --- mas, na prática, precisamos, porque existem \textbf{vários sistemas} de codificação e eles \textbf{não são compatíveis entre si}.
+
+\subsection{ASCII}
+O \textbf{ASCII} (\textit{American Standard Code for Information Interchange}) é um sistema pioneiro que serviu de base para muitos sistemas modernos. Ainda é bastante usado, mas é \textbf{muito limitado}: se o seu idioma inclui caracteres como @ä@, @ö@ --- ou os nossos @á@, @ç@, @ã@ ---, o ASCII não dá conta.
+
+\subsection{Unicode}
+O \textbf{Unicode} é um padrão para codificar a maioria dos sistemas de escrita do mundo, cobrindo cerca de \textbf{140 mil caracteres} entre escritas modernas e históricas, símbolos e emojis. Por exemplo, o emoji de fatia de pizza tem o código @U+1F355@, e o espaço em branco corresponde a @U+0020@. O Unicode pode ser implementado por diferentes codificações, como o \textbf{UTF-8}.
+
+\begin{tipbox}[Ponto-chave]
+O UTF-8 é \textbf{retrocompatível com o ASCII}: as codificações do ASCII são um subconjunto do UTF-8. Assim, um arquivo em ASCII pode ser decodificado como UTF-8 --- mas o \textbf{contrário não vale}.
+\end{tipbox}
+
+% =========================================================== 3 ==============
+\section{Carregando arquivos de texto simples no Python}
+
+Arquivos de texto simples são carregados com a função @open()@. O primeiro argumento deve ser uma \textit{string} com o \textbf{caminho} do arquivo. Aqui, o caminho aponta para @NYT_1991-01-16-A15.txt@, no diretório @data@ --- diretório e nome separados por uma barra @/@:
+
+\begin{pybox}
+open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8')
+\end{pybox}
+
+\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
+  \item @encoding@: o Python 3 assume UTF-8 por padrão, mas deixamos explícito passando @utf-8@.
+  \item @mode@: a \textit{string} @r@ (de \textit{read}) indica que queremos \textbf{apenas ler}.
+  \item Usamos @open()@ junto do @with@, que garante o \textbf{fechamento} do arquivo após o bloco indentado --- evitando consumo desnecessário de memória.
+\end{itemize}
+
+\begin{pybox}
+# Abre um arquivo e o atribui à variável 'file'
+with open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8') as file:
+
+    # A instrução 'with' deve ser seguida por um bloco de código indentado.
+    # Aqui chamamos o método read() para ler o conteúdo do arquivo e
+    # atribuímos o resultado à variável 'text'.
+    text = file.read()
+\end{pybox}
+
+A palavra @as@ instrui o Python a atribuir o retorno de @open()@ à variável @file@. Ao chamá-la, obtemos um objeto @TextIOWrapper@:
+
+\begin{pybox}
+# Chama a variável para examinar o objeto
+file
+\end{pybox}
+\begin{outbox}
+<_io.TextIOWrapper name='data/NYT_1991-01-16-A15.txt' mode='r' encoding='utf-8'>
+\end{outbox}
+
+Se tentarmos chamar @read()@ \textbf{fora} do bloco @with@, o Python levanta um erro, porque o arquivo já foi fechado:
+
+\begin{pybox}
+# Tenta usar o método read() para ler o conteúdo do arquivo
+file.read()
+\end{pybox}
+\begin{outbox}
+ValueError: I/O operation on closed file.
+\end{outbox}
+
+Esse comportamento é o esperado --- importante sobretudo ao trabalhar com \textbf{milhares de arquivos}. Vejamos o conteúdo lido, guardado em @text@. Como é longo, pegamos uma \textbf{fatia} dos primeiros 500 caracteres com @[:500]@. Adicionar colchetes após o nome da variável permite acessar partes do objeto; @text[1]@ recuperaria o caractere na posição 1, e o @:@ antes do número recupera todos os caracteres até a posição 500.
+
+\begin{pybox}
+# Recupera os primeiros 500 caracteres da variável 'text'
+text[:500]
+\end{pybox}
+\begin{outbox}
+'U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis
+Whose Visas Have Expired\nBy JAMES BARRON\nNew York Times (1923-Current file);
+Jan 16, 1991; ... the Justice Department'
+\end{outbox}
+
+Há sequências estranhas: uma marca BOM (@U+FEFF@) no início e vários @\n@. A primeira é a ``assinatura'' de que o arquivo é UTF-8; as demais indicam \textbf{quebra de linha}. Isso fica evidente ao usar @print()@:
+
+\begin{pybox}
+# Imprime os primeiros 1000 caracteres da variável 'text'
+print(text[:1000])
+\end{pybox}
+\begin{outbox}
+U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis Whose Visas Have Expired
+By JAMES BARRON
+New York Times (1923-Current file); Jan 16, 1991;
+...
+   The Federal Bureau of Investigation has been ordered to track down as many as
+   3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday.
+\end{outbox}
+
+O Python interpreta o @\n@ e insere a quebra de linha. As primeiras linhas contêm \textbf{metadados} (nome, autor, fonte), que antecedem o corpo do texto.
+
+% =========================================================== 4 ==============
+\section{Manipulando texto}
+
+Como @text@ é um objeto \textit{string}, podemos usar todos os métodos de manipulação de \textit{strings} do Python.
+
+\subsection{Substituindo com \textnormal{@replace()@}}
+Vamos trocar todas as quebras de linha @"\n"@ por \textit{strings} vazias @""@:
+
+\begin{pybox}
+# Substitui as quebras de linha \n por strings vazias e atribui o resultado
+# à variável 'processed_text'
+processed_text = text.replace('\n', '')
+
+# Imprime os primeiros 1000 caracteres da variável 'processed_text'
+print(processed_text[:1000])
+\end{pybox}
+
+Agora o texto ficou ``grudado'', mas ainda dá para identificar o início de cada parágrafo, marcado por \textbf{três espaços}.
+
+\begin{warnbox}
+Remover as quebras de linha também fundiu os metadados em um único parágrafo. Sempre fique atento aos \textbf{efeitos indesejados} de substituições e transformações!
+\end{warnbox}
+
+\subsection{Dividindo com \textnormal{@split()@}}
+Sabendo que os metadados estão separados do corpo por três espaços, usamos @split()@ para \textbf{dividir a \textit{string} em uma lista}, com os três espaços como separador:
+
+\begin{pybox}
+# Usa o método split() com três espaços como separador. Atribui o
+# resultado à variável 'processed_text'.
+processed_text = processed_text.split(sep='   ')
+
+# Imprime o resultado da variável 'processed_text'
+print(processed_text)
+\end{pybox}
+
+O método retorna uma \textbf{lista} de \textit{strings}:
+
+\begin{pybox}
+# Verifica o tipo do objeto na variável 'processed_text'
+type(processed_text)
+\end{pybox}
+\begin{outbox}
+list
+\end{outbox}
+
+Os metadados ficaram no \textbf{primeiro item} (índice @0@ --- o Python conta do zero):
+
+\begin{pybox}
+# Recupera o objeto string no índice 0 da lista 'processed_text'
+processed_text[0]
+\end{pybox}
+
+\subsection{Removendo itens com \textnormal{@pop()@}}
+Para remover os metadados, usamos @pop()@, que espera o índice do item a remover:
+
+\begin{pybox}
+# Chama o método pop() da lista 'processed_text' com o
+# índice do item a ser removido.
+processed_text.pop(0)
+\end{pybox}
+
+Não atribuímos o resultado a uma variável porque as listas são \textbf{mutáveis}: @pop()@ altera a lista \textit{in place}. Conferindo os três primeiros itens, o metadado já não aparece:
+
+\begin{pybox}
+# Recupera os três primeiros itens da lista 'processed_text'
+processed_text[:3]
+\end{pybox}
+
+\subsection{Reunindo com \textnormal{@join()@}}
+Para voltar de lista para \textit{string}, usamos @join()@, que espera um \textbf{iterável}. O ponto que confunde: o @join()@ é chamado \textbf{sobre a \textit{string} que serve de ``cola''}. Aqui, a cola é a sequência original de parágrafo (@'\n   '@ --- quebra de linha e três espaços):
+
+\begin{pybox}
+# Usa o método join() para unir os itens da lista 'processed_text'
+# usando a string '\n   ' — uma quebra de linha e três espaços. Guarda o
+# resultado na variável de mesmo nome.
+processed_text = '\n   '.join(processed_text)
+
+# Verifica o resultado imprimindo os primeiros 1000 caracteres da string
+# resultante em 'processed_text'
+print(processed_text[:1000])
+\end{pybox}
+
+O @join()@ devolve uma \textit{string} com as quebras de parágrafo originais!
+
+\subsection{Um \textit{pipeline} de substituições com laço \textnormal{@for@}}
+O OCR deixou uma \textbf{mistura de aspas}. Para padronizar tudo em @"@ sem repetir @replace()@ à mão, combinamos \textbf{listas} e \textbf{tuplas}. Cada tupla guarda o caractere a substituir e o seu substituto:
+
+\begin{pybox}
+# Define uma lista com quatro tuplas, cada uma com duas strings: o caractere
+# a ser substituido e o seu substituto.
+pipeline = [('“', '"'), ('´´', '"'), ('”', '"'), ('’’', '"')]
+\end{pybox}
+
+Isso mostra como estruturas de dados são \textbf{aninhadas}: a lista contém tuplas, e as tuplas contêm \textit{strings}. Agora percorremos a lista com um laço @for@ (a próxima linha deve ser \textbf{indentada}):
+
+\begin{pybox}
+# Percorre as tuplas da lista 'pipeline'. Cada tupla tem dois valores, que
+# atribuimos as variaveis 'old' e 'new' automaticamente!
+for old, new in pipeline:
+
+    # Usa o metodo replace() para substituir a string da variavel 'old'
+    # pela string da variavel 'new'
+    processed_text = processed_text.replace(old, new)
+\end{pybox}
+
+A cada volta, atualizamos a \textit{string} em @processed_text@. Para entender a diferença entre usar \textbf{uma} variável em vez de duas:
+
+\begin{pybox}
+# Percorre os itens da variavel 'pipeline'
+for our_tuple in pipeline:
+
+    # Imprime o objeto retornado
+    print(our_tuple)
+\end{pybox}
+\begin{outbox}
+('“', '"')
+('´´', '"')
+('”', '"')
+('’’', '"')
+\end{outbox}
+
+Com uma variável, o laço devolve a \textbf{tupla inteira}; com duas, o Python avança até as \textit{strings} dentro dela. Preste sempre atenção aos itens contidos na lista!
+
+% =========================================================== 5 ==============
+\section{Manipulando texto em escala}
+
+O ideal é aplicar o mesmo procedimento a dez, cem ou mil arquivos com o mesmo esforço. Para isso, precisamos de padrões \textbf{mais flexíveis} que as \textit{strings} fixas, e de abrir/fechar arquivos automaticamente --- capacidades dos módulos de \textbf{expressões regulares} e de \textbf{manipulação de arquivos}.
+
+\subsection{Expressões regulares}
+Expressões regulares são uma ``linguagem'' para definir \textbf{padrões de busca}, permitindo \textbf{curingas} e \textbf{quantificadores}. Ativamos o módulo @re@:
+
+\begin{pybox}
+import re
+\end{pybox}
+
+Carregamos um arquivo e pegamos seus \textbf{últimos} 2000 caracteres:
+
+\begin{pybox}
+# Define o caminho do arquivo e o abre para leitura (r) com codificacao utf-8
+with open(file='data/WP_1990-08-10-25A.txt', mode='r', encoding='utf-8') as file:
+
+    # Le o conteudo do arquivo com o metodo .read()
+    text = file.read()
+
+# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero
+extract = text[-2000:]
+
+# Imprime o resultado
+print(extract)
+\end{pybox}
+
+O texto tem muitos erros de OCR, como sequências @....@ e @,,,,@. Compilamos uma expressão que busca \textbf{dois ou mais pontos finais} com @compile()@. O prefixo @r@ guarda a \textit{string} em formato ``bruto'' (\textit{raw}):
+
+\begin{pybox}
+# Compila uma expressao regular e a atribui a variavel 'stops'
+stops = re.compile(r'\.{2,}')
+
+# Vamos verificar o tipo da expressao regular!
+type(stops)
+\end{pybox}
+\begin{outbox}
+re.Pattern
+\end{outbox}
+
+\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
+  \item A \textbf{barra invertida} @\@ antes do @.@ diz que queremos o ponto ``de verdade'' (nas regex, @.@ é um curinga).
+  \item As \textbf{chaves} @{2,}@ buscam o item anterior \textbf{duas ou mais vezes}.
+\end{itemize}
+
+Aplicamos com @sub()@, que recebe @repl@ (o substituto) e @string@ (onde procurar):
+
+\begin{pybox}
+# Aplica a expressao regular ao texto em 'extract' e salva a saida
+# na mesma variavel, essencialmente sobrescrevendo o texto antigo.
+extract = stops.sub(repl='', string=extract)
+
+# Imprime o texto para examinar o resultado
+print(extract)
+\end{pybox}
+
+As sequências de pontos finais desapareceram.
+
+\subsection{Alternativas na expressão regular}
+Acrescentando \textbf{alternativas} com parênteses @()@ e a barra vertical @|@, buscamos \textbf{dois ou mais pontos finais ou vírgulas}:
+
+\begin{pybox}
+# Compila uma expressao regular e a atribui a variavel 'punct'
+punct = re.compile(r'(\.|,){2,}')
+\end{pybox}
+
+Reiniciamos @extract@ a partir de @text@ e aplicamos o novo padrão:
+
+\begin{pybox}
+# "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original
+extract = text[-2000:]
+
+# Aplica a expressao regular
+extract = punct.sub(repl='', string=extract)
+
+# Imprime o resultado
+print(extract)
+\end{pybox}
+
+Sucesso! Pontos finais \textbf{e} vírgulas foram removidos com uma única expressão. Sequências mais irregulares exigiriam padrões mais complexos.
+
+\begin{tipbox}
+Use um serviço como \href{https://regex101.com}{regex101.com} para aprender e testar expressões regulares interativamente. E lembre-se: para identificar padrões confiáveis, observe sempre \textbf{mais de um} texto do seu corpus.
+\end{tipbox}
+
+\subsection{Processando múltiplos arquivos}
+Corpora costumam ter textos em vários arquivos. A classe @Path@ do módulo @pathlib@ simplifica abrir, ler, processar e fechar arquivos programaticamente --- e \textbf{infere automaticamente} o tipo de caminho do sistema operacional (Windows, Linux, macOS):
+
+\begin{pybox}
+from pathlib import Path
+\end{pybox}
+\begin{pybox}
+# Cria um objeto Path que aponta para o diretorio 'data' e o atribui
+# a variavel 'corpus_dir'
+corpus_dir = Path('data')
+\end{pybox}
+
+O objeto oferece métodos úteis que retornam valores \textbf{booleanos} (@True@/@False@):
+
+\begin{pybox}
+# Usa o metodo exists() para verificar se o caminho e valido
+corpus_dir.exists()
+\end{pybox}
+\begin{outbox}
+True
+\end{outbox}
+
+\begin{pybox}
+# Usa o metodo is_dir() para verificar se o caminho aponta para um diretorio
+corpus_dir.is_dir()
+
+# Usa o metodo is_file() para verificar se o caminho aponta para um arquivo
+corpus_dir.is_file()
+\end{pybox}
+\begin{outbox}
+True
+False
+\end{outbox}
+
+Usamos @glob()@ (de \textit{global}) para coletar os arquivos @.txt@. O @*@ é um \textbf{curinga}; convertemos o resultado em lista com @list()@:
+
+\begin{pybox}
+# Coleta todos os arquivos com sufixo .txt no diretorio 'corpus_dir' e converte o resultado em uma lista
+files = list(corpus_dir.glob(pattern='*.txt'))
+
+# Mostra o resultado
+files
+\end{pybox}
+\begin{outbox}
+[PosixPath('data/WP_1990-08-10-25A.txt'),
+ PosixPath('data/NYT_1991-01-16-A15.txt'),
+ PosixPath('data/WP_1991-01-17-A1B.txt')]
+\end{outbox}
+
+Com a lista de três @Path@, iteramos e gravamos cada arquivo modificado com um novo nome:
+
+\begin{pybox}
+# Percorre a lista de objetos Path em 'files'. Refere-se a cada arquivo
+# pela variavel 'file'.
+for file in files:
+
+    # Usa o metodo read_text() de um objeto Path para ler o conteudo do arquivo.
+    # Passa o valor 'utf-8' ao argumento 'encoding' para declarar a codificacao.
+    # Guarda o resultado na variavel 'text'.
+    text = file.read_text(encoding='utf-8')
+
+    # Aplica a expressao regular definida acima para remover a pontuacao
+    # excessiva do texto. Guarda o resultado na variavel 'mod_text'.
+    mod_text = punct.sub('', text)
+
+    # Define um novo nome de arquivo com o prefixo 'mod_' criando uma nova string.
+    # O objeto Path guarda o nome do arquivo como string no atributo 'name'.
+    # Combina as duas strings com o operador '+'.
+    new_filename = 'mod_' + file.name
+
+    # Define um novo objeto Path que aponta para o novo arquivo. O objeto Path
+    # junta automaticamente o diretorio e o nome do arquivo para nos.
+    new_path = Path('data', new_filename)
+
+    # Imprime uma mensagem de status usando formatacao de string. Ao adicionar
+    # o prefixo 'f' a uma string, podemos usar chaves {} para inserir uma
+    # variavel dentro da string. Aqui inserimos o caminho atual do arquivo.
+    print(f'Writing modified text to {new_path}')
+
+    # Usa o metodo write_text() para escrever o texto modificado de 'mod_text'
+    # no arquivo, com codificacao UTF-8.
+    new_path.write_text(mod_text, encoding='utf-8')
+\end{pybox}
+\begin{outbox}
+Writing modified text to data/mod_WP_1990-08-10-25A.txt
+Writing modified text to data/mod_NYT_1991-01-16-A15.txt
+Writing modified text to data/mod_WP_1991-01-17-A1B.txt
+\end{outbox}
+
+Os objetos @Path@ oferecem @read_text()@ e @write_text()@, que leem e gravam \textbf{sem} o @with@ --- fechando o arquivo automaticamente após a leitura.
+
+% ======================================================= resumo ============
+\section*{Resumo da unidade}
+\addcontentsline{toc}{section}{Resumo da unidade}
+\begin{objbox}[Nesta unidade, você aprendeu a]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
+  \item distinguir texto formatado, estruturado e simples;
+  \item compreender a codificação de caracteres (ASCII e Unicode/UTF-8);
+  \item carregar arquivos com @open()@ + @with@ + @read()@;
+  \item manipular \textit{strings} com @replace()@, @split()@, @pop()@ e @join()@;
+  \item definir padrões com expressões regulares (@re.compile()@, @sub()@);
+  \item processar vários arquivos com @pathlib.Path@, @glob()@, @read_text()@ e @write_text()@.
+\end{enumerate}
+\end{objbox}
+
+\begin{notebox}[Exercícios sugeridos]
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
+  \item Carregue um arquivo do diretório @data@ e conte quantas quebras de linha (@\n@) ele contém antes de qualquer limpeza.
+  \item Escreva um \textit{pipeline} (lista de tuplas) que padronize travessões em um único caractere.
+  \item Crie uma expressão regular que substitua dois ou mais espaços em branco por um único espaço.
+  \item Adapte o laço da Seção 5.3 para gravar os arquivos modificados em um diretório @output@.
+\end{enumerate}
+\end{notebox}
+
+\vspace{6pt}
+\noindent\rule{\linewidth}{0.4pt}\\[4pt]
+{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Hill, M. J.; Hengchen, S. (2019). \textit{Quantifying the impact of dirty OCR on historical text analysis.} Digital Scholarship in the Humanities.\par
+Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+
+\end{document}

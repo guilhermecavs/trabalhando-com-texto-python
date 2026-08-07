@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidade 1 — Manipulando texto com Python</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+    --code-bg:#1e2430; --code-ink:#e6e9ef;
+    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
+    --h3-ink:#2b3242;
+    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
+    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+    --border:#e6e8ef; --radius:16px;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
+  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
+    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
+    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+  header.hero .inner{max-width:900px;margin:0 auto}
+  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;opacity:.9;margin:0 0 12px}
+  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
+  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
+  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
+  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
+    border-left:5px solid var(--accent);line-height:1.25}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
+  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
+  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
+  p{margin:14px 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+  a:hover{border-color:var(--accent)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
+    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
+  strong{color:var(--ink-strong);font-weight:700}
+  ul,ol{margin:14px 0;padding-left:24px}
+  li{margin:7px 0}
+  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
+  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  /* code */
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
+    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
+    font-size:14.5px;line-height:1.6;position:relative;
+    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
+  pre.code{border-top:3px solid var(--accent)}
+  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
+    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
+    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
+  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
+    box-shadow:none;border-top:3px solid var(--out-tag)}
+  pre.out .tag{background:var(--out-tag)}
+  pre code{font-family:inherit;white-space:pre}
+  .c{color:var(--c-comment);font-style:italic}
+  .s{color:var(--c-string)}
+  .k{color:var(--c-kw);font-weight:600}
+  .n{color:var(--c-num)}
+  /* callouts */
+  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
+    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
+  .call p{margin:6px 0}
+  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
+  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
+  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
+  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+  footer{color:var(--muted);font-size:14px;margin-top:40px}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
+  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{border:none}
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152}
+  }
+  :root[data-theme="dark"]{
+    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
+    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
+    <h1>Manipulando texto com Python</h1>
+    <p class="sub">Trabalhando com Texto em Python I — Unidade 1. Do texto simples às expressões regulares e ao processamento de múltiplos arquivos.</p>
+    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h4>Nesta unidade</h4>
+    <ol>
+      <li><a href="#s1">Computadores e texto</a></li>
+      <li><a href="#s2">Codificação de texto</a></li>
+      <li><a href="#s3">Carregando arquivos no Python</a></li>
+      <li><a href="#s4">Manipulando texto</a></li>
+      <li><a href="#s5">Manipulando texto em escala</a></li>
+    </ol>
+  </nav>
+
+  <div class="obj">
+    <h4>Objetivos de aprendizagem</h4>
+    <ul>
+      <li>Compreender a diferença entre texto formatado (<em>rich text</em>), estruturado (<em>structured text</em>) e simples (<em>plain text</em>).</li>
+      <li>Entender o conceito de codificação de caracteres (<em>text encoding</em>).</li>
+      <li>Carregar arquivos de texto simples no Python e manipular o seu conteúdo.</li>
+      <li>Definir padrões flexíveis de busca com expressões regulares.</li>
+      <li>Processar vários arquivos de uma só vez e salvar os resultados.</li>
+    </ul>
+  </div>
+
+  <h2 id="s1"><span class="num">1.</span> Computadores e texto</h2>
+  <p>Os computadores podem armazenar e representar texto em formatos diferentes. Conhecer a distinção entre esses tipos é <strong>fundamental</strong> para processá‑los programaticamente, porque cada formato traz consigo informações (ou ruídos) distintos.</p>
+
+  <h3>1.1 O que é texto formatado (<em>rich text</em>)?</h3>
+  <p>Processadores de texto, como o Microsoft Word, produzem <strong>texto formatado</strong> (<em>rich text</em>): texto cuja aparência foi estilizada de alguma maneira específica. É possível definir estilos visuais para os elementos do documento — títulos com fontes próprias, trechos em itálico ou negrito para dar ênfase, além de imagens e tabelas. Esse é o formato padrão dos editores modernos do tipo <em>WYSIWYG</em> (<em>what you see is what you get</em>).</p>
+
+  <h3>1.2 O que é texto simples (<em>plain text</em>)?</h3>
+  <p>Diferentemente do texto formatado, o <strong>texto simples</strong> (<em>plain text</em>) não contém nenhuma informação sobre a aparência visual: ele é feito <strong>apenas de caracteres</strong> — letras, números, sinais de pontuação, espaços e quebras de linha. A definição é flexível, mas, em geral, refere‑se a texto sem qualquer formatação ou estilo.</p>
+
+  <h3>1.3 O que é texto estruturado (<em>structured text</em>)?</h3>
+  <p>O <strong>texto estruturado</strong> pode ser entendido como um caso especial de texto simples que inclui sequências de caracteres usadas para <strong>formatar o texto para exibição</strong>. São exemplos os textos descritos por linguagens de marcação como XML, Markdown ou HTML. Abaixo, uma frase em texto simples envolvida por marcadores (<em>tags</em>) HTML de parágrafo <code class="inl">&lt;p&gt;</code>. A marca de abertura <code class="inl">&lt;p&gt;</code> e a de fechamento <code class="inl">&lt;/p&gt;</code> informam ao computador que o conteúdo entre elas forma um parágrafo:</p>
+  <pre class="code"><span class="tag">HTML</span><code>&lt;p&gt;This is an example sentence.&lt;/p&gt;</code></pre>
+
+  <h3>1.4 Por que isso importa?</h3>
+  <p>Ao reunir textos para formar um <strong>corpus</strong>, é provável que parte deles tenha origem em formato formatado ou estruturado:</p>
+  <ul>
+    <li>Documentos impressos digitalizados por <strong>reconhecimento óptico de caracteres</strong> (<em>OCR</em>) e convertidos para texto simples tendem a acumular <strong>erros</strong>. Esse OCR "sujo" pode afetar a análise textual (Hill &amp; Hengchen, 2019).</li>
+    <li>Documentos raspados de fóruns ou sites costumam trazer vestígios de marcadores de marcação, arrastados para o texto simples durante a conversão.</li>
+  </ul>
+  <p>O texto simples é, de longe, o formato <strong>mais interoperável</strong>, por ser fácil de ler para os computadores — por isso as linguagens de programação trabalham com ele.</p>
+  <div class="call note"><span class="lbl">Em resumo</span><p>Ao trabalhar com texto simples, muitas vezes será preciso lidar com os vestígios deixados pela conversão a partir de texto formatado ou estruturado.</p></div>
+
+  <h2 id="s2"><span class="num">2.</span> Codificação de texto <em>(text encoding)</em></h2>
+  <p>Para serem lidos pelos computadores, os textos simples precisam ser <strong>codificados</strong>. A <strong>codificação de caracteres</strong> mapeia cada caractere (letras, números, pontuação, espaços…) para uma representação numérica compreendida pela máquina. O ideal seria não termos de lidar com isso — mas, na prática, precisamos, porque existem <strong>vários sistemas</strong> de codificação e eles <strong>não são compatíveis entre si</strong>.</p>
+
+  <h3>2.1 ASCII</h3>
+  <p>O <strong>ASCII</strong> (<em>American Standard Code for Information Interchange</em>) é um sistema pioneiro que serviu de base para muitos sistemas modernos. Ainda é bastante usado, mas é <strong>muito limitado</strong>: se o seu idioma inclui caracteres como <code class="inl">ä</code>, <code class="inl">ö</code> — ou os nossos <code class="inl">á</code>, <code class="inl">ç</code>, <code class="inl">ã</code> —, o ASCII não dá conta.</p>
+
+  <h3>2.2 Unicode</h3>
+  <p>O <strong>Unicode</strong> é um padrão para codificar a maioria dos sistemas de escrita do mundo, cobrindo cerca de <strong>140 mil caracteres</strong> entre escritas modernas e históricas, símbolos e emojis. Por exemplo, o emoji de fatia de pizza 🍕 tem o código <code class="inl">U+1F355</code>, e o espaço em branco corresponde a <code class="inl">U+0020</code>. O Unicode pode ser implementado por diferentes codificações, como o <strong>UTF‑8</strong>.</p>
+  <div class="call tip"><span class="lbl">Ponto‑chave</span><p>O UTF‑8 é <strong>retrocompatível com o ASCII</strong>: as codificações do ASCII são um subconjunto do UTF‑8. Assim, um arquivo em ASCII pode ser decodificado como UTF‑8 — mas o <strong>contrário não vale</strong>.</p></div>
+
+  <h2 id="s3"><span class="num">3.</span> Carregando arquivos de texto simples no Python</h2>
+  <p>Arquivos de texto simples são carregados com a função <code class="inl">open()</code>. O primeiro argumento deve ser uma <em>string</em> com o <strong>caminho</strong> do arquivo. Aqui, o caminho aponta para <code class="inl">NYT_1991-01-16-A15.txt</code>, no diretório <code class="inl">data</code> — diretório e nome separados por uma barra <code class="inl">/</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8')</code></pre>
+  <ul>
+    <li><code class="inl">encoding</code>: o Python 3 assume UTF‑8 por padrão, mas deixamos explícito passando <code class="inl">utf-8</code>.</li>
+    <li><code class="inl">mode</code>: a <em>string</em> <code class="inl">r</code> (de <em>read</em>) indica que queremos <strong>apenas ler</strong>.</li>
+    <li>Usamos <code class="inl">open()</code> junto do <code class="inl">with</code>, que garante o <strong>fechamento</strong> do arquivo após o bloco indentado — evitando consumo desnecessário de memória.</li>
+  </ul>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Abre um arquivo e o atribui à variável 'file'
+with open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8') as file:
+
+    # A instrução 'with' deve ser seguida por um bloco de código indentado.
+    # Aqui chamamos o método read() para ler o conteúdo do arquivo e
+    # atribuímos o resultado à variável 'text'.
+    text = file.read()</code></pre>
+  <p>A palavra <code class="inl">as</code> instrui o Python a atribuir o retorno de <code class="inl">open()</code> à variável <code class="inl">file</code>. Ao chamá‑la, obtemos um objeto <code class="inl">TextIOWrapper</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Chama a variável para examinar o objeto
+file</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>&lt;_io.TextIOWrapper name='data/NYT_1991-01-16-A15.txt' mode='r' encoding='utf-8'&gt;</code></pre>
+  <p>Se tentarmos chamar <code class="inl">read()</code> <strong>fora</strong> do bloco <code class="inl">with</code>, o Python levanta um erro, porque o arquivo já foi fechado:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Tenta usar o método read() para ler o conteúdo do arquivo
+file.read()</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>ValueError: I/O operation on closed file.</code></pre>
+  <p>Esse comportamento é o esperado — importante sobretudo ao trabalhar com <strong>milhares de arquivos</strong>. Vejamos o conteúdo lido, guardado em <code class="inl">text</code>. Como é longo, pegamos uma <strong>fatia</strong> dos primeiros 500 caracteres com <code class="inl">[:500]</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera os primeiros 500 caracteres da variável 'text'
+text[:500]</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>'﻿U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis
+Whose Visas Have Expired\nBy JAMES BARRON\nNew York Times (1923-Current file);
+Jan 16, 1991; ... the Justice Department'</code></pre>
+  <p>Há sequências estranhas: <code class="inl">﻿</code> no início e vários <code class="inl">\n</code>. A primeira é a "assinatura" de que o arquivo é UTF‑8; as demais indicam <strong>quebra de linha</strong>. Isso fica evidente ao usar <code class="inl">print()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Imprime os primeiros 1000 caracteres da variável 'text'
+print(text[:1000])</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis Whose Visas Have Expired
+By JAMES BARRON
+New York Times (1923-Current file); Jan 16, 1991;
+...
+   The Federal Bureau of Investigation has been ordered to track down as many as
+   3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday.</code></pre>
+  <p>O Python interpreta o <code class="inl">\n</code> e insere a quebra de linha. As primeiras linhas contêm <strong>metadados</strong> (nome, autor, fonte), que antecedem o corpo do texto.</p>
+
+  <h2 id="s4"><span class="num">4.</span> Manipulando texto</h2>
+  <p>Como <code class="inl">text</code> é um objeto <em>string</em>, podemos usar todos os métodos de manipulação de <em>strings</em> do Python.</p>
+
+  <h3>4.1 Substituindo com <code class="inl">replace()</code></h3>
+  <p>Vamos trocar todas as quebras de linha <code class="inl">"\n"</code> por <em>strings</em> vazias <code class="inl">""</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Substitui as quebras de linha \n por strings vazias e atribui o resultado
+# à variável 'processed_text'
+processed_text = text.replace('\n', '')
+
+# Imprime os primeiros 1000 caracteres da variável 'processed_text'
+print(processed_text[:1000])</code></pre>
+  <p>Agora o texto ficou "grudado", mas ainda dá para identificar o início de cada parágrafo, marcado por <strong>três espaços</strong>.</p>
+  <div class="call warn"><span class="lbl">Atenção</span><p>Remover as quebras de linha também fundiu os metadados em um único parágrafo. Sempre fique atento aos <strong>efeitos indesejados</strong> de substituições e transformações!</p></div>
+
+  <h3>4.2 Dividindo com <code class="inl">split()</code></h3>
+  <p>Sabendo que os metadados estão separados do corpo por três espaços, usamos <code class="inl">split()</code> para <strong>dividir a <em>string</em> em uma lista</strong>, com os três espaços como separador:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa o método split() com três espaços como separador. Atribui o
+# resultado à variável 'processed_text'.
+processed_text = processed_text.split(sep='   ')
+
+# Imprime o resultado da variável 'processed_text'
+print(processed_text)</code></pre>
+  <p>O método retorna uma <strong>lista</strong> de <em>strings</em>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Verifica o tipo do objeto na variável 'processed_text'
+type(processed_text)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>list</code></pre>
+  <p>Os metadados ficaram no <strong>primeiro item</strong> (índice <code class="inl">0</code> — o Python conta do zero):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera o objeto string no índice 0 da lista 'processed_text'
+processed_text[0]</code></pre>
+
+  <h3>4.3 Removendo itens com <code class="inl">pop()</code></h3>
+  <p>Para remover os metadados, usamos <code class="inl">pop()</code>, que espera o índice do item a remover:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Chama o método pop() da lista 'processed_text' com o
+# índice do item a ser removido.
+processed_text.pop(0)</code></pre>
+  <p>Não atribuímos o resultado a uma variável porque as listas são <strong>mutáveis</strong>: <code class="inl">pop()</code> altera a lista <em>in place</em>. Conferindo os três primeiros itens, o metadado já não aparece:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera os três primeiros itens da lista 'processed_text'
+processed_text[:3]</code></pre>
+
+  <h3>4.4 Reunindo com <code class="inl">join()</code></h3>
+  <p>Para voltar de lista para <em>string</em>, usamos <code class="inl">join()</code>, que espera um <strong>iterável</strong>. O ponto que confunde: o <code class="inl">join()</code> é chamado <strong>sobre a <em>string</em> que serve de "cola"</strong>. Aqui, a cola é a sequência original de parágrafo (<code class="inl">'\n   '</code> — quebra de linha e três espaços):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa o método join() para unir os itens da lista 'processed_text'
+# usando a string '\n   ' — uma quebra de linha e três espaços. Guarda o
+# resultado na variável de mesmo nome.
+processed_text = '\n   '.join(processed_text)
+
+# Verifica o resultado imprimindo os primeiros 1000 caracteres da string
+# resultante em 'processed_text'
+print(processed_text[:1000])</code></pre>
+  <p>O <code class="inl">join()</code> devolve uma <em>string</em> com as quebras de parágrafo originais!</p>
+
+  <h3>4.5 Um <em>pipeline</em> de substituições com laço <code class="inl">for</code></h3>
+  <p>O OCR deixou uma <strong>mistura de aspas</strong> (<code class="inl">"</code>, <code class="inl">“</code>, <code class="inl">”</code>, <code class="inl">’’</code>, <code class="inl">‘‘</code>). Para padronizar tudo em <code class="inl">"</code> sem repetir <code class="inl">replace()</code> à mão, combinamos <strong>listas</strong> e <strong>tuplas</strong>. Cada tupla guarda o caractere a substituir e o seu substituto:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define uma lista com quatro tuplas, cada uma com duas strings: o caractere
+# a ser substituido e o seu substituto.
+pipeline = [('“', '"'), ('´´', '"'), ('”', '"'), ('’’', '"')]</code></pre>
+  <p>Isso mostra como estruturas de dados são <strong>aninhadas</strong>: a lista contém tuplas, e as tuplas contêm <em>strings</em>. Agora percorremos a lista com um laço <code class="inl">for</code> (a próxima linha deve ser <strong>indentada</strong>):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre as tuplas da lista 'pipeline'. Cada tupla tem dois valores, que
+# atribuimos as variaveis 'old' e 'new' automaticamente!
+for old, new in pipeline:
+
+    # Usa o metodo replace() para substituir a string da variavel 'old'
+    # pela string da variavel 'new'
+    processed_text = processed_text.replace(old, new)</code></pre>
+  <p>A cada volta, atualizamos a <em>string</em> em <code class="inl">processed_text</code>. Para entender a diferença de usar <strong>uma</strong> variável em vez de duas:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens da variavel 'pipeline'
+for our_tuple in pipeline:
+
+    # Imprime o objeto retornado
+    print(our_tuple)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>('“', '"')
+('´´', '"')
+('”', '"')
+('’’', '"')</code></pre>
+  <p>Com uma variável, o laço devolve a <strong>tupla inteira</strong>; com duas, o Python avança até as <em>strings</em> dentro dela. Preste sempre atenção aos itens contidos na lista!</p>
+
+  <h2 id="s5"><span class="num">5.</span> Manipulando texto em escala</h2>
+  <p>O ideal é aplicar o mesmo procedimento a dez, cem ou mil arquivos com o mesmo esforço. Para isso, precisamos de padrões <strong>mais flexíveis</strong> que as <em>strings</em> fixas, e de abrir/fechar arquivos automaticamente — capacidades dos módulos de <strong>expressões regulares</strong> e de <strong>manipulação de arquivos</strong>.</p>
+
+  <h3>5.1 Expressões regulares</h3>
+  <p>Expressões regulares são uma "linguagem" para definir <strong>padrões de busca</strong>, permitindo <strong>curingas</strong> e <strong>quantificadores</strong>. Ativamos o módulo <code class="inl">re</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">import re</code></pre>
+  <p>Carregamos um arquivo e pegamos seus <strong>últimos</strong> 2000 caracteres:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define o caminho do arquivo e o abre para leitura (r) com codificacao utf-8
+with open(file='data/WP_1990-08-10-25A.txt', mode='r', encoding='utf-8') as file:
+
+    # Le o conteudo do arquivo com o metodo .read()
+    text = file.read()
+
+# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero
+extract = text[-2000:]
+
+# Imprime o resultado
+print(extract)</code></pre>
+  <p>O texto tem muitos erros de OCR, como sequências <code class="inl">....</code> e <code class="inl">,,,,</code>. Compilamos uma expressão que busca <strong>dois ou mais pontos finais</strong> com <code class="inl">compile()</code>. O prefixo <code class="inl">r</code> guarda a <em>string</em> em formato "bruto" (<em>raw</em>):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Compila uma expressao regular e a atribui a variavel 'stops'
+stops = re.compile(r'\.{2,}')
+
+# Vamos verificar o tipo da expressao regular!
+type(stops)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>re.Pattern</code></pre>
+  <ul>
+    <li>A <strong>barra invertida</strong> <code class="inl">\</code> antes do <code class="inl">.</code> diz que queremos o ponto "de verdade" (nas regex, <code class="inl">.</code> é um curinga).</li>
+    <li>As <strong>chaves</strong> <code class="inl">{2,}</code> buscam o item anterior <strong>duas ou mais vezes</strong>.</li>
+  </ul>
+  <p>Aplicamos com <code class="inl">sub()</code>, que recebe <code class="inl">repl</code> (o substituto) e <code class="inl">string</code> (onde procurar):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Aplica a expressao regular ao texto em 'extract' e salva a saida
+# na mesma variavel, essencialmente sobrescrevendo o texto antigo.
+extract = stops.sub(repl='', string=extract)
+
+# Imprime o texto para examinar o resultado
+print(extract)</code></pre>
+  <p>As sequências de pontos finais desapareceram.</p>
+
+  <h3>5.2 Alternativas na expressão regular</h3>
+  <p>Acrescentando <strong>alternativas</strong> com parênteses <code class="inl">( )</code> e a barra vertical <code class="inl">|</code>, buscamos <strong>dois ou mais pontos finais ou vírgulas</strong>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Compila uma expressao regular e a atribui a variavel 'punct'
+punct = re.compile(r'(\.|,){2,}')</code></pre>
+  <p>Reiniciamos <code class="inl">extract</code> a partir de <code class="inl">text</code> e aplicamos o novo padrão:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original
+extract = text[-2000:]
+
+# Aplica a expressao regular
+extract = punct.sub(repl='', string=extract)
+
+# Imprime o resultado
+print(extract)</code></pre>
+  <p>Sucesso! Pontos finais <strong>e</strong> vírgulas foram removidos com uma única expressão. Sequências mais irregulares exigiriam padrões mais complexos.</p>
+  <div class="call tip"><span class="lbl">Dica</span><p>Use um serviço como <a href="https://regex101.com">regex101.com</a> para aprender e testar expressões regulares interativamente. E lembre‑se: para identificar padrões confiáveis, observe sempre <strong>mais de um</strong> texto do seu corpus.</p></div>
+
+  <h3>5.3 Processando múltiplos arquivos</h3>
+  <p>Corpora costumam ter textos em vários arquivos. A classe <code class="inl">Path</code> do módulo <code class="inl">pathlib</code> simplifica abrir, ler, processar e fechar arquivos programaticamente — e <strong>infere automaticamente</strong> o tipo de caminho do sistema operacional (Windows, Linux, macOS):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">from pathlib import Path</code></pre>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Cria um objeto Path que aponta para o diretorio 'data' e o atribui
+# a variavel 'corpus_dir'
+corpus_dir = Path('data')</code></pre>
+  <p>O objeto oferece métodos úteis que retornam valores <strong>booleanos</strong> (<code class="inl">True</code>/<code class="inl">False</code>):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa o metodo exists() para verificar se o caminho e valido
+corpus_dir.exists()</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>True</code></pre>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa o metodo is_dir() para verificar se o caminho aponta para um diretorio
+corpus_dir.is_dir()
+
+# Usa o metodo is_file() para verificar se o caminho aponta para um arquivo
+corpus_dir.is_file()</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>True
+False</code></pre>
+  <p>Usamos <code class="inl">glob()</code> (de <em>global</em>) para coletar os arquivos <code class="inl">.txt</code>. O <code class="inl">*</code> é um <strong>curinga</strong>; convertemos o resultado em lista com <code class="inl">list()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Coleta todos os arquivos com sufixo .txt no diretorio 'corpus_dir' e converte o resultado em uma lista
+files = list(corpus_dir.glob(pattern='*.txt'))
+
+# Mostra o resultado
+files</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[PosixPath('data/WP_1990-08-10-25A.txt'),
+ PosixPath('data/NYT_1991-01-16-A15.txt'),
+ PosixPath('data/WP_1991-01-17-A1B.txt')]</code></pre>
+  <p>Com a lista de três <code class="inl">Path</code>, iteramos e gravamos cada arquivo modificado com um novo nome:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre a lista de objetos Path em 'files'. Refere-se a cada arquivo
+# pela variavel 'file'.
+for file in files:
+
+    # Usa o metodo read_text() de um objeto Path para ler o conteudo do arquivo.
+    # Passa o valor 'utf-8' ao argumento 'encoding' para declarar a codificacao.
+    # Guarda o resultado na variavel 'text'.
+    text = file.read_text(encoding='utf-8')
+
+    # Aplica a expressao regular definida acima para remover a pontuacao
+    # excessiva do texto. Guarda o resultado na variavel 'mod_text'.
+    mod_text = punct.sub('', text)
+
+    # Define um novo nome de arquivo com o prefixo 'mod_' criando uma nova string.
+    # O objeto Path guarda o nome do arquivo como string no atributo 'name'.
+    # Combina as duas strings com o operador '+'.
+    new_filename = 'mod_' + file.name
+
+    # Define um novo objeto Path que aponta para o novo arquivo. O objeto Path
+    # junta automaticamente o diretorio e o nome do arquivo para nos.
+    new_path = Path('data', new_filename)
+
+    # Imprime uma mensagem de status usando formatacao de string. Ao adicionar
+    # o prefixo 'f' a uma string, podemos usar chaves {} para inserir uma
+    # variavel dentro da string. Aqui inserimos o caminho atual do arquivo.
+    print(f'Writing modified text to {new_path}')
+
+    # Usa o metodo write_text() para escrever o texto modificado de 'mod_text'
+    # no arquivo, com codificacao UTF-8.
+    new_path.write_text(mod_text, encoding='utf-8')</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>Writing modified text to data/mod_WP_1990-08-10-25A.txt
+Writing modified text to data/mod_NYT_1991-01-16-A15.txt
+Writing modified text to data/mod_WP_1991-01-17-A1B.txt</code></pre>
+  <p>Os objetos <code class="inl">Path</code> oferecem <code class="inl">read_text()</code> e <code class="inl">write_text()</code>, que leem e gravam <strong>sem</strong> o <code class="inl">with</code> — fechando o arquivo automaticamente após a leitura.</p>
+
+  <hr>
+  <div class="obj">
+    <h4>Resumo da unidade</h4>
+    <ol>
+      <li>Distinguir texto formatado, estruturado e simples.</li>
+      <li>Compreender a codificação de caracteres (ASCII e Unicode/UTF‑8).</li>
+      <li>Carregar arquivos com <code class="inl">open()</code> + <code class="inl">with</code> + <code class="inl">read()</code>.</li>
+      <li>Manipular <em>strings</em> com <code class="inl">replace()</code>, <code class="inl">split()</code>, <code class="inl">pop()</code> e <code class="inl">join()</code>.</li>
+      <li>Definir padrões com expressões regulares (<code class="inl">re.compile()</code>, <code class="inl">sub()</code>).</li>
+      <li>Processar vários arquivos com <code class="inl">pathlib.Path</code>, <code class="inl">glob()</code>, <code class="inl">read_text()</code> e <code class="inl">write_text()</code>.</li>
+    </ol>
+  </div>
+
+  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
+    <ol>
+      <li>Carregue um arquivo do diretório <code class="inl">data</code> e conte quantas quebras de linha (<code class="inl">\n</code>) ele contém antes de qualquer limpeza.</li>
+      <li>Escreva um <em>pipeline</em> (lista de tuplas) que padronize travessões (<code class="inl">—</code>, <code class="inl">–</code>, <code class="inl">-</code>) em um único caractere.</li>
+      <li>Crie uma expressão regular que substitua dois ou mais espaços em branco por um único espaço.</li>
+      <li>Adapte o laço da Seção 5.3 para gravar os arquivos modificados em um diretório <code class="inl">output</code>.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. Hill, M. J.; Hengchen, S. (2019). <em>Quantifying the impact of dirty OCR on historical text analysis.</em> Digital Scholarship in the Humanities.</p>
+    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
+    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except']);
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hlLine(line){
+    var out='', i=0, n=line.length;
+    while(i<n){
+      var c=line[i];
+      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
+      if(c==="'"||c==='"'){
+        var q=c, j=i+1;
+        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
+        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
+        i=j+1; continue;
+      }
+      if(/[A-Za-z_]/.test(c)){
+        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
+        var w=line.slice(i,j2);
+        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
+        i=j2; continue;
+      }
+      if(/[0-9]/.test(c)){
+        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
+        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
+      }
+      out+=esc(c); i++;
+    }
+    return out;
+  }
+  document.querySelectorAll('code.lang-python').forEach(function(el){
+    var src=el.textContent;
+    el.innerHTML=src.split('\n').map(hlLine).join('\n');
+  });
+})();
+</script>
+</body>
+</html>
