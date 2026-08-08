@@ -1,0 +1,531 @@
+% !TEX program = pdflatex
+% ============================================================================
+%  Unidade 2 - Processando textos com spaCy
+%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
+%
+%  COMPILAR COM:  pdflatex unidade2_processando_com_spacy.tex   (rodar 2x)
+%
+%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
+%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry,
+%    listings, tcolorbox, titlesec, enumitem, hyperref, microtype
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+% -------------------------------------------------------------- paleta ------
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{codebg}{HTML}{1E2430}
+\definecolor{codetext}{HTML}{E6E9EF}
+\definecolor{ccomment}{HTML}{7FD18B}
+\definecolor{cstring}{HTML}{F0B866}
+\definecolor{ckw}{HTML}{C792EA}
+\definecolor{cbuiltin}{HTML}{82AAFF}
+\definecolor{outbg}{HTML}{F0F2F7}
+\definecolor{outtext}{HTML}{2F3646}
+\definecolor{outframe}{HTML}{9AA4B8}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+\definecolor{inlink}{HTML}{5A34D6}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
+  pdftitle={Processando textos com spaCy},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
+
+% --------------------------------------------------- estilo do codigo -------
+\lstset{
+  extendedchars=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  keepspaces=true,
+  columns=fullflexible,
+  tabsize=4,
+  showstringspaces=false,
+  literate=%
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
+    {—}{{---}}1 {–}{{--}}1
+    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+}
+
+\lstdefinestyle{pystyle}{
+  language=Python,
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{ckw}\bfseries,
+  keywordstyle=[2]\color{cbuiltin},
+  morekeywords=[2]{print,type,load,enumerate,render,explain,get,to_dict,spacy,displacy},
+  commentstyle=\color{ccomment}\itshape,
+  stringstyle=\color{cstring},
+}
+\lstdefinestyle{outstyle}{
+  basicstyle=\ttfamily\small\color{outtext},
+}
+
+% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
+\newtcblisting{pybox}{
+  breakable, enhanced,
+  listing only, listing options={style=pystyle},
+  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
+  borderline west={3pt}{0pt}{accent},
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+% caixa de saida (fundo claro)
+\newtcblisting{outbox}{
+  breakable, enhanced,
+  listing only, listing options={style=outstyle},
+  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+
+% ------------------------------------------------------ caixas de aviso -----
+\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
+  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
+  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
+  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
+  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
+% caixa de citacao (frase de exemplo)
+\newtcolorbox{quotebox}{enhanced,breakable,
+  colback=subink!4,colframe=subink!25,coltext=subink,
+  boxrule=0pt,leftrule=4pt,arc=3pt,fontupper=\itshape,
+  left=10pt,right=10pt,top=6pt,bottom=6pt,before skip=8pt,after skip=8pt}
+
+% ------------------------------------------------------ titulos de secao ----
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
+  {\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+
+% codigo em linha (verbatim, colorido) via atalho @...@
+\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\begin{document}
+
+% --------------------------------------------------------------- capa -------
+\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
+  before skip=0pt, after skip=20pt]
+  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
+  {\Huge\bfseries Processando textos com spaCy}\\[8pt]
+  {\large Trabalhando com Texto em Python I \ --- \ Unidade 2}\\[6pt]
+  {\normalsize Tokenização, classes gramaticais, análise morfológica e sintática, sentenças, lemas e entidades nomeadas.}\\[10pt]
+  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
+\end{tcolorbox}
+
+\begin{objbox}
+Ao final desta unidade, você deverá:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item conhecer alguns dos conceitos e tarefas fundamentais do processamento de linguagem natural (PLN);
+  \item saber realizar tarefas simples de PLN usando a biblioteca \textbf{spaCy}.
+\end{itemize}
+\end{objbox}
+
+% =========================================================== 1 ==============
+\section{Primeiros passos}
+
+Para começar, importamos o \textbf{spaCy}, uma das muitas bibliotecas disponíveis para processamento de linguagem natural em Python.
+
+\begin{pybox}
+# Importa a biblioteca spaCy
+import spacy
+\end{pybox}
+
+\begin{tipbox}[Dica prática]
+A primeira importação do spaCy pode demorar alguns segundos, porque a biblioteca carrega dependências pesadas (redes neurais, tokenizadores etc.). Isso é normal.
+\end{tipbox}
+
+Para realizar tarefas de processamento de linguagem natural em um idioma específico, precisamos carregar um \textbf{modelo de linguagem} treinado para executar essas tarefas naquele idioma.
+
+O spaCy oferece suporte a muitos idiomas, mas disponibiliza \textbf{modelos pré-treinados} apenas para um subconjunto deles. Esses modelos vêm em tamanhos e ``sabores'' diferentes --- exploraremos essas diferenças mais adiante no curso. Para nos familiarizarmos com as tarefas básicas de PLN, começaremos com um modelo pequeno para o \textbf{inglês}.
+
+Os modelos de linguagem são carregados com a função @load()@ do spaCy, que recebe o \textbf{nome do modelo} como entrada:
+
+\begin{pybox}
+# Carrega o modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+nlp = spacy.load('en_core_web_sm')
+
+# Chama a variavel para examinar o objeto
+nlp
+\end{pybox}
+
+Chamar a variável @nlp@ retorna um objeto @Language@ do spaCy, que contém o modelo de linguagem para o inglês. Em essência, o objeto @Language@ do spaCy é um \textbf{pipeline} (uma sequência de etapas de processamento) que usa o modelo de linguagem para executar diversas tarefas de PLN --- tarefas que veremos a seguir.
+
+\subsection{O que é um modelo de linguagem?}
+A maioria dos modelos de linguagem modernos é baseada em \textbf{estatística}, e não em regras definidas manualmente por humanos. Modelos de linguagem estatísticos se apoiam em \textbf{probabilidades}, respondendo perguntas como:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item Qual a probabilidade de uma determinada frase ocorrer em um idioma?
+  \item Qual a probabilidade de uma determinada palavra ocorrer em uma sequência de palavras?
+\end{itemize}
+
+Considere as frases a seguir, extraídas dos artigos de jornal usados na Unidade 1:
+
+\begin{quotebox}
+``From financial exchanges in \textbf{\textup{OCULTO}} Manhattan to cloakrooms in Washington and homeless shelters in California, unfamiliar rituals were the order of the day.''
+\end{quotebox}
+\begin{quotebox}
+``Security precautions were being taken around the \textbf{\textup{OCULTO}} as the deadline for Iraq to withdraw from Kuwait neared.''
+\end{quotebox}
+
+Você provavelmente consegue \textbf{arriscar um bom palpite} sobre as palavras ocultas, com base no seu conhecimento da língua inglesa e do mundo em geral (no primeiro caso, algo como \textit{``lower''}; no segundo, \textit{``country''}).
+
+Da mesma forma, construir um modelo de linguagem estatístico envolve observar a ocorrência de palavras em \textbf{grandes corpora} e calcular suas probabilidades de ocorrência em um determinado contexto. O modelo é então treinado fazendo previsões e ajustando-se com base nos erros cometidos durante essas previsões.
+
+\subsection{Como os modelos de linguagem são treinados?}
+O modelo pequeno para o inglês, por exemplo, é treinado em um corpus chamado \textbf{OntoNotes 5.0}, que reúne textos de gêneros variados --- notícias de agências de imprensa, notícias de telejornal, conversas telefônicas e transmitidas, e blogs. Isso permite que o corpus cubra a variação linguística tanto da língua \textbf{escrita} quanto \textbf{falada} em inglês.
+
+O corpus OntoNotes 5.0 é composto por mais do que texto puro: suas anotações incluem \textbf{classes gramaticais} (\textit{part-of-speech tags}), \textbf{dependências sintáticas} e \textbf{correferências} entre palavras. Isso permite modelar não apenas a ocorrência de palavras ou sequências de palavras, mas também suas \textbf{características gramaticais}.
+
+% =========================================================== 2 ==============
+\section{Realizando tarefas básicas de PLN com spaCy}
+
+Para processar um texto usando o objeto @Language@ que contém o modelo de linguagem para o inglês, basta \textbf{chamar} o objeto @nlp@ sobre algum texto.
+
+Vamos definir uma frase de teste simples --- um objeto \textit{string} do Python, guardado na variável @text@:
+
+\begin{pybox}
+# Atribui uma frase de exemplo a variavel 'text'
+text = "The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday."
+
+# Chama a variavel para examinar o resultado
+text
+\end{pybox}
+
+Passar a variável @text@ para o objeto @Language@ @nlp@ retorna um objeto @Doc@ do spaCy (abreviação de \textit{document}, ``documento''). Em processamento de linguagem natural, trechos maiores de texto costumam ser chamados de ``documentos'', ainda que, neste caso, nosso documento consista em uma única frase.
+
+Esse objeto contém tanto o texto de entrada (@text@) quanto os \textbf{resultados} do processamento de linguagem natural feito pelo spaCy.
+
+\begin{pybox}
+# Alimenta a string em 'text' ao objeto Language em 'nlp'
+# Guarda o resultado na variavel 'doc'
+doc = nlp(text)
+\end{pybox}
+
+O objeto @Doc@ agora está guardado na variável @doc@:
+
+\begin{pybox}
+# Chama a variavel para examinar o objeto
+doc
+\end{pybox}
+
+Embora a saída se pareça com uma \textit{string} comum do Python, o objeto @Doc@ contém uma \textbf{riqueza de informações} sobre a estrutura linguística do texto, geradas pelo spaCy ao processar a frase através do seu \textit{pipeline} de PLN. Vamos agora examinar, uma a uma, as tarefas realizadas ``nos bastidores''.
+
+\subsection{Tokenização}
+A primeira tarefa realizada é conhecida como \textbf{tokenização}: ela quebra o texto em unidades analíticas que serão processadas posteriormente.
+
+Na maioria dos casos, um \textbf{token} corresponde a uma palavra separada por espaço em branco, mas sinais de pontuação também são considerados tokens independentes. Como os computadores tratam palavras como sequências de caracteres, atribuir aos sinais de pontuação seus próprios tokens evita que a pontuação final ``grude'' nas palavras que a precedem.
+
+Um objeto @Doc@ do spaCy é composto por uma sequência de objetos @Token@, que armazenam os resultados das diversas tarefas de PLN. Vamos imprimir cada objeto @Token@ guardado em @doc@:
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime cada token
+    print(token)
+\end{pybox}
+
+A saída mostra um @Token@ por linha. Como esperado, sinais de pontuação como @.@ e @,@ constituem seus próprios @Token@s.
+
+\subsection{Anotação morfossintática \textnormal{\textit{(part-of-speech tagging)}}}
+A \textbf{anotação morfossintática} (\textit{POS tagging}) é a tarefa de determinar a \textbf{classe gramatical} de um token. Isso é crucial para desambiguação, já que classes gramaticais diferentes podem ter formas idênticas.
+
+Considere o exemplo em inglês: \textit{``The sailor \textbf{dogs} the hatch.''} (algo como ``O marinheiro tranca a escotilha''). O presente do verbo \textit{to dog} (prender/trancar algo com algo) é exatamente igual ao plural do substantivo \textit{dog} (cachorro): @dogs@. Para identificar a classe correta, é preciso examinar o \textbf{contexto} em que a palavra aparece.
+
+O spaCy fornece dois tipos de anotação morfossintática, uma \textbf{genérica} (\textit{coarse}) e uma \textbf{detalhada} (\textit{fine-grained}), guardadas respectivamente nos atributos @pos_@ e @tag_@. Acessamos os atributos de um objeto Python inserindo o atributo após o objeto, separados por um ponto final --- por exemplo, @token.pos_@.
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e as anotacoes morfossintaticas genericas e detalhadas
+    print(token, token.pos_, token.tag_)
+\end{pybox}
+
+As anotações genéricas disponíveis em @pos_@ são baseadas no conjunto de rótulos do projeto \textbf{Universal Dependencies}. Já as anotações detalhadas em @tag_@ são baseadas no corpus OntoNotes 5.0 apresentado acima. Diferentemente das anotações genéricas, as detalhadas também codificam informação gramatical adicional --- as anotações de verbos, por exemplo, se distinguem por \textbf{aspecto} e \textbf{tempo verbal}.
+
+\subsection{Análise morfológica}
+\textbf{Morfemas} são as menores unidades gramaticais que carregam significado. Reconhecem-se geralmente dois tipos: \textbf{morfemas livres}, que consistem em palavras capazes de existir sozinhas, e \textbf{morfemas presos}, que flexionam outros morfemas. No inglês, morfemas presos incluem sufixos como @-s@, usado para indicar o plural de um substantivo.
+
+Em outras palavras, os morfemas moldam a forma externa de uma palavra, e essas formas estão associadas a funções gramaticais específicas.
+
+O spaCy realiza a análise morfológica automaticamente, guardando o resultado no atributo @morph@ de um objeto @Token@:
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e o resultado da analise morfologica
+    print(token, token.morph)
+\end{pybox}
+
+Como mostra a saída, \textbf{nem todos os tokens} têm informação morfológica --- alguns consistem em morfemas livres, sem flexão. Para recuperar informação morfológica de um @Token@, usamos o método @get()@ do atributo @morph@. Podemos usar colchetes @[]@ para acessar itens no objeto @Doc@. A linha a seguir recupera a informação morfológica de \textbf{aspecto} para o 23º token do @Doc@ (índice 22):
+
+\begin{pybox}
+# Recupera informacao morfologica sobre aspecto para o Token no indice 22 do objeto Doc
+doc[22].morph.get('Aspect')
+\end{pybox}
+\begin{outbox}
+['Perf']
+\end{outbox}
+
+Isso retorna uma lista com um único item, a \textit{string} @Perf@, que se refere ao \textbf{aspecto perfectivo}.
+
+O que acontece se tentarmos recuperar uma característica morfológica que o token \textbf{não possui}? Vamos tentar recuperar a informação de aspecto para o 22º token (índice 21):
+
+\begin{pybox}
+# Recupera informacao morfologica sobre aspecto para o Token no indice 21 do objeto Doc
+doc[21].morph.get('Aspect')
+\end{pybox}
+\begin{outbox}
+[]
+\end{outbox}
+
+Isso retorna uma \textbf{lista vazia}, indicada pelos colchetes @[ ]@ sem nada entre eles.
+
+Para recuperar \textbf{toda} a informação morfológica disponível para um dado @Token@, a melhor solução é usar o método @to_dict()@ do atributo @morph@. Isso retorna um \textbf{dicionário}, uma estrutura de dados do Python composta por pares de chave e valor:
+
+\begin{pybox}
+# Recupera informacao morfologica para o Token no indice 21 do objeto Doc
+# Usa o metodo to_dict() para converter o resultado em um dicionario
+doc[21].morph.to_dict()
+\end{pybox}
+
+Um dicionário Python é delimitado por chaves @{ }@. Cada par chave/valor é separado por dois-pontos @:@. Nesse caso, tanto as chaves quanto os valores são objetos \textit{string}. O valor guardado em uma chave pode ser acessado colocando o nome da chave entre colchetes @[ ]@ logo após o nome do dicionário:
+
+\begin{pybox}
+# Atribui a informacao morfologica ao dicionario 'morph_dict'
+morph_dict = doc[21].morph.to_dict()
+
+# Recupera o valor correspondente a chave 'Mood'
+morph_dict['Mood']
+\end{pybox}
+
+Dicionários são uma estrutura de dados poderosa em Python, que usaremos com frequência para guardar informações.
+
+\subsection{Análise sintática \textnormal{(\textit{parsing} de dependências)}}
+A \textbf{análise sintática} (ou \textit{parsing} de dependências) é a tarefa de definir as \textbf{dependências sintáticas} entre tokens. Essas dependências ficam disponíveis no atributo @dep_@ de um objeto @Token@:
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e sua etiqueta de dependencia
+    print(token, token.dep_)
+\end{pybox}
+
+Diferentemente das anotações morfossintáticas, associadas a um único @Token@, as etiquetas de dependência indicam uma \textbf{relação} entre dois tokens. Para entender melhor essas relações sintáticas, vamos usar alguns atributos adicionais de cada @Token@:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item @i@: a posição do token no @Doc@;
+  \item @token@: o próprio token;
+  \item @dep_@: a etiqueta da relação sintática;
+  \item @head@ e @i@: o token que \textbf{governa} o token atual, e o índice desse token-governante.
+\end{itemize}
+
+Isso ilustra como os atributos do Python podem ser combinados de forma flexível: o atributo @head@ aponta para outro @Token@, que por sua vez tem o atributo @i@ com seu próprio índice no @Doc@. Podemos combinar os dois atributos e acessar essa informação com @.head.i@:
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o indice do token atual, o token, a dependencia, o governante e seu indice
+    print(token.i, token, token.dep_, token.head.i, token.head)
+\end{pybox}
+
+Embora a saída acima ajude a esclarecer as dependências sintáticas entre os tokens, elas costumam ser \textbf{muito mais fáceis de perceber} por meio de diagramas. O spaCy oferece uma ferramenta de visualização chamada \textbf{displaCy}, importável com o comando:
+
+\begin{pybox}
+from spacy import displacy
+\end{pybox}
+
+O módulo @displacy@ tem uma função chamada @render()@, que recebe um objeto @Doc@ como entrada. Para desenhar uma árvore de dependências, passamos o @Doc@ @doc@ à função @render()@ com dois argumentos:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item @style@: o valor @'dep'@ instrui o displaCy a desenhar uma visualização de dependências sintáticas;
+  \item @options@: recebe um dicionário Python como entrada. Passamos um dicionário com a chave @compact@ e o valor booleano @True@ para instruir o displaCy a desenhar uma árvore compacta.
+\end{itemize}
+
+\begin{pybox}
+displacy.render(doc, style='dep', options={'compact': True})
+\end{pybox}
+
+As dependências sintáticas são visualizadas por meio de \textbf{linhas} que partem do token-governante em direção ao token governado por ele. As etiquetas de dependência são baseadas no projeto \textbf{Universal Dependencies}, um arcabouço para descrever características morfológicas e sintáticas entre diferentes idiomas.
+
+Se você não souber o significado de uma etiqueta específica, o spaCy oferece uma função para explicá-las, @explain()@, que recebe a etiqueta como entrada (atenção: as etiquetas diferenciam maiúsculas de minúsculas):
+
+\begin{pybox}
+spacy.explain('pobj')
+\end{pybox}
+
+Por fim, se você está se perguntando sobre os sublinhados @_@ nos nomes dos atributos: o spaCy codifica todas as \textit{strings} mapeando-as para \textbf{valores de hash} (uma representação numérica) por eficiência computacional. Vamos imprimir o primeiro token do @Doc@ (@doc[0]@) e suas dependências para examinar como isso funciona:
+
+\begin{pybox}
+print(doc[0], doc[0].dep, doc[0].dep_)
+\end{pybox}
+
+Como se vê, o valor de hash @415@ está reservado para a etiqueta correspondente a um determinante (@det@).
+
+\begin{warnbox}
+Se você quiser uma saída legível para humanos na análise de dependências e o spaCy devolver sequências de números, provavelmente você esqueceu de adicionar o sublinhado ao nome do atributo (por exemplo, usou @dep@ em vez de @dep_@).
+\end{warnbox}
+
+\subsection{Segmentação de sentenças}
+O spaCy também segmenta objetos @Doc@ em \textbf{sentenças} --- tarefa conhecida como \textbf{segmentação de sentenças}. Essa segmentação impõe estrutura adicional a textos maiores: ao determinar os limites de uma sentença, podemos restringir tarefas como a análise de dependências a sentenças individuais.
+
+O spaCy disponibiliza o resultado da segmentação de sentenças no atributo @sents@ de um objeto @Doc@. Vamos percorrer as sentenças contidas em @doc@ e contá-las usando a função @enumerate()@ do Python, que retorna uma contagem crescente a cada item do laço:
+
+\begin{pybox}
+# Percorre as sentencas no objeto Doc e as conta usando enumerate()
+for number, sent in enumerate(doc.sents):
+
+    # Imprime o numero e a sentenca
+    print(number, sent)
+\end{pybox}
+
+Isso retorna apenas \textbf{uma sentença}, mas o objeto @Doc@ poderia facilmente conter um texto mais longo com múltiplas sentenças, como uma reportagem inteira.
+
+\subsection{Lematização}
+Um \textbf{lema} é a forma base de uma palavra. Tenha em mente que, a menos que instruído explicitamente, o computador não sabe distinguir formas singular e plural de uma palavra --- ele as trata como tokens distintos, porque suas formas diferem.
+
+Se quisermos contar a \textbf{ocorrência de palavras}, por exemplo, é necessário um processo chamado \textbf{lematização}, que agrupa as diferentes formas de um mesmo token. Os lemas ficam disponíveis para cada @Token@ no atributo @lemma_@:
+
+\begin{pybox}
+# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e seu lema
+    print(token, token.lemma_)
+\end{pybox}
+
+\subsection{Reconhecimento de entidades nomeadas \textnormal{(NER)}}
+O \textbf{reconhecimento de entidades nomeadas} (\textit{named entity recognition}, NER) é a tarefa de identificar e classificar entidades mencionadas em um texto. O spaCy reconhece as entidades nomeadas anotadas no corpus OntoNotes 5 --- pessoas, locais geográficos e produtos, entre outros exemplos.
+
+Usamos o atributo @.ents@ do objeto @Doc@ para obter as entidades nomeadas:
+
+\begin{pybox}
+doc.ents
+\end{pybox}
+
+Isso retorna uma \textbf{tupla} com as entidades nomeadas. Cada item da tupla é um objeto @Span@ do spaCy --- objetos @Span@ podem conter \textbf{múltiplos} objetos @Token@, já que muitas entidades nomeadas se estendem por mais de um token. As entidades nomeadas e seus tipos ficam guardados nos atributos @.text@ e @.label_@ de cada @Span@. Vamos percorrer a tupla e imprimir ambos os atributos:
+
+\begin{pybox}
+# Percorre as entidades nomeadas no objeto Doc
+for ent in doc.ents:
+
+    # Imprime a entidade nomeada e sua etiqueta
+    print(ent.text, ent.label_)
+\end{pybox}
+
+Como se vê, a maioria das entidades nomeadas identificadas consiste em \textbf{múltiplos tokens}, por isso são representadas como objetos @Span@. Podemos confirmar isso acessando a primeira entidade nomeada (índice @0@, já que o Python conta do zero) e passando o objeto à função @type()@:
+
+\begin{pybox}
+# Verifica o tipo do objeto usado para armazenar entidades nomeadas
+type(doc.ents[0])
+\end{pybox}
+
+Objetos @Span@ do spaCy têm vários argumentos úteis. Mais importante: os atributos @start@ e @end@ retornam os \textbf{índices dos tokens} que determinam onde o @Span@ começa e termina no @Doc@. Vamos examinar isso com mais detalhe, imprimindo os atributos @start@ e @end@ da primeira entidade nomeada:
+
+\begin{pybox}
+# Imprime a entidade nomeada e os indices de seus tokens de inicio e fim
+print(doc.ents[0], doc.ents[0].start, doc.ents[0].end)
+\end{pybox}
+
+A entidade nomeada começa no índice @0@ e termina no índice @5@ do @Doc@. Se recuperarmos o sexto token do @Doc@ (índice @5@), veremos que ele corresponde ao token @"has"@:
+
+\begin{pybox}
+doc[5]
+\end{pybox}
+
+Isso mostra que o índice retornado por @end@ \textbf{não} corresponde ao último token do @Span@ que contém a entidade nomeada, mas sim ao índice do \textbf{primeiro token seguinte} ao @Span@. Vamos examinar isso percorrendo o recorte (\textit{slice}) do @Doc@ correspondente à primeira entidade nomeada:
+
+\begin{pybox}
+# Percorre um recorte do objeto Doc que cobre a primeira entidade nomeada
+for token in doc[doc.ents[0].start: doc.ents[0].end]:
+
+    # Imprime o token e seu indice
+    print(token, token.i)
+\end{pybox}
+
+Como se vê, o atributo @start@ indica onde o @Span@ \textbf{começa}, enquanto @end@ indica onde o @Span@ \textbf{terminou} (ou seja, o token logo após o seu fim).
+
+Também podemos renderizar as entidades nomeadas com o displaCy, o mesmo módulo usado acima para visualizar as dependências sintáticas. Note que, desta vez, passamos a \textit{string} @'ent'@ ao argumento @style@ para indicar que queremos visualizar \textbf{entidades nomeadas}:
+
+\begin{pybox}
+displacy.render(doc, style='ent')
+\end{pybox}
+
+Se você não reconhecer uma etiqueta usada para uma entidade nomeada, pode sempre pedir uma explicação ao spaCy:
+
+\begin{pybox}
+spacy.explain('NORP')
+\end{pybox}
+
+% ======================================================= resumo ============
+\section*{Resumo da unidade}
+\addcontentsline{toc}{section}{Resumo da unidade}
+\begin{objbox}[Nesta unidade, você aprendeu a]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
+  \item carregar um modelo de linguagem com @spacy.load()@ e entender como é treinado um modelo estatístico de linguagem;
+  \item processar um texto com @nlp(text)@, obtendo um objeto @Doc@;
+  \item tokenizar o texto e percorrer os objetos @Token@ resultantes;
+  \item anotar classes gramaticais (@pos_@, @tag_@) e realizar análise morfológica (@morph@, @to_dict()@);
+  \item analisar dependências sintáticas (@dep_@, @head@) e visualizá-las com @displacy.render()@;
+  \item segmentar sentenças (@doc.sents@) e lematizar tokens (@lemma_@);
+  \item reconhecer entidades nomeadas (@doc.ents@, @.text@, @.label_@) e visualizá-las com @displacy.render(..., style='ent')@.
+\end{enumerate}
+\end{objbox}
+
+\begin{notebox}[Exercícios sugeridos]
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
+  \item Processe uma das notícias completas da Unidade 1 com @nlp()@ e conte quantas sentenças o @Doc@ resultante contém.
+  \item Liste todos os tokens classificados como verbo (@token.pos_ == 'VERB'@) em um texto à sua escolha.
+  \item Extraia todas as entidades nomeadas do tipo pessoa (@PERSON@) de um texto e imprima seus lemas.
+  \item Use @spacy.explain()@ para descobrir o significado de pelo menos três etiquetas de dependência (@dep_@) diferentes das usadas nos exemplos acima.
+\end{enumerate}
+\end{notebox}
+
+\vspace{6pt}
+\noindent\rule{\linewidth}{0.4pt}\\[4pt]
+{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. de Marneffe, M.-C. et al. (2021). \textit{Universal Dependencies.} Computational Linguistics. Honnibal, M.; Montani, I. et al. \textit{spaCy: Industrial-strength Natural Language Processing in Python} --- \href{https://spacy.io/}{spacy.io}.\par
+Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+
+\end{document}

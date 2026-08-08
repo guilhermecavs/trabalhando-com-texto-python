@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidade 2 — Processando textos com spaCy</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+    --code-bg:#1e2430; --code-ink:#e6e9ef;
+    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
+    --h3-ink:#2b3242;
+    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
+    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+    --border:#e6e8ef; --radius:16px;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
+  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
+    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
+    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+  header.hero .inner{max-width:900px;margin:0 auto}
+  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;opacity:.9;margin:0 0 12px}
+  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
+  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
+  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
+  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
+  .navlink:hover{opacity:1}
+  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
+    border-left:5px solid var(--accent);line-height:1.25}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
+  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
+  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
+  p{margin:14px 0}
+  blockquote{margin:16px 0;padding:4px 0 4px 16px;border-left:3px solid var(--border);color:var(--muted);font-style:italic}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+  a:hover{border-color:var(--accent)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
+    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
+  strong{color:var(--ink-strong);font-weight:700}
+  ul,ol{margin:14px 0;padding-left:24px}
+  li{margin:7px 0}
+  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
+  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  /* code */
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
+    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
+    font-size:14.5px;line-height:1.6;position:relative;
+    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
+  pre.code{border-top:3px solid var(--accent)}
+  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
+    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
+    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
+  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
+    box-shadow:none;border-top:3px solid var(--out-tag)}
+  pre.out .tag{background:var(--out-tag)}
+  pre code{font-family:inherit;white-space:pre}
+  .c{color:var(--c-comment);font-style:italic}
+  .s{color:var(--c-string)}
+  .k{color:var(--c-kw);font-weight:600}
+  .n{color:var(--c-num)}
+  /* callouts */
+  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
+    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
+  .call p{margin:6px 0}
+  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
+  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
+  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
+  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+  footer{color:var(--muted);font-size:14px;margin-top:40px}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
+  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{border:none}
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152}
+  }
+  :root[data-theme="dark"]{
+    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
+    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
+    <h1>Processando textos com spaCy</h1>
+    <p class="sub">Trabalhando com Texto em Python I — Unidade 2. Tokenização, classes gramaticais, análise morfológica e sintática, sentenças, lemas e entidades nomeadas.</p>
+    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span><br>
+    <a class="navlink" href="../Unidade-1/unidade1_manipulando_texto.html">&larr; Unidade 1 · Manipulando texto com Python</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h4>Nesta unidade</h4>
+    <ol>
+      <li><a href="#s1">Primeiros passos</a></li>
+      <li><a href="#s2">Realizando tarefas básicas de PLN com spaCy</a></li>
+    </ol>
+  </nav>
+
+  <div class="obj">
+    <h4>Objetivos de aprendizagem</h4>
+    <ul>
+      <li>Conhecer alguns dos conceitos e tarefas fundamentais do processamento de linguagem natural (PLN).</li>
+      <li>Saber realizar tarefas simples de PLN usando a biblioteca <strong>spaCy</strong>.</li>
+    </ul>
+  </div>
+
+  <h2 id="s1"><span class="num">1.</span> Primeiros passos</h2>
+  <p>Para começar, importamos o <strong>spaCy</strong>, uma das muitas bibliotecas disponíveis para processamento de linguagem natural em Python.</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a biblioteca spaCy
+import spacy</code></pre>
+  <div class="call tip"><span class="lbl">Dica prática</span><p>A primeira importação do spaCy pode demorar alguns segundos, porque a biblioteca carrega dependências pesadas (redes neurais, tokenizadores etc.). Isso é normal.</p></div>
+
+  <p>Para realizar tarefas de processamento de linguagem natural em um idioma específico, precisamos carregar um <strong>modelo de linguagem</strong> treinado para executar essas tarefas naquele idioma.</p>
+  <p>O spaCy oferece suporte a muitos idiomas, mas disponibiliza <strong>modelos pré‑treinados</strong> apenas para um subconjunto deles. Esses modelos vêm em tamanhos e "sabores" diferentes — exploraremos essas diferenças mais adiante no curso. Para nos familiarizarmos com as tarefas básicas de PLN, começaremos com um modelo pequeno para o <strong>inglês</strong>.</p>
+  <p>Os modelos de linguagem são carregados com a função <code class="inl">load()</code> do spaCy, que recebe o <strong>nome do modelo</strong> como entrada:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Carrega o modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+nlp = spacy.load('en_core_web_sm')
+
+# Chama a variavel para examinar o objeto
+nlp</code></pre>
+  <p>Chamar a variável <code class="inl">nlp</code> retorna um objeto <code class="inl">Language</code> do spaCy, que contém o modelo de linguagem para o inglês. Em essência, o objeto <code class="inl">Language</code> do spaCy é um <strong>pipeline</strong> (uma sequência de etapas de processamento) que usa o modelo de linguagem para executar diversas tarefas de PLN — tarefas que veremos a seguir.</p>
+
+  <h3>1.1 O que é um modelo de linguagem?</h3>
+  <p>A maioria dos modelos de linguagem modernos é baseada em <strong>estatística</strong>, e não em regras definidas manualmente por humanos. Modelos de linguagem estatísticos se apoiam em <strong>probabilidades</strong>, respondendo perguntas como:</p>
+  <ul>
+    <li>Qual a probabilidade de uma determinada frase ocorrer em um idioma?</li>
+    <li>Qual a probabilidade de uma determinada palavra ocorrer em uma sequência de palavras?</li>
+  </ul>
+  <p>Considere as frases a seguir, extraídas dos artigos de jornal usados na Unidade 1:</p>
+  <blockquote>"From financial exchanges in <strong>OCULTO</strong> Manhattan to cloakrooms in Washington and homeless shelters in California, unfamiliar rituals were the order of the day."</blockquote>
+  <blockquote>"Security precautions were being taken around the <strong>OCULTO</strong> as the deadline for Iraq to withdraw from Kuwait neared."</blockquote>
+  <p>Você provavelmente consegue <strong>arriscar um bom palpite</strong> sobre as palavras ocultas, com base no seu conhecimento da língua inglesa e do mundo em geral (no primeiro caso, algo como <em>"lower"</em>; no segundo, <em>"country"</em>).</p>
+  <p>Da mesma forma, construir um modelo de linguagem estatístico envolve observar a ocorrência de palavras em <strong>grandes corpora</strong> e calcular suas probabilidades de ocorrência em um determinado contexto. O modelo é então treinado fazendo previsões e ajustando‑se com base nos erros cometidos durante essas previsões.</p>
+
+  <h3>1.2 Como os modelos de linguagem são treinados?</h3>
+  <p>O modelo pequeno para o inglês, por exemplo, é treinado em um corpus chamado <strong>OntoNotes 5.0</strong>, que reúne textos de gêneros variados — notícias de agências de imprensa, notícias de telejornal, conversas telefônicas e transmitidas, e blogs. Isso permite que o corpus cubra a variação linguística tanto da língua <strong>escrita</strong> quanto <strong>falada</strong> em inglês.</p>
+  <p>O corpus OntoNotes 5.0 é composto por mais do que texto puro: suas anotações incluem <strong>classes gramaticais</strong> (<em>part‑of‑speech tags</em>), <strong>dependências sintáticas</strong> e <strong>correferências</strong> entre palavras. Isso permite modelar não apenas a ocorrência de palavras ou sequências de palavras, mas também suas <strong>características gramaticais</strong>.</p>
+
+  <h2 id="s2"><span class="num">2.</span> Realizando tarefas básicas de PLN com spaCy</h2>
+  <p>Para processar um texto usando o objeto <code class="inl">Language</code> que contém o modelo de linguagem para o inglês, basta <strong>chamar</strong> o objeto <code class="inl">nlp</code> sobre algum texto.</p>
+  <p>Vamos definir uma frase de teste simples — um objeto <em>string</em> do Python, guardado na variável <code class="inl">text</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Atribui uma frase de exemplo a variavel 'text'
+text = "The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday."
+
+# Chama a variavel para examinar o resultado
+text</code></pre>
+  <p>Passar a variável <code class="inl">text</code> para o objeto <code class="inl">Language</code> <code class="inl">nlp</code> retorna um objeto <code class="inl">Doc</code> do spaCy (abreviação de <em>document</em>, "documento"). Em processamento de linguagem natural, trechos maiores de texto costumam ser chamados de "documentos", ainda que, neste caso, nosso documento consista em uma única frase.</p>
+  <p>Esse objeto contém tanto o texto de entrada (<code class="inl">text</code>) quanto os <strong>resultados</strong> do processamento de linguagem natural feito pelo spaCy.</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Alimenta a string em 'text' ao objeto Language em 'nlp'
+# Guarda o resultado na variavel 'doc'
+doc = nlp(text)</code></pre>
+  <p>O objeto <code class="inl">Doc</code> agora está guardado na variável <code class="inl">doc</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Chama a variavel para examinar o objeto
+doc</code></pre>
+  <p>Embora a saída se pareça com uma <em>string</em> comum do Python, o objeto <code class="inl">Doc</code> contém uma <strong>riqueza de informações</strong> sobre a estrutura linguística do texto, geradas pelo spaCy ao processar a frase através do seu <em>pipeline</em> de PLN. Vamos agora examinar, uma a uma, as tarefas realizadas "nos bastidores".</p>
+
+  <h3>2.1 Tokenização</h3>
+  <p>A primeira tarefa realizada é conhecida como <strong>tokenização</strong>: ela quebra o texto em unidades analíticas que serão processadas posteriormente.</p>
+  <p>Na maioria dos casos, um <strong>token</strong> corresponde a uma palavra separada por espaço em branco, mas sinais de pontuação também são considerados tokens independentes. Como os computadores tratam palavras como sequências de caracteres, atribuir aos sinais de pontuação seus próprios tokens evita que a pontuação final "grude" nas palavras que a precedem.</p>
+  <p>Um objeto <code class="inl">Doc</code> do spaCy é composto por uma sequência de objetos <code class="inl">Token</code>, que armazenam os resultados das diversas tarefas de PLN. Vamos imprimir cada objeto <code class="inl">Token</code> guardado em <code class="inl">doc</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime cada token
+    print(token)</code></pre>
+  <p>A saída mostra um <code class="inl">Token</code> por linha. Como esperado, sinais de pontuação como <code class="inl">.</code> e <code class="inl">,</code> constituem seus próprios <code class="inl">Token</code>s.</p>
+
+  <h3>2.2 Anotação morfossintática (<em>part‑of‑speech tagging</em>)</h3>
+  <p>A <strong>anotação morfossintática</strong> (<em>POS tagging</em>) é a tarefa de determinar a <strong>classe gramatical</strong> de um token. Isso é crucial para desambiguação, já que classes gramaticais diferentes podem ter formas idênticas.</p>
+  <p>Considere o exemplo em inglês: <em>"The sailor <strong>dogs</strong> the hatch."</em> (algo como "O marinheiro tranca a escotilha"). O presente do verbo <em>to dog</em> (prender/trancar algo com algo) é exatamente igual ao plural do substantivo <em>dog</em> (cachorro): <code class="inl">dogs</code>. Para identificar a classe correta, é preciso examinar o <strong>contexto</strong> em que a palavra aparece.</p>
+  <p>O spaCy fornece dois tipos de anotação morfossintática, uma <strong>genérica</strong> (<em>coarse</em>) e uma <strong>detalhada</strong> (<em>fine‑grained</em>), guardadas respectivamente nos atributos <code class="inl">pos_</code> e <code class="inl">tag_</code>. Acessamos os atributos de um objeto Python inserindo o atributo após o objeto, separados por um ponto final — por exemplo, <code class="inl">token.pos_</code>.</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e as anotacoes morfossintaticas genericas e detalhadas
+    print(token, token.pos_, token.tag_)</code></pre>
+  <p>As anotações genéricas disponíveis em <code class="inl">pos_</code> são baseadas no conjunto de rótulos do projeto <strong>Universal Dependencies</strong>. Já as anotações detalhadas em <code class="inl">tag_</code> são baseadas no corpus OntoNotes 5.0 apresentado acima. Diferentemente das anotações genéricas, as detalhadas também codificam informação gramatical adicional — as anotações de verbos, por exemplo, se distinguem por <strong>aspecto</strong> e <strong>tempo verbal</strong>.</p>
+
+  <h3>2.3 Análise morfológica</h3>
+  <p><strong>Morfemas</strong> são as menores unidades gramaticais que carregam significado. Reconhecem‑se geralmente dois tipos: <strong>morfemas livres</strong>, que consistem em palavras capazes de existir sozinhas, e <strong>morfemas presos</strong>, que flexionam outros morfemas. No inglês, morfemas presos incluem sufixos como <code class="inl">-s</code>, usado para indicar o plural de um substantivo.</p>
+  <p>Em outras palavras, os morfemas moldam a forma externa de uma palavra, e essas formas estão associadas a funções gramaticais específicas.</p>
+  <p>O spaCy realiza a análise morfológica automaticamente, guardando o resultado no atributo <code class="inl">morph</code> de um objeto <code class="inl">Token</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e o resultado da analise morfologica
+    print(token, token.morph)</code></pre>
+  <p>Como mostra a saída, <strong>nem todos os tokens</strong> têm informação morfológica — alguns consistem em morfemas livres, sem flexão. Para recuperar informação morfológica de um <code class="inl">Token</code>, usamos o método <code class="inl">get()</code> do atributo <code class="inl">morph</code>. Podemos usar colchetes <code class="inl">[]</code> para acessar itens no objeto <code class="inl">Doc</code>. A linha a seguir recupera a informação morfológica de <strong>aspecto</strong> para o 23º token do <code class="inl">Doc</code> (índice 22):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera informacao morfologica sobre aspecto para o Token no indice 22 do objeto Doc
+doc[22].morph.get('Aspect')</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>['Perf']</code></pre>
+  <p>Isso retorna uma lista com um único item, a <em>string</em> <code class="inl">Perf</code>, que se refere ao <strong>aspecto perfectivo</strong>.</p>
+  <p>O que acontece se tentarmos recuperar uma característica morfológica que o token <strong>não possui</strong>? Vamos tentar recuperar a informação de aspecto para o 22º token (índice 21):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera informacao morfologica sobre aspecto para o Token no indice 21 do objeto Doc
+doc[21].morph.get('Aspect')</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[]</code></pre>
+  <p>Isso retorna uma <strong>lista vazia</strong>, indicada pelos colchetes <code class="inl">[ ]</code> sem nada entre eles.</p>
+  <p>Para recuperar <strong>toda</strong> a informação morfológica disponível para um dado <code class="inl">Token</code>, a melhor solução é usar o método <code class="inl">to_dict()</code> do atributo <code class="inl">morph</code>. Isso retorna um <strong>dicionário</strong>, uma estrutura de dados do Python composta por pares de chave e valor:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera informacao morfologica para o Token no indice 21 do objeto Doc
+# Usa o metodo to_dict() para converter o resultado em um dicionario
+doc[21].morph.to_dict()</code></pre>
+  <p>Um dicionário Python é delimitado por chaves <code class="inl">{ }</code>. Cada par chave/valor é separado por dois‑pontos <code class="inl">:</code>. Nesse caso, tanto as chaves quanto os valores são objetos <em>string</em>. O valor guardado em uma chave pode ser acessado colocando o nome da chave entre colchetes <code class="inl">[ ]</code> logo após o nome do dicionário:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Atribui a informacao morfologica ao dicionario 'morph_dict'
+morph_dict = doc[21].morph.to_dict()
+
+# Recupera o valor correspondente a chave 'Mood'
+morph_dict['Mood']</code></pre>
+  <p>Dicionários são uma estrutura de dados poderosa em Python, que usaremos com frequência para guardar informações.</p>
+
+  <h3>2.4 Análise sintática (<em>parsing</em> de dependências)</h3>
+  <p>A <strong>análise sintática</strong> (ou <em>parsing</em> de dependências) é a tarefa de definir as <strong>dependências sintáticas</strong> entre tokens. Essas dependências ficam disponíveis no atributo <code class="inl">dep_</code> de um objeto <code class="inl">Token</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e sua etiqueta de dependencia
+    print(token, token.dep_)</code></pre>
+  <p>Diferentemente das anotações morfossintáticas, associadas a um único <code class="inl">Token</code>, as etiquetas de dependência indicam uma <strong>relação</strong> entre dois tokens. Para entender melhor essas relações sintáticas, vamos usar alguns atributos adicionais de cada <code class="inl">Token</code>:</p>
+  <ul>
+    <li><code class="inl">i</code>: a posição do token no <code class="inl">Doc</code>;</li>
+    <li><code class="inl">token</code>: o próprio token;</li>
+    <li><code class="inl">dep_</code>: a etiqueta da relação sintática;</li>
+    <li><code class="inl">head</code> e <code class="inl">i</code>: o token que <strong>governa</strong> o token atual, e o índice desse token‑governante.</li>
+  </ul>
+  <p>Isso ilustra como os atributos do Python podem ser combinados de forma flexível: o atributo <code class="inl">head</code> aponta para outro <code class="inl">Token</code>, que por sua vez tem o atributo <code class="inl">i</code> com seu próprio índice no <code class="inl">Doc</code>. Podemos combinar os dois atributos e acessar essa informação com <code class="inl">.head.i</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o indice do token atual, o token, a dependencia, o governante e seu indice
+    print(token.i, token, token.dep_, token.head.i, token.head)</code></pre>
+  <p>Embora a saída acima ajude a esclarecer as dependências sintáticas entre os tokens, elas costumam ser <strong>muito mais fáceis de perceber</strong> por meio de diagramas. O spaCy oferece uma ferramenta de visualização chamada <strong>displaCy</strong>, importável com o comando:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">from spacy import displacy</code></pre>
+  <p>O módulo <code class="inl">displacy</code> tem uma função chamada <code class="inl">render()</code>, que recebe um objeto <code class="inl">Doc</code> como entrada. Para desenhar uma árvore de dependências, passamos o <code class="inl">Doc</code> <code class="inl">doc</code> à função <code class="inl">render()</code> com dois argumentos:</p>
+  <ul>
+    <li><code class="inl">style</code>: o valor <code class="inl">'dep'</code> instrui o displaCy a desenhar uma visualização de dependências sintáticas;</li>
+    <li><code class="inl">options</code>: recebe um dicionário Python como entrada. Passamos um dicionário com a chave <code class="inl">compact</code> e o valor booleano <code class="inl">True</code> para instruir o displaCy a desenhar uma árvore compacta.</li>
+  </ul>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">displacy.render(doc, style='dep', options={'compact': True})</code></pre>
+  <p>As dependências sintáticas são visualizadas por meio de <strong>linhas</strong> que partem do token‑governante em direção ao token governado por ele. As etiquetas de dependência são baseadas no projeto <strong>Universal Dependencies</strong>, um arcabouço para descrever características morfológicas e sintáticas entre diferentes idiomas.</p>
+  <p>Se você não souber o significado de uma etiqueta específica, o spaCy oferece uma função para explicá‑las, <code class="inl">explain()</code>, que recebe a etiqueta como entrada (atenção: as etiquetas diferenciam maiúsculas de minúsculas):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">spacy.explain('pobj')</code></pre>
+  <p>Por fim, se você está se perguntando sobre os sublinhados <code class="inl">_</code> nos nomes dos atributos: o spaCy codifica todas as <em>strings</em> mapeando‑as para <strong>valores de hash</strong> (uma representação numérica) por eficiência computacional. Vamos imprimir o primeiro token do <code class="inl">Doc</code> (<code class="inl">doc[0]</code>) e suas dependências para examinar como isso funciona:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">print(doc[0], doc[0].dep, doc[0].dep_)</code></pre>
+  <p>Como se vê, o valor de hash <code class="inl">415</code> está reservado para a etiqueta correspondente a um determinante (<code class="inl">det</code>).</p>
+  <div class="call warn"><span class="lbl">Atenção</span><p>Se você quiser uma saída legível para humanos na análise de dependências e o spaCy devolver sequências de números, provavelmente você esqueceu de adicionar o sublinhado ao nome do atributo (por exemplo, usou <code class="inl">dep</code> em vez de <code class="inl">dep_</code>).</p></div>
+
+  <h3>2.5 Segmentação de sentenças</h3>
+  <p>O spaCy também segmenta objetos <code class="inl">Doc</code> em <strong>sentenças</strong> — tarefa conhecida como <strong>segmentação de sentenças</strong>. Essa segmentação impõe estrutura adicional a textos maiores: ao determinar os limites de uma sentença, podemos restringir tarefas como a análise de dependências a sentenças individuais.</p>
+  <p>O spaCy disponibiliza o resultado da segmentação de sentenças no atributo <code class="inl">sents</code> de um objeto <code class="inl">Doc</code>. Vamos percorrer as sentenças contidas em <code class="inl">doc</code> e contá‑las usando a função <code class="inl">enumerate()</code> do Python, que retorna uma contagem crescente a cada item do laço:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre as sentencas no objeto Doc e as conta usando enumerate()
+for number, sent in enumerate(doc.sents):
+
+    # Imprime o numero e a sentenca
+    print(number, sent)</code></pre>
+  <p>Isso retorna apenas <strong>uma sentença</strong>, mas o objeto <code class="inl">Doc</code> poderia facilmente conter um texto mais longo com múltiplas sentenças, como uma reportagem inteira.</p>
+
+  <h3>2.6 Lematização</h3>
+  <p>Um <strong>lema</strong> é a forma base de uma palavra. Tenha em mente que, a menos que instruído explicitamente, o computador não sabe distinguir formas singular e plural de uma palavra — ele as trata como tokens distintos, porque suas formas diferem.</p>
+  <p>Se quisermos contar a <strong>ocorrência de palavras</strong>, por exemplo, é necessário um processo chamado <strong>lematização</strong>, que agrupa as diferentes formas de um mesmo token. Os lemas ficam disponíveis para cada <code class="inl">Token</code> no atributo <code class="inl">lemma_</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+for token in doc:
+
+    # Imprime o token e seu lema
+    print(token, token.lemma_)</code></pre>
+
+  <h3>2.7 Reconhecimento de entidades nomeadas (<em>named entity recognition</em>, NER)</h3>
+  <p>O <strong>reconhecimento de entidades nomeadas</strong> (NER) é a tarefa de identificar e classificar entidades mencionadas em um texto. O spaCy reconhece as entidades nomeadas anotadas no corpus OntoNotes 5 — pessoas, locais geográficos e produtos, entre outros exemplos.</p>
+  <p>Usamos o atributo <code class="inl">.ents</code> do objeto <code class="inl">Doc</code> para obter as entidades nomeadas:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">doc.ents</code></pre>
+  <p>Isso retorna uma <strong>tupla</strong> com as entidades nomeadas. Cada item da tupla é um objeto <code class="inl">Span</code> do spaCy — objetos <code class="inl">Span</code> podem conter <strong>múltiplos</strong> objetos <code class="inl">Token</code>, já que muitas entidades nomeadas se estendem por mais de um token. As entidades nomeadas e seus tipos ficam guardados nos atributos <code class="inl">.text</code> e <code class="inl">.label_</code> de cada <code class="inl">Span</code>. Vamos percorrer a tupla e imprimir ambos os atributos:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre as entidades nomeadas no objeto Doc
+for ent in doc.ents:
+
+    # Imprime a entidade nomeada e sua etiqueta
+    print(ent.text, ent.label_)</code></pre>
+  <p>Como se vê, a maioria das entidades nomeadas identificadas consiste em <strong>múltiplos tokens</strong>, por isso são representadas como objetos <code class="inl">Span</code>. Podemos confirmar isso acessando a primeira entidade nomeada (índice <code class="inl">0</code>, já que o Python conta do zero) e passando o objeto à função <code class="inl">type()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Verifica o tipo do objeto usado para armazenar entidades nomeadas
+type(doc.ents[0])</code></pre>
+  <p>Objetos <code class="inl">Span</code> do spaCy têm vários argumentos úteis. Mais importante: os atributos <code class="inl">start</code> e <code class="inl">end</code> retornam os <strong>índices dos tokens</strong> que determinam onde o <code class="inl">Span</code> começa e termina no <code class="inl">Doc</code>. Vamos examinar isso com mais detalhe, imprimindo os atributos <code class="inl">start</code> e <code class="inl">end</code> da primeira entidade nomeada:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Imprime a entidade nomeada e os indices de seus tokens de inicio e fim
+print(doc.ents[0], doc.ents[0].start, doc.ents[0].end)</code></pre>
+  <p>A entidade nomeada começa no índice <code class="inl">0</code> e termina no índice <code class="inl">5</code> do <code class="inl">Doc</code>. Se recuperarmos o sexto token do <code class="inl">Doc</code> (índice <code class="inl">5</code>), veremos que ele corresponde ao token <code class="inl">"has"</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">doc[5]</code></pre>
+  <p>Isso mostra que o índice retornado por <code class="inl">end</code> <strong>não</strong> corresponde ao último token do <code class="inl">Span</code> que contém a entidade nomeada, mas sim ao índice do <strong>primeiro token seguinte</strong> ao <code class="inl">Span</code>. Vamos examinar isso percorrendo o recorte (<em>slice</em>) do <code class="inl">Doc</code> correspondente à primeira entidade nomeada:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre um recorte do objeto Doc que cobre a primeira entidade nomeada
+for token in doc[doc.ents[0].start: doc.ents[0].end]:
+
+    # Imprime o token e seu indice
+    print(token, token.i)</code></pre>
+  <p>Como se vê, o atributo <code class="inl">start</code> indica onde o <code class="inl">Span</code> <strong>começa</strong>, enquanto <code class="inl">end</code> indica onde o <code class="inl">Span</code> <strong>terminou</strong> (ou seja, o token logo após o seu fim).</p>
+  <p>Também podemos renderizar as entidades nomeadas com o displaCy, o mesmo módulo usado acima para visualizar as dependências sintáticas. Note que, desta vez, passamos a <em>string</em> <code class="inl">'ent'</code> ao argumento <code class="inl">style</code> para indicar que queremos visualizar <strong>entidades nomeadas</strong>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">displacy.render(doc, style='ent')</code></pre>
+  <p>Se você não reconhecer uma etiqueta usada para uma entidade nomeada, pode sempre pedir uma explicação ao spaCy:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">spacy.explain('NORP')</code></pre>
+
+  <hr>
+  <div class="obj">
+    <h4>Resumo da unidade</h4>
+    <ol>
+      <li>Carregar um modelo de linguagem com <code class="inl">spacy.load()</code> e entender como é treinado um modelo estatístico de linguagem.</li>
+      <li>Processar um texto com <code class="inl">nlp(text)</code>, obtendo um objeto <code class="inl">Doc</code>.</li>
+      <li>Tokenizar o texto e percorrer os objetos <code class="inl">Token</code> resultantes.</li>
+      <li>Anotar classes gramaticais (<code class="inl">pos_</code>, <code class="inl">tag_</code>) e realizar análise morfológica (<code class="inl">morph</code>, <code class="inl">to_dict()</code>).</li>
+      <li>Analisar dependências sintáticas (<code class="inl">dep_</code>, <code class="inl">head</code>) e visualizá‑las com <code class="inl">displacy.render()</code>.</li>
+      <li>Segmentar sentenças (<code class="inl">doc.sents</code>) e lematizar tokens (<code class="inl">lemma_</code>).</li>
+      <li>Reconhecer entidades nomeadas (<code class="inl">doc.ents</code>, <code class="inl">.text</code>, <code class="inl">.label_</code>) e visualizá‑las com <code class="inl">displacy.render(..., style='ent')</code>.</li>
+    </ol>
+  </div>
+
+  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
+    <ol>
+      <li>Processe uma das notícias completas da Unidade 1 com <code class="inl">nlp()</code> e conte quantas sentenças o <code class="inl">Doc</code> resultante contém.</li>
+      <li>Liste todos os tokens classificados como verbo (<code class="inl">token.pos_ == 'VERB'</code>) em um texto à sua escolha.</li>
+      <li>Extraia todas as entidades nomeadas do tipo pessoa (<code class="inl">PERSON</code>) de um texto e imprima seus lemas.</li>
+      <li>Use <code class="inl">spacy.explain()</code> para descobrir o significado de pelo menos três etiquetas de dependência (<code class="inl">dep_</code>) diferentes das usadas nos exemplos acima.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. de Marneffe, M.-C. et al. (2021). <em>Universal Dependencies.</em> Computational Linguistics. Honnibal, M.; Montani, I. et al. <em>spaCy: Industrial-strength Natural Language Processing in Python</em> — <a href="https://spacy.io/">spacy.io</a>.</p>
+    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
+    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except']);
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hlLine(line){
+    var out='', i=0, n=line.length;
+    while(i<n){
+      var c=line[i];
+      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
+      if(c==="'"||c==='"'){
+        var q=c, j=i+1;
+        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
+        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
+        i=j+1; continue;
+      }
+      if(/[A-Za-z_]/.test(c)){
+        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
+        var w=line.slice(i,j2);
+        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
+        i=j2; continue;
+      }
+      if(/[0-9]/.test(c)){
+        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
+        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
+      }
+      out+=esc(c); i++;
+    }
+    return out;
+  }
+  document.querySelectorAll('code.lang-python').forEach(function(el){
+    var src=el.textContent;
+    el.innerHTML=src.split('\n').map(hlLine).join('\n');
+  });
+})();
+</script>
+</body>
+</html>

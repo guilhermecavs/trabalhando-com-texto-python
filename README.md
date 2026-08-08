@@ -16,6 +16,10 @@ Conteúdo adaptado e traduzido para o português a partir do curso [*Applied Lan
 Unidade-1/   Manipulando texto com Python
              (computadores e texto, encoding, carregar arquivos,
               manipular texto, regex, processar múltiplos arquivos)
+
+Unidade-2/   Processando textos com spaCy
+             (tokenização, classes gramaticais, análise morfológica
+              e sintática, segmentação de sentenças, lematização, NER)
 ```
 
 Cada unidade é entregue em três formatos:
@@ -27,7 +31,7 @@ Cada unidade é entregue em três formatos:
 ## Compilando o PDF
 
 ```bash
-cd Unidade-1
+cd Unidade-1                              # ou Unidade-2
 pdflatex unidade1_manipulando_texto.tex
 pdflatex unidade1_manipulando_texto.tex   # rodar 2x para índice/links
 ```
