@@ -28,7 +28,14 @@ Unidade-3/   Customizando o pipeline do spaCy
 Unidade-4/   Avaliando modelos de linguagem
              (padrão-ouro, concordância entre anotadores, kappa de
               Cohen, matriz de confusão, precisão, revocação, F1)
+
+Unidade-5/   Gerenciando dados textuais com pandas
+             (importar/examinar/estender/salvar DataFrames, Series,
+              value_counts, describe, .loc, apply, pickle)
 ```
+
+> **Status:** curso completo — as 5 unidades correspondem às 5 seções da
+> Parte II ("Working with Text in Python") do curso de referência.
 
 Cada unidade é entregue em três formatos:
 

@@ -1,0 +1,682 @@
+% !TEX program = pdflatex
+% ============================================================================
+%  Unidade 5 - Gerenciando dados textuais com pandas
+%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
+%
+%  COMPILAR COM:  pdflatex unidade5_gerenciando_dados_pandas.tex   (rodar 2x)
+%
+%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
+%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry, listings,
+%    tcolorbox, titlesec, enumitem, hyperref, microtype, booktabs, colortbl, array
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{hyperref}
+
+% -------------------------------------------------------------- paleta ------
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{codebg}{HTML}{1E2430}
+\definecolor{codetext}{HTML}{E6E9EF}
+\definecolor{ccomment}{HTML}{7FD18B}
+\definecolor{cstring}{HTML}{F0B866}
+\definecolor{ckw}{HTML}{C792EA}
+\definecolor{cbuiltin}{HTML}{82AAFF}
+\definecolor{outbg}{HTML}{F0F2F7}
+\definecolor{outtext}{HTML}{2F3646}
+\definecolor{outframe}{HTML}{9AA4B8}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+\definecolor{inlink}{HTML}{5A34D6}
+\definecolor{headrow}{HTML}{EFE9FF}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
+  pdftitle={Gerenciando dados textuais com pandas},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
+
+% --------------------------------------------------- estilo do codigo -------
+\lstset{
+  extendedchars=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  keepspaces=true,
+  columns=fullflexible,
+  tabsize=4,
+  showstringspaces=false,
+  literate=%
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
+    {—}{{---}}1 {–}{{--}}1
+    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+}
+
+\lstdefinestyle{pystyle}{
+  language=Python,
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{ckw}\bfseries,
+  keywordstyle=[2]\color{cbuiltin},
+  morekeywords=[2]{print,type,len,range,enumerate,list,append,extend,read_csv,DataFrame,apply,spacy,pd},
+  commentstyle=\color{ccomment}\itshape,
+  stringstyle=\color{cstring},
+}
+\lstdefinestyle{outstyle}{
+  basicstyle=\ttfamily\small\color{outtext},
+}
+
+% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
+\newtcblisting{pybox}{
+  breakable, enhanced,
+  listing only, listing options={style=pystyle},
+  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
+  borderline west={3pt}{0pt}{accent},
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+% caixa de saida (fundo claro)
+\newtcblisting{outbox}{
+  breakable, enhanced,
+  listing only, listing options={style=outstyle},
+  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+
+% ------------------------------------------------------ caixas de aviso -----
+\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
+  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
+  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
+  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
+  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
+
+% ------------------------------------------------------ titulos de secao ----
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
+  {\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+
+% codigo em linha (verbatim, colorido) via atalho @...@
+\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\newcommand{\thd}[1]{\textbf{#1}}
+
+\begin{document}
+
+% --------------------------------------------------------------- capa -------
+\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
+  before skip=0pt, after skip=20pt]
+  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
+  {\Huge\bfseries Gerenciando dados textuais com pandas}\\[8pt]
+  {\large Trabalhando com Texto em Python I \ --- \ Unidade 5}\\[6pt]
+  {\normalsize Importar, examinar, estender e salvar DataFrames; aplicar PLN a colunas.}\\[10pt]
+  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
+\end{tcolorbox}
+
+\begin{objbox}
+Ao final desta unidade, você deverá saber:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item importar dados para um @DataFrame@ do pandas;
+  \item explorar dados armazenados em um @DataFrame@;
+  \item acrescentar (estender) dados a um @DataFrame@;
+  \item salvar os dados de um @DataFrame@.
+\end{itemize}
+\end{objbox}
+
+O \textbf{pandas} é uma biblioteca do Python para trabalhar com \textbf{dados tabulares}. Começamos importando-a --- usamos @as@ para controlar o nome do módulo; por convenção, o pandas é abreviado como @pd@:
+
+\begin{pybox}
+import pandas as pd
+\end{pybox}
+
+% =========================================================== 1 ==============
+\section{Importando dados para o pandas}
+
+\subsection{A partir de um único arquivo}
+Formatos típicos para distribuir corpora incluem \textbf{CSV} (\textit{Comma-separated Values}), \textbf{JSON} e texto simples. O pandas oferece muitas funções de leitura --- dá até para importar planilhas do Excel! O exemplo carrega um recorte do \textit{SFU Opinion and Comments Corpus} (SOCC), com artigos de opinião do jornal canadense \textit{The Globe and Mail}. A função @read_csv()@ recebe o \textbf{caminho} do arquivo:
+
+\begin{pybox}
+# Le o arquivo CSV e atribui a saida a variavel 'socc'
+socc = pd.read_csv('data/socc_gnm_articles.csv')
+
+# Examina o tipo do objeto guardado em 'socc'
+type(socc)
+\end{pybox}
+\begin{outbox}
+pandas.core.frame.DataFrame
+\end{outbox}
+
+O pandas devolve o conteúdo do CSV em um \textbf{@DataFrame@}, sua estrutura de dados nativa. O método @head()@ mostra as primeiras linhas:
+
+\begin{pybox}
+# Imprime as primeiras cinco linhas do DataFrame
+socc.head(5)
+\end{pybox}
+
+O @DataFrame@ tem forma \textbf{tabular}, com colunas (@article_id@, @title@, @author@, @article_text@\ldots) e um \textbf{índice} por linha (0, 1, 2, \ldots). Versão compacta (algumas colunas omitidas para caber):
+
+\begin{center}\small
+\begin{tabular}{c c p{5.2cm} p{3cm} c}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{article\_id} & \thd{title} & \thd{author} & \thd{ntop\_level\_comments} \\
+\midrule
+0 & 26842506 & The Tories deserve another mandate\ldots & GLOBE EDITORIAL & 1378.0 \\
+1 & 26055892 & Harper hysteria a sign of closed liberal minds & Konrad Yakabuski & 455.0 \\
+2 & 6929035 & Too many first nations people live in a dream\ldots & Jeffrey Simpson & 433.0 \\
+3 & 19047636 & The Globe's editorial board endorses Tim Hudak\ldots & GLOBE EDITORIAL & 432.0 \\
+4 & 11672346 & Disgruntled Arab states look to strip Canada\ldots & Campbell Clark & 411.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+O acessador @.at[]@ inspeciona \textbf{um único item}. O valor da coluna @title@ no índice 123:
+
+\begin{pybox}
+socc.at[123, 'title']
+\end{pybox}
+\begin{outbox}
+"How Toronto got a 'world-class,' gold-plated, half-billion-dollar empty train"
+\end{outbox}
+
+\subsection{A partir de múltiplos arquivos}
+Outro cenário comum é ter \textbf{vários arquivos} de texto. Primeiro, coletamos os arquivos com a classe @Path@ (vista na Unidade 1):
+
+\begin{pybox}
+# Importa a classe Path
+from pathlib import Path
+
+# Cria um objeto Path que aponta para o diretorio com os dados
+corpus_dir = Path('data')
+
+# Coleta todos os arquivos .txt no diretorio do corpus
+corpus_files = list(corpus_dir.glob('*.txt'))
+
+# Verifica os arquivos do corpus
+corpus_files
+\end{pybox}
+\begin{outbox}
+[PosixPath('data/WP_1990-08-10-25A.txt'),
+ PosixPath('data/NYT_1991-01-16-A15.txt'),
+ PosixPath('data/WP_1991-01-17-A1B.txt')]
+\end{outbox}
+
+Criamos um @DataFrame@ \textbf{vazio} definindo a forma de antemão: o número de linhas (@index@, com @range()@ de 0 até @len(corpus_files)@) e os nomes das colunas (@columns@):
+
+\begin{pybox}
+# Cria um DataFrame e atribui o resultado a variavel 'df'
+df = pd.DataFrame(index=range(0, len(corpus_files)), columns=['filename', 'text'])
+
+# Chama a variavel para inspecionar a saida
+df
+\end{pybox}
+
+\begin{center}\small
+\begin{tabular}{c l l}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
+\midrule
+0 & NaN & NaN \\
+1 & NaN & NaN \\
+2 & NaN & NaN \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Percorremos os @Path@s, lemos o conteúdo e o adicionamos com o acessador @.at@:
+
+\begin{pybox}
+# Percorre os arquivos do corpus e conta cada volta com enumerate()
+for i, f in enumerate(corpus_files):
+
+    # Le o conteudo do arquivo
+    text = f.read_text(encoding='utf-8')
+
+    # Pega o nome do arquivo do objeto Path
+    filename = f.name
+
+    # Atribui o texto do arquivo ao indice 'i' na coluna 'text' usando
+    # o acessador .at -- isso modifica o DataFrame "no lugar" (in place);
+    # nao e preciso atribuir o resultado a uma variavel
+    df.at[i, 'text'] = text
+
+    # Faz o mesmo com o nome do arquivo
+    df.at[i, 'filename'] = filename
+\end{pybox}
+
+O @DataFrame@ fica populado com os nomes dos arquivos e o texto:
+
+\begin{center}\small
+\begin{tabular}{c l p{7cm}}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
+\midrule
+0 & WP\_1990-08-10-25A.txt & *We Don't Stand for Bullies': Diverse Voices\ldots \\
+1 & NYT\_1991-01-16-A15.txt & U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. I\ldots \\
+2 & WP\_1991-01-17-A1B.txt & U.S., Allies Launch Massive Air War Against T\ldots \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =========================================================== 2 ==============
+\section{Examinando DataFrames}
+
+Os @DataFrame@s guardam muita informação, organizada em \textbf{colunas}, acessíveis pelo atributo @columns@:
+
+\begin{pybox}
+# Recupera as colunas e seus nomes
+socc.columns
+\end{pybox}
+\begin{outbox}
+Index(['article_id', 'title', 'article_url', 'author', 'published_date',
+       'ncomments', 'ntop_level_comments', 'article_text'],
+      dtype='object')
+\end{outbox}
+
+Uma coluna inteira é acessada com colchetes @[]@ e o nome como \textit{string} --- como as chaves de um dicionário:
+
+\begin{pybox}
+# Recupera o conteudo da coluna 'author' no DataFrame 'socc'
+socc['author']
+\end{pybox}
+\begin{outbox}
+0         GLOBE EDITORIAL
+1        Konrad Yakabuski
+2         Jeffrey Simpson
+             ...
+10337      Adam Radwanski
+10338     GLOBE EDITORIAL
+Name: author, Length: 10339, dtype: object
+\end{outbox}
+
+Cada coluna é, na verdade, um objeto \textbf{@Series@} --- pense no @DataFrame@ como a tabela inteira, cujas colunas são @Series@:
+
+\begin{pybox}
+# Verifica o tipo de 'socc' e de 'socc['author']'
+type(socc), type(socc['author'])
+\end{pybox}
+\begin{outbox}
+(pandas.core.frame.DataFrame, pandas.core.series.Series)
+\end{outbox}
+
+\begin{notebox}
+Ao imprimir um @DataFrame@ ou @Series@, o pandas \textbf{omite} tudo entre as cinco primeiras e as cinco últimas linhas por padrão --- conveniente com milhares de linhas.
+\end{notebox}
+
+O método @value_counts()@ conta os valores únicos de uma @Series@:
+
+\begin{pybox}
+# Conta os valores unicos na coluna 'author'
+socc['author'].value_counts()
+\end{pybox}
+\begin{outbox}
+GLOBE EDITORIAL                   2712
+Jeffrey Simpson                    649
+Margaret Wente                     547
+                                  ...
+Jessica Scott-Reid                   1
+Kenneth Oppel                        1
+Name: author, Length: 1896, dtype: int64
+\end{outbox}
+
+Podemos \textbf{visualizar} o resultado com o método @.plot()@, que usa a biblioteca \textbf{matplotlib}. Passamos @bar@ ao argumento @kind@ e @[:10]@ para os dez autores mais prolíficos:
+
+\begin{pybox}
+# Magia do Jupyter que permite renderizar graficos do matplotlib no notebook!
+# Voce so precisa executar este comando uma vez.
+%matplotlib inline
+
+# Conta os valores da coluna 'author' e limita ao top-10 antes de plotar.
+socc['author'].value_counts()[:10].plot(kind='bar')
+\end{pybox}
+
+\begin{tipbox}
+O @.plot()@ gera uma \textbf{imagem} (gráfico de barras) exibida no notebook; a saída de texto é apenas @<AxesSubplot: >@. Para outros tipos, mude @kind@ (ex.: @'line'@, @'hist'@, @'pie'@).
+\end{tipbox}
+
+Para colunas \textbf{numéricas}, o método @describe()@ dá estatísticas descritivas:
+
+\begin{pybox}
+# Estatisticas descritivas basicas da coluna 'ntop_level_comments'
+socc['ntop_level_comments'].describe()
+\end{pybox}
+\begin{outbox}
+count    10339.000000
+mean        26.384273
+std         39.786923
+min          0.000000
+25%          1.000000
+50%         14.000000
+75%         35.000000
+max       1378.000000
+Name: ntop_level_comments, dtype: float64
+\end{outbox}
+
+Lendo a saída: 10\,339 linhas; média (@mean@) $\approx 26$ comentários, com forte variação (desvio-padrão @std@ $\approx 40$); mínimo (@min@) 0; primeiro quartil (@25%@) $= 1$; mediana (@50%@) $= 14$; terceiro quartil (@75%@) $= 35$; máximo (@max@) $= 1\,378$.
+
+\subsection{Filtrando linhas com \textnormal{@.loc@}}
+Como achar os artigos com \textbf{zero} comentários? Usamos @.loc@ para selecionar linhas por valor. Como @=@ é reservado para atribuição, a comparação ``é igual a'' usa \textbf{dois} sinais (@==@):
+
+\begin{pybox}
+# Pega as linhas sem comentarios de nivel superior
+socc.loc[socc['ntop_level_comments'] == 0]
+\end{pybox}
+\begin{outbox}
+[... 2542 rows x 8 columns ...]
+\end{outbox}
+
+Retorna 2\,542 linhas. Para visões mais complexas, combinamos critérios com @&@ (``E'' lógico) --- cada critério entre \textbf{parênteses} @()@:
+
+\begin{pybox}
+# Numero de comentarios de nivel superior para o autor Hayden King
+socc.loc[(socc['ntop_level_comments'] == 0) & (socc['author'] == 'Hayden King')]
+\end{pybox}
+
+Retorna apenas a linha de índice 7797 --- o único artigo dele sem comentários.
+
+% =========================================================== 3 ==============
+\section{Estendendo DataFrames}
+
+É fácil \textbf{acrescentar} informação. Um cenário comum: carregar dados, analisar e guardar os resultados no mesmo @DataFrame@. Adicionamos uma coluna vazia com @[]@ e o tipo @None@:
+
+\begin{pybox}
+# Adiciona uma nova coluna chamada 'comments_ratio' ao DataFrame
+socc['comments_ratio'] = None
+\end{pybox}
+
+Preenchemos a coluna com a proporção de comentários de nível superior sobre o total --- dividindo uma coluna pela outra:
+
+\begin{pybox}
+# Preenche a coluna 'comments_ratio' com a razao entre comentarios de
+# nivel superior e o total de comentarios
+socc['comments_ratio'] = socc['ntop_level_comments'] / socc['ncomments']
+\end{pybox}
+
+Uma amostra do resultado:
+
+\begin{center}\small
+\begin{tabular}{c c c c}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{ntop\_level\_comments} & \thd{ncomments} & \thd{comments\_ratio} \\
+\midrule
+0 & 1378.0 & 2187.0 & 0.630087 \\
+1 & 455.0 & 1103.0 & 0.412511 \\
+2 & 433.0 & 1164.0 & 0.371993 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Mas alguns artigos \textbf{não} receberam comentários --- nesses casos, dividiríamos zero por zero. Para essas linhas, @comments_ratio@ fica marcada como \textbf{@NaN@} (\textit{not a number}). O pandas \textbf{ignora automaticamente} os @NaN@ nos cálculos, como mostra o @describe()@:
+
+\begin{pybox}
+# Estatisticas descritivas da coluna 'comments_ratio'
+socc['comments_ratio'].describe()
+\end{pybox}
+\begin{outbox}
+count    7797.000000
+mean        0.537057
+std         0.205398
+min         0.083333
+25%         0.384615
+50%         0.485714
+75%         0.647059
+max         1.000000
+Name: comments_ratio, dtype: float64
+\end{outbox}
+
+Note o @count@: só 7\,797 itens (dos 10\,339) entraram no cálculo --- os @NaN@ foram ignorados.
+
+\subsection{Aplicando processamento de linguagem a uma coluna}
+E se quiséssemos fazer PLN e guardar os resultados? Selecionamos artigos no primeiro quartil de @comments_ratio@ \textbf{e} com mais de 200 comentários, usando @&@:
+
+\begin{pybox}
+# Filtra o DataFrame por artigos muito comentados e atribui o resultado a 'talk'
+talk = socc.loc[(socc['comments_ratio'] <= 0.384) & (socc['ncomments'] >= 200)]
+\end{pybox}
+
+Importamos o spaCy e carregamos um modelo \textbf{médio} para o inglês:
+
+\begin{pybox}
+# Importa a biblioteca spaCy
+import spacy
+
+# Note que agora carregamos um modelo de tamanho medio!
+nlp = spacy.load('en_core_web_md')
+\end{pybox}
+
+Ao criar uma coluna nova em @talk@, o pandas emite um \textbf{@SettingWithCopyWarning@}, porque @talk@ é apenas um recorte (\textit{slice}) do @DataFrame@ original. A solução é criar uma \textbf{cópia profunda} com @.copy()@:
+
+\begin{pybox}
+# Cria uma copia profunda do DataFrame
+talk = talk.copy()
+
+# Cria uma nova coluna chamada 'processed_title'
+talk['processed_title'] = None
+\end{pybox}
+
+Para processar os títulos, usamos @apply()@, que \textbf{aplica} o que recebe a cada linha da coluna. Passamos o modelo @nlp@:
+
+\begin{pybox}
+# Aplica o modelo de linguagem 'nlp' ao conteudo da coluna 'title'
+talk['processed_title'] = talk['title'].apply(nlp)
+\end{pybox}
+
+Cada célula da coluna @processed_title@ agora contém um objeto \textbf{@Doc@} do spaCy:
+
+\begin{pybox}
+# Pega o valor da coluna 'processed_title' na linha de indice 2
+talk.at[2, 'processed_title']
+
+# Verifica o tipo do objeto contido
+type(talk.at[2, 'processed_title'])
+\end{pybox}
+\begin{outbox}
+Too many first nations people live in a dream palace
+spacy.tokens.doc.Doc
+\end{outbox}
+
+\subsection{Definindo a própria função e aplicando com \textnormal{@apply()@}}
+Vamos definir uma função para buscar os \textbf{lemas de cada substantivo} do título. Funções são definidas com @def@, seguido do nome e dos parâmetros entre parênteses:
+
+\begin{pybox}
+# Define uma funcao 'get_nouns' que recebe um unico objeto como entrada.
+# Referimo-nos a essa entrada pela variavel 'nlp_text'.
+def get_nouns(nlp_text):
+
+    # Primeiro garantimos que a entrada e do tipo correto,
+    # usando 'assert' para checar o tipo
+    assert type(nlp_text) == spacy.tokens.doc.Doc
+
+    # Prepara uma lista vazia para os lemas
+    lemmas = []
+
+    # Percorre o objeto Doc
+    for token in nlp_text:
+
+        # Se a classe gramatical detalhada do token for substantivo (NN)
+        if token.tag_ == 'NN':
+
+            # Acrescenta o lema do token a lista de lemas
+            lemmas.append(token.lemma_)
+
+    # Ao fim do laco, retorna a lista de lemas
+    return lemmas
+\end{pybox}
+
+Aplicamos com @apply()@, criando a coluna @nouns@ automaticamente pela atribuição:
+
+\begin{pybox}
+# Aplica a funcao 'get_nouns' a coluna 'processed_title'
+talk['nouns'] = talk['processed_title'].apply(get_nouns)
+\end{pybox}
+
+Uma amostra dos títulos processados e seus substantivos:
+
+\begin{center}\small
+\begin{tabular}{c p{7.5cm} l}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{title} & \thd{nouns} \\
+\midrule
+2 & Too many first nations people live in a dream\ldots & [dream, palace] \\
+5 & Fifty years in Canada, and now I feel like a s\ldots & [class, citizen] \\
+8 & A nation of \$100,000 firefighters & [nation] \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{notebox}
+Não é necessário criar uma coluna vazia antes --- o pandas cria a coluna nova automaticamente na atribuição, como em @talk['nouns']@.
+\end{notebox}
+
+\subsection{Extraindo dados para estruturas nativas do Python}
+O método @tolist()@ extrai o conteúdo de uma @Series@ para uma \textbf{lista}:
+
+\begin{pybox}
+# Converte a pandas Series em uma lista
+noun_list = talk['nouns'].tolist()
+
+# Mostra os dez primeiros
+noun_list[:10]
+\end{pybox}
+\begin{outbox}
+[['dream', 'palace'], ['agency'], ['class', 'citizen'], ['right'],
+ ['nation'], [], ['reform'], ['leader', 'parade'], ['pm'],
+ ['government', 'monopoly']]
+\end{outbox}
+
+Temos uma \textbf{lista de listas}. Vamos ``achatar'' tudo em uma única lista @final_list@ com @extend()@:
+
+\begin{pybox}
+# Prepara a lista vazia
+final_list = []
+
+# Percorre cada lista dentro da lista de listas
+for nlist in noun_list:
+
+    # Estende a lista final com a lista atual
+    final_list.extend(nlist)
+
+# Verifica o tamanho da lista
+len(final_list)
+\end{pybox}
+\begin{outbox}
+884
+\end{outbox}
+
+Para plotar os 10 substantivos mais frequentes, convertemos em @Series@, contamos com @value_counts()@ e plotamos:
+
+\begin{pybox}
+# Converte a lista em uma pandas Series, conta os substantivos unicos com
+# value_counts(), pega os 10 mais frequentes [:10] e plota em barras.
+pd.Series(final_list).value_counts()[:10].plot(kind='bar')
+\end{pybox}
+
+% =========================================================== 4 ==============
+\section{Salvando DataFrames}
+
+@DataFrame@s podem ser salvos como objetos \textbf{serializados} (\textit{pickled}) com o método @to_pickle()@, que recebe o caminho do arquivo:
+
+\begin{pybox}
+# Grava o DataFrame em disco usando pickle
+df.to_pickle('data/pickled_df.pkl')
+\end{pybox}
+
+\begin{warnbox}[Segurança (importante no CiberExt)]
+O formato \textit{pickle} serializa objetos Python arbitrários e, ao ser \textbf{carregado}, pode \textbf{executar código arbitrário}. \textbf{Nunca} faça @read_pickle()@ (nem @pickle.load@, @joblib.load@, @numpy@ com @allow_pickle=True@ etc.) em arquivos de \textbf{fontes não confiáveis} --- um @.pkl@ malicioso compromete a máquina. Use \textit{pickle} só com dados que \textbf{você mesmo} gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não executam código, como \textbf{CSV}, \textbf{JSON} ou \textbf{Parquet}.
+\end{warnbox}
+
+Verificamos lendo de volta com @read_pickle()@:
+
+\begin{pybox}
+# Le o DataFrame serializado e atribui o resultado a 'df_2'
+df_2 = pd.read_pickle('data/pickled_df.pkl')
+\end{pybox}
+
+Comparando os dois @DataFrame@s com @==@, obtemos um booleano por célula:
+
+\begin{pybox}
+# Compara os DataFrames 'df' e 'df_2'
+df == df_2
+\end{pybox}
+
+\begin{center}\small
+\begin{tabular}{c c c}
+\toprule
+\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
+\midrule
+0 & True & True \\
+1 & True & True \\
+2 & True & True \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Tudo @True@ --- os dados foram salvos e recarregados com sucesso.
+
+% ======================================================= resumo ============
+\section*{Resumo da unidade}
+\addcontentsline{toc}{section}{Resumo da unidade}
+\begin{objbox}[Nesta unidade, você aprendeu a]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
+  \item importar dados de um único arquivo (@read_csv()@) ou de vários (@Path@/@glob@ + laço com @.at@);
+  \item examinar @DataFrame@s: @columns@, colunas como @Series@, @value_counts()@, @describe()@, @.plot()@ e filtragem com @.loc@ (@&@, @==@);
+  \item estender: adicionar colunas, calcular entre colunas, lidar com @NaN@, usar @.copy()@ e aplicar funções com @apply()@;
+  \item extrair com @tolist()@/@extend()@ e salvar/carregar com @to_pickle()@/@read_pickle()@ (com cuidado de segurança).
+\end{enumerate}
+\end{objbox}
+
+\begin{notebox}[Exercícios sugeridos]
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
+  \item Carregue os três arquivos de notícias da Unidade 1 em um @DataFrame@ (colunas @filename@ e @text@) e conte quantos caracteres cada texto tem, numa nova coluna @n_chars@.
+  \item No @DataFrame@ @socc@, use @.loc@ para selecionar os artigos de @GLOBE EDITORIAL@ com mais de 500 comentários.
+  \item Escreva uma função @get_verbs()@ (análoga a @get_nouns@) que colete os lemas dos \textbf{verbos} (@token.pos_ == 'VERB'@) e aplique-a a uma coluna de títulos processados.
+  \item Salve um @DataFrame@ em CSV com @to_csv('saida.csv', index=False)@ e recarregue com @read_csv()@, conferindo as colunas.
+\end{enumerate}
+\end{notebox}
+
+\vspace{6pt}
+\noindent\rule{\linewidth}{0.4pt}\\[4pt]
+{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Kolhatkar, V. et al. (2020). \textit{The SFU Opinion and Comments Corpus.} Corpus Pragmatics. McKinney, W. et al. \textit{pandas: powerful Python data analysis toolkit} --- \href{https://pandas.pydata.org/}{pandas.pydata.org}.\par
+Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+
+\end{document}
