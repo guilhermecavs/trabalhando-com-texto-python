@@ -20,6 +20,10 @@ Unidade-1/   Manipulando texto com Python
 Unidade-2/   Processando textos com spaCy
              (tokenização, classes gramaticais, análise morfológica
               e sintática, segmentação de sentenças, lematização, NER)
+
+Unidade-3/   Customizando o pipeline do spaCy
+             (modificar o pipeline, processar em lote, atributos
+              personalizados, DocBin, mesclar sintagmas e entidades)
 ```
 
 Cada unidade é entregue em três formatos:

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidade 3 — Customizando o pipeline do spaCy</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+    --code-bg:#1e2430; --code-ink:#e6e9ef;
+    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
+    --h3-ink:#2b3242;
+    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
+    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+    --border:#e6e8ef; --radius:16px;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
+  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
+    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
+    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+  header.hero .inner{max-width:900px;margin:0 auto}
+  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;opacity:.9;margin:0 0 12px}
+  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
+  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
+  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
+  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
+  .navlink:hover{opacity:1}
+  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
+    border-left:5px solid var(--accent);line-height:1.25}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
+  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
+  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
+  p{margin:14px 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+  a:hover{border-color:var(--accent)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
+    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
+  strong{color:var(--ink-strong);font-weight:700}
+  ul,ol{margin:14px 0;padding-left:24px}
+  li{margin:7px 0}
+  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
+  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  /* code */
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
+    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
+    font-size:14.5px;line-height:1.6;position:relative;
+    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
+  pre.code{border-top:3px solid var(--accent)}
+  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
+    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
+    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
+  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
+    box-shadow:none;border-top:3px solid var(--out-tag)}
+  pre.out .tag{background:var(--out-tag)}
+  pre code{font-family:inherit;white-space:pre}
+  .c{color:var(--c-comment);font-style:italic}
+  .s{color:var(--c-string)}
+  .k{color:var(--c-kw);font-weight:600}
+  .n{color:var(--c-num)}
+  /* callouts */
+  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
+    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
+  .call p{margin:6px 0}
+  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
+  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
+  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
+  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+  footer{color:var(--muted);font-size:14px;margin-top:40px}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
+  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{border:none}
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152}
+  }
+  :root[data-theme="dark"]{
+    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
+    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
+    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
+    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
+    <h1>Customizando o pipeline do spaCy</h1>
+    <p class="sub">Trabalhando com Texto em Python I — Unidade 3. Modificar o pipeline, processar em lote, atributos personalizados, salvar em disco e mesclar sintagmas e entidades.</p>
+    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span><br>
+    <a class="navlink" href="../Unidade-2/unidade2_processando_com_spacy.html">&larr; Unidade 2 · Processando textos com spaCy</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h4>Nesta unidade</h4>
+    <ol>
+      <li><a href="#s1">Modificando pipelines do spaCy</a></li>
+      <li><a href="#s2">Processando textos com eficiência</a></li>
+      <li><a href="#s3">Adicionando atributos personalizados</a></li>
+      <li><a href="#s4">Gravando textos processados em disco</a></li>
+      <li><a href="#s5">Simplificando a saída: sintagmas e entidades</a></li>
+    </ol>
+  </nav>
+
+  <div class="obj">
+    <h4>Objetivos de aprendizagem</h4>
+    <ul>
+      <li>Examinar e modificar o pipeline do spaCy.</li>
+      <li>Processar textos com eficiência.</li>
+      <li>Adicionar atributos personalizados a objetos do spaCy.</li>
+      <li>Salvar em disco os textos processados.</li>
+      <li>Mesclar sintagmas nominais e entidades nomeadas em tokens únicos.</li>
+    </ul>
+  </div>
+
+  <p>Vamos começar importando a biblioteca spaCy e o módulo <code class="inl">displacy</code>, usado para desenhar árvores de dependência, e carregando um modelo de linguagem para o inglês:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a biblioteca spaCy e o modulo displacy
+from spacy import displacy
+import spacy
+
+# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+nlp = spacy.load('en_core_web_sm')
+
+# Chama a variavel para examinar o objeto
+nlp</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>&lt;spacy.lang.en.English at 0x294522f10&gt;</code></pre>
+
+  <h2 id="s1"><span class="num">1.</span> Modificando pipelines do spaCy</h2>
+  <p>O objeto <code class="inl">Language</code> é, essencialmente, um <strong>pipeline</strong> que aplica um modelo de linguagem ao texto, executando as tarefas para as quais o modelo foi treinado. As tarefas realizadas dependem dos <strong>componentes</strong> presentes no pipeline.</p>
+  <p>Podemos examinar os componentes com o atributo <code class="inl">pipeline</code> de um objeto <code class="inl">Language</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">nlp.pipeline</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[('tok2vec', &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0&gt;),
+ ('tagger', &lt;spacy.pipeline.tagger.Tagger at 0x294cf3ca0&gt;),
+ ('parser', &lt;spacy.pipeline.dep_parser.DependencyParser at 0x294b566d0&gt;),
+ ('attribute_ruler', &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x295187680&gt;),
+ ('lemmatizer', &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540&gt;),
+ ('ner', &lt;spacy.pipeline.ner.EntityRecognizer at 0x294b56740&gt;)]</code></pre>
+  <p>Isso retorna um objeto <code class="inl">SimpleFrozenList</code> do spaCy, composto por <strong>tuplas</strong> com dois itens: o <strong>nome</strong> do componente (ex.: <code class="inl">tagger</code>) e o <strong>componente</strong> que executa a tarefa (ex.: <code class="inl">spacy.pipeline.tok2vec.Tok2Vec</code>).</p>
+  <p>Componentes como <code class="inl">tagger</code>, <code class="inl">parser</code>, <code class="inl">ner</code> e <code class="inl">lemmatizer</code> já são familiares da unidade anterior. Há dois novos:</p>
+  <ul>
+    <li><strong><code class="inl">tok2vec</code></strong> mapeia os tokens para suas representações numéricas (veremos na Parte III).</li>
+    <li><strong><code class="inl">attribute_ruler</code></strong> aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.</li>
+  </ul>
+  <div class="call note"><span class="lbl">Nota</span><p>A lista em <code class="inl">nlp.pipeline</code> <strong>não</strong> inclui o <code class="inl">Tokenizer</code>, porque todo texto precisa ser tokenizado para qualquer processamento ocorrer. Por isso ele fica no atributo <code class="inl">tokenizer</code>, e não em <code class="inl">pipeline</code>.</p></div>
+
+  <h3>1.1 Excluindo componentes para ganhar desempenho</h3>
+  <p><strong>Todo componente tem um custo computacional.</strong> Se você não precisa da saída de um componente, não deve incluí‑lo, pois o processamento fica mais lento. Para excluir, forneça o argumento <code class="inl">exclude</code> com os nomes dos componentes ao chamar <code class="inl">load()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de
+# entidades nomeadas ('ner') e a analise de dependencias sintaticas ('parser').
+nlp = spacy.load('en_core_web_sm', exclude=['ner', 'parser'])
+
+# Examina os componentes ativos no objeto Language 'nlp'
+nlp.pipeline</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[('tok2vec', &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760&gt;),
+ ('tagger', &lt;spacy.pipeline.tagger.Tagger at 0x296c7ba00&gt;),
+ ('attribute_ruler', &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40&gt;),
+ ('lemmatizer', &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200&gt;)]</code></pre>
+  <p>Como mostra a saída, <code class="inl">ner</code> e <code class="inl">parser</code> não estão mais no pipeline.</p>
+
+  <h3>1.2 Analisando o pipeline com <code class="inl">analyze_pipes()</code></h3>
+  <p>O método <code class="inl">analyze_pipes()</code> dá uma visão geral dos componentes. Definindo <code class="inl">pretty</code> como <code class="inl">True</code>, o spaCy imprime uma tabela com os componentes e as anotações que produzem:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Analisa o pipeline e guarda a analise na variavel 'pipe_analysis'
+pipe_analysis = nlp.analyze_pipes(pretty=True)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>============================= Pipeline Overview =============================
+
+#   Component         Assigns       Requires   Scores      Retokenizes
+-   ---------------   -----------   --------   ---------   -----------
+0   tok2vec           doc.tensor                           False
+1   tagger            token.tag                tag_acc     False
+2   attribute_ruler                                        False
+3   lemmatizer        token.lemma              lemma_acc   False
+
+✔ No problems found.</code></pre>
+  <p>O método retorna um <strong>dicionário</strong> Python. Você pode usá‑lo para verificar que nenhum problema foi encontrado <strong>antes</strong> de processar grandes volumes. Os relatórios ficam sob a chave <code class="inl">problems</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Examina o valor guardado sob a chave 'problems'
+pipe_analysis['problems']</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>{'tok2vec': [], 'tagger': [], 'attribute_ruler': [], 'lemmatizer': []}</code></pre>
+  <p>Podemos escrever um trecho que <strong>verifica</strong> isso. Percorremos o dicionário com <code class="inl">items()</code> e usamos <code class="inl">assert</code> com <code class="inl">len()</code> e o operador <code class="inl">==</code> para checar que a lista tem tamanho <code class="inl">0</code>; caso contrário, o Python levanta um <code class="inl">AssertionError</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os pares chave/valor do dicionario. Atribui a chave e o valor
+# as variaveis 'component_name' e 'problem_list'.
+for component_name, problem_list in pipe_analysis['problems'].items():
+
+    # Usa 'assert' para checar a lista de problemas; levanta Error se necessario.
+    assert len(problem_list) == 0, f"There is a problem with {component_name}: {problem_list}!"</code></pre>
+  <p>Usamos uma <em>f‑string</em>: o <code class="inl">f</code> antes das aspas permite <strong>inserir variáveis</strong> entre chaves <code class="inl">{}</code>. Se nenhum problema for encontrado, o laço passa silenciosamente.</p>
+
+  <h2 id="s2"><span class="num">2.</span> Processando textos com eficiência</h2>
+  <p>Ao trabalhar com grandes volumes, é desejável processá‑los da forma mais eficiente possível. Vamos definir um exemplo com uma <strong>lista</strong> de três frases da Wikipédia em inglês:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Reinicializa o modelo de linguagem, pois precisamos da analise de
+# dependencias nas proximas secoes.
+nlp = spacy.load('en_core_web_sm')
+
+# Define uma lista de frases de exemplo
+sents = ["On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production.",
+         "The 'Complex Modernization' initiative expanded two existing nuclear sites to produce new bomb parts.",
+         "The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee."]
+
+# Chama a variavel para examinar a saida
+sents</code></pre>
+  <p>Os objetos <code class="inl">Language</code> têm um método específico, <code class="inl">pipe()</code>, para processar textos em uma <strong>lista</strong>. Ele foi otimizado para processar em <strong>lotes</strong> (<em>batches</em>), sendo mais rápido que um laço <code class="inl">for</code>. O <code class="inl">pipe()</code> recebe uma lista e retorna um <strong>gerador</strong> (<em>generator</em>):</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Alimenta a lista de frases ao metodo pipe()
+docs = nlp.pipe(sents)
+
+# Chama a variavel para examinar a saida
+docs</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>&lt;generator object Language.pipe at 0x296d0b580&gt;</code></pre>
+  <p>Geradores contêm outros objetos e os <strong>produzem</strong> (<em>yield</em>) quando chamados. Para recuperar todos, convertemos o gerador em uma <strong>lista</strong>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Converte o gerador pipe em uma lista
+docs = list(docs)
+
+# Chama a variavel para examinar a saida
+docs</code></pre>
+  <p>Isso nos dá uma lista de objetos <code class="inl">Doc</code> prontos para processamento posterior.</p>
+
+  <h2 id="s3"><span class="num">3.</span> Adicionando atributos personalizados aos objetos do spaCy</h2>
+  <p>O spaCy permite <strong>definir atributos personalizados</strong> para objetos <code class="inl">Doc</code>, <code class="inl">Span</code> e <code class="inl">Token</code> — úteis para guardar informações adicionais sobre os textos. Usamos o método <code class="inl">set_extension()</code>. Como o atributo é adicionado a <strong>todos</strong> os <code class="inl">Doc</code>, primeiro importamos o objeto <code class="inl">Doc</code> genérico:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa o objeto Doc do modulo 'tokens' do spaCy
+from spacy.tokens import Doc
+
+# Adiciona dois atributos personalizados ao objeto Doc, 'age' e 'location',
+# usando o metodo set_extension().
+Doc.set_extension("age", default=None)
+Doc.set_extension("location", default=None)</code></pre>
+  <p>O argumento <code class="inl">default</code> define um valor padrão, aqui a palavra‑chave <code class="inl">None</code>.</p>
+  <div class="call note"><span class="lbl">Nota</span><p>Diferentemente de atributos como <code class="inl">sents</code> ou <code class="inl">heads</code>, os personalizados ficam sob um atributo que consiste no sublinhado <code class="inl">_</code> — por exemplo, <code class="inl">Doc._.age</code>.</p></div>
+  <p>Vamos definir um dicionário aninhado <code class="inl">sents_dict</code> com três chaves (<code class="inl">0</code>, <code class="inl">1</code>, <code class="inl">2</code>), cujos valores são dicionários com <code class="inl">age</code>, <code class="inl">location</code> e <code class="inl">text</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Cria um dicionario cujos valores sao outros dicionarios
+# com tres chaves: 'age', 'location' e 'text'.
+sents_dict = {0: {"age": 23,
+                  "location": "Helsinki",
+                  "text": "The Senate Square is by far the most important landmark in Helsinki."
+                 },
+              1: {"age": 35,
+                  "location": "Tallinn",
+                  "text": "The Old Town, for sure."
+                 },
+              2: {"age": 58,
+                  "location": "Stockholm",
+                  "text": "Södermalm is interesting!"
+                 }
+             }</code></pre>
+  <p>Percorremos o dicionário, processamos cada texto e definimos os atributos personalizados:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Prepara uma lista vazia para guardar os textos processados
+docs = []
+
+# Percorre os pares de chave e valor do dicionario 'sents_dict'.
+# Os pares chave/valor ficam disponiveis pelo metodo items().
+# Chamamos essas chaves e valores de 'key' e 'data'; ou seja, usamos
+# a variavel 'data' para se referir ao dicionario aninhado.
+for key, data in sents_dict.items():
+
+    # Recupera o valor da chave 'text' do dicionario aninhado.
+    # Alimenta esse texto ao modelo em 'nlp' e guarda o resultado em 'doc'.
+    doc = nlp(data['text'])
+
+    # Recupera os valores de 'age' e 'location' do dicionario aninhado.
+    # Atribui esses valores aos atributos personalizados do objeto Doc.
+    # Lembre-se: atributos personalizados ficam sob o pseudo-atributo '_'!
+    doc._.age = data['age']
+    doc._.location = data['location']
+
+    # Acrescenta o Doc atual em 'doc' a lista 'docs'
+    docs.append(doc)</code></pre>
+  <p>Isso produz uma lista de <code class="inl">Doc</code>s. Vamos percorrê‑la e imprimir cada um com seus atributos:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre cada objeto Doc na lista 'docs'
+for doc in docs:
+
+    # Imprime cada Doc e os atributos 'age' e 'location'
+    print(doc, doc._.age, doc._.location)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki
+The Old Town, for sure. 35 Tallinn
+Södermalm is interesting! 58 Stockholm</code></pre>
+
+  <h3>3.1 Filtrando dados com compreensão de lista</h3>
+  <p>Os atributos personalizados podem ser usados para <strong>filtrar</strong> dados. Uma forma eficiente é a <strong>compreensão de lista</strong> (<em>list comprehension</em>) — como um laço <code class="inl">for</code> declarado "na hora", entre colchetes <code class="inl">[]</code>, com três partes: (1) o que guardar na nova lista; (2) o <code class="inl">for ... in</code> percorrendo os itens; (3) o <code class="inl">if</code> com a condição:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa uma compreensao de lista para filtrar os Docs cujo atributo
+# 'age' tenha valor abaixo de 40.
+under_forty = [doc for doc in docs if doc._.get('age') < 40]
+
+# Chama a variavel para examinar a saida
+under_forty</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[The Senate Square is by far the most important landmark in Helsinki.,
+ The Old Town, for sure.]</code></pre>
+  <p>Isso retorna uma lista com apenas dois <code class="inl">Doc</code>s que atendem ao critério.</p>
+
+  <h2 id="s4"><span class="num">4.</span> Gravando textos processados em disco</h2>
+  <p>Com grandes volumes, primeiro garanta que o pipeline funciona com <strong>poucos</strong> textos; depois processe tudo e <strong>salve</strong>. O spaCy oferece o tipo <code class="inl">DocBin</code> para armazenar objetos <code class="inl">Doc</code> com suas anotações:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa o objeto DocBin do modulo 'tokens' do spaCy
+from spacy.tokens import DocBin
+
+# Inicializa um objeto DocBin e adiciona os Docs de 'docs'
+docbin = DocBin(docs=docs)</code></pre>
+  <div class="call warn"><span class="lbl">Atenção</span><p>Se você adicionou <strong>atributos personalizados</strong> a <code class="inl">Doc</code>s, <code class="inl">Span</code>s ou <code class="inl">Token</code>s, também é preciso definir <code class="inl">store_user_data=True</code> — por exemplo, <code class="inl">DocBin(docs=docs, store_user_data=True)</code>.</p></div>
+  <p>Verificamos que os três <code class="inl">Doc</code>s entraram no <code class="inl">DocBin</code> com o método <code class="inl">__len__()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Obtem o numero de Docs no DocBin
+docbin.__len__()</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>3</code></pre>
+  <p>O método <code class="inl">add()</code> permite adicionar mais <code class="inl">Doc</code>s:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define uma string, alimenta o modelo em 'nlp' e adiciona o
+# Doc resultante ao objeto DocBin 'docbin'
+docbin.add(nlp("Yet another Doc object."))
+
+# Verifica que o Doc foi adicionado; o tamanho agora deve ser 4
+docbin.__len__()</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>4</code></pre>
+  <p>Gravamos o <code class="inl">DocBin</code> em disco com <code class="inl">to_disk()</code>, que recebe o argumento <code class="inl">path</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Grava o objeto DocBin em disco
+docbin.to_disk(path='data/docbin.spacy')</code></pre>
+  <p>Para <strong>carregar</strong>, inicialize um <code class="inl">DocBin</code> vazio e use <code class="inl">from_disk()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Inicializa um novo DocBin e usa 'from_disk' para carregar os dados do disco.
+# Atribui o resultado a variavel 'docbin_loaded'.
+docbin_loaded = DocBin().from_disk(path='data/docbin.spacy')
+
+# Chama a variavel para examinar a saida
+docbin_loaded</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>&lt;spacy.tokens._serialize.DocBin at 0x2953a4c40&gt;</code></pre>
+  <p>Para acessar os <code class="inl">Doc</code>s guardados, use <code class="inl">get_docs()</code>, passando o <strong>vocabulário</strong> (<code class="inl">nlp.vocab</code>) necessário para reconstruir os dados:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa 'get_docs' para recuperar os Docs do DocBin, passando o
+# vocabulario em 'nlp.vocab' para reconstruir os dados.
+# Converte o gerador resultante em uma lista para exame.
+docs_loaded = list(docbin_loaded.get_docs(nlp.vocab))
+
+# Chama a variavel para examinar a saida
+docs_loaded</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>[The Senate Square is by far the most important landmark in Helsinki.,
+ The Old Town, for sure.,
+ Södermalm is interesting!,
+ Yet another Doc object.]</code></pre>
+  <div class="call tip"><span class="lbl">Resumindo</span><p>O ideal é processar os textos <strong>uma vez</strong>, gravá‑los em disco e carregá‑los para as análises seguintes.</p></div>
+
+  <h2 id="s5"><span class="num">5.</span> Simplificando a saída: sintagmas nominais e entidades nomeadas</h2>
+
+  <h3>5.1 Mesclando sintagmas nominais</h3>
+  <p>Às vezes é mais vantajoso operar com unidades maiores que tokens individuais, como <strong>sintagmas nominais</strong> (<em>noun phrases</em>). O spaCy dá acesso a eles pelo atributo <code class="inl">noun_chunks</code> de um <code class="inl">Doc</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Primeiro laco: percorre a lista 'docs'; 'doc' se refere aos itens da lista
+for doc in docs:
+
+    # Percorre cada sintagma nominal do objeto Doc
+    for noun_chunk in doc.noun_chunks:
+
+        # Imprime o sintagma nominal
+        print(noun_chunk)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>The Senate Square
+the most important landmark
+Helsinki
+The Old Town
+Södermalm</code></pre>
+  <p>Para <strong>mesclar</strong> os sintagmas em um único token, o spaCy oferece a função <code class="inl">merge_noun_chunks</code>, adicionada ao pipeline com <code class="inl">add_pipe</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Adiciona o componente que mescla sintagmas nominais em Tokens unicos
+nlp.add_pipe('merge_noun_chunks')</code></pre>
+  <div class="call note"><span class="lbl">Nota</span><p>Não é preciso reatribuir o objeto <code class="inl">Language</code> à mesma variável — o <code class="inl">add_pipe</code> adiciona o componente automaticamente.</p></div>
+  <p>Processando as frases novamente com <code class="inl">pipe()</code>, ao percorrer os tokens do primeiro <code class="inl">Doc</code> (<code class="inl">[0]</code>) vemos os sintagmas <strong>mesclados</strong> e rotulados como <code class="inl">NOUN</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Aplica o objeto Language 'nlp' a lista de frases em 'sents'
+docs = list(nlp.pipe(sents))
+
+# Percorre os Tokens do primeiro Doc da lista
+for token in docs[0]:
+
+    # Imprime o Token e sua classe gramatical
+    print(token, token.pos_)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>On ADP
+October PROPN
+1 NUM
+, PUNCT
+2009 NUM
+, PUNCT
+the Obama administration NOUN
+went VERB
+ahead ADV
+with ADP
+a Bush administration program NOUN
+, PUNCT
+increasing VERB
+nuclear weapons production NOUN
+. PUNCT</code></pre>
+  <p>Rotular como <code class="inl">NOUN</code> é uma aproximação razoável, já que as palavras‑núcleo são substantivos. Mesclar os sintagmas <strong>simplifica</strong> a árvore sintática:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python">displacy.render(docs[0], style='dep')</code></pre>
+  <p>Os sintagmas continuam disponíveis em <code class="inl">noun_chunks</code>, guardados como <code class="inl">Span</code>s com atributos <code class="inl">start</code> e <code class="inl">end</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os sintagmas nominais do primeiro Doc [0] na lista 'docs'
+for noun_chunk in docs[0].noun_chunks:
+
+    # Imprime o sintagma, seu tipo, e os indices onde comeca e termina
+    print(noun_chunk, type(noun_chunk), noun_chunk.start, noun_chunk.end)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>October &lt;class 'spacy.tokens.span.Span'&gt; 1 2
+the Obama administration &lt;class 'spacy.tokens.span.Span'&gt; 6 7
+a Bush administration program &lt;class 'spacy.tokens.span.Span'&gt; 10 11
+nuclear weapons production &lt;class 'spacy.tokens.span.Span'&gt; 13 14</code></pre>
+
+  <h3>5.2 Mesclando entidades nomeadas</h3>
+  <p>Entidades nomeadas são mescladas do mesmo modo, com <code class="inl">merge_entities</code>. Primeiro removemos a função <code class="inl">merge_noun_chunks</code> com <code class="inl">remove_pipe()</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Remove a funcao 'merge_noun_chunks' do pipeline em 'nlp'
+nlp.remove_pipe('merge_noun_chunks')
+
+# Processa as frases originais novamente
+docs = list(nlp.pipe(sents))</code></pre>
+  <p>Em seguida, adicionamos <code class="inl">merge_entities</code> e reprocessamos, examinando o terceiro <code class="inl">Doc</code>:</p>
+  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Adiciona a funcao 'merge_entities' ao pipeline
+nlp.add_pipe('merge_entities')
+
+# Processa os dados novamente
+docs = list(nlp.pipe(sents))
+
+# Percorre os Tokens do terceiro Doc da lista
+for token in docs[2]:
+
+    # Imprime o Token e sua classe gramatical
+    print(token, token.pos_)</code></pre>
+  <pre class="out"><span class="tag">Saída</span><code>The DET
+administration NOUN
+built VERB
+new ADJ
+plutonium NOUN
+pits NOUN
+at ADP
+the DET
+Los Alamos PROPN
+lab NOUN
+in ADP
+New Mexico PROPN
+and CCONJ
+expanded VERB
+enriched ADJ
+uranium NOUN
+processing NOUN
+at ADP
+the DET
+Y-12 NUM
+facility NOUN
+in ADP
+Oak Ridge PROPN
+, PUNCT
+Tennessee PROPN
+. PUNCT</code></pre>
+  <p>Entidades nomeadas com vários tokens — como os topônimos <em>"Los Alamos"</em> e <em>"New Mexico"</em> — foram <strong>mescladas</strong> em tokens únicos.</p>
+
+  <hr>
+  <div class="obj">
+    <h4>Resumo da unidade</h4>
+    <ol>
+      <li>Examinar o pipeline com <code class="inl">nlp.pipeline</code> e entender <code class="inl">tok2vec</code>/<code class="inl">attribute_ruler</code>.</li>
+      <li>Excluir componentes (<code class="inl">exclude=[...]</code>) e auditar o pipeline com <code class="inl">analyze_pipes()</code> e <code class="inl">assert</code>.</li>
+      <li>Processar em lote com <code class="inl">nlp.pipe()</code>, entendendo geradores e conversão para lista.</li>
+      <li>Adicionar atributos personalizados (<code class="inl">set_extension()</code>, <code class="inl">Doc._.</code>) e filtrar com compreensão de lista.</li>
+      <li>Gravar e carregar com <code class="inl">DocBin</code> (<code class="inl">to_disk()</code>, <code class="inl">from_disk()</code>, <code class="inl">get_docs()</code>).</li>
+      <li>Mesclar sintagmas nominais e entidades com <code class="inl">add_pipe()</code>/<code class="inl">remove_pipe()</code>.</li>
+    </ol>
+  </div>
+
+  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
+    <ol>
+      <li>Carregue o modelo excluindo apenas o <code class="inl">lemmatizer</code> e confirme, com <code class="inl">nlp.pipeline</code>, que ele não está mais presente.</li>
+      <li>Adicione um atributo personalizado <code class="inl">source</code> ao <code class="inl">Doc</code> e preencha‑o com o nome do arquivo de origem ao processar textos da Unidade 1.</li>
+      <li>Processe as notícias da Unidade 1 com <code class="inl">nlp.pipe()</code>, grave em um <code class="inl">DocBin</code> e recarregue do disco, conferindo o número de <code class="inl">Doc</code>s.</li>
+      <li>Compare a árvore de dependências de uma frase <strong>com</strong> e <strong>sem</strong> <code class="inl">merge_noun_chunks</code> e descreva a diferença.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. Honnibal, M.; Montani, I. et al. <em>spaCy: Industrial-strength Natural Language Processing in Python</em> — <a href="https://spacy.io/">spacy.io</a>.</p>
+    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
+    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except','assert']);
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hlLine(line){
+    var out='', i=0, n=line.length;
+    while(i<n){
+      var c=line[i];
+      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
+      if(c==="'"||c==='"'){
+        var q=c, j=i+1;
+        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
+        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
+        i=j+1; continue;
+      }
+      if(/[A-Za-z_]/.test(c)){
+        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
+        var w=line.slice(i,j2);
+        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
+        i=j2; continue;
+      }
+      if(/[0-9]/.test(c)){
+        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
+        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
+      }
+      out+=esc(c); i++;
+    }
+    return out;
+  }
+  document.querySelectorAll('code.lang-python').forEach(function(el){
+    var src=el.textContent;
+    el.innerHTML=src.split('\n').map(hlLine).join('\n');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+% !TEX program = pdflatex
+% ============================================================================
+%  Unidade 3 - Customizando o pipeline do spaCy
+%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
+%
+%  COMPILAR COM:  pdflatex unidade3_customizando_pipeline_spacy.tex   (rodar 2x)
+%
+%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
+%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry,
+%    listings, tcolorbox, titlesec, enumitem, hyperref, microtype
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+% -------------------------------------------------------------- paleta ------
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{codebg}{HTML}{1E2430}
+\definecolor{codetext}{HTML}{E6E9EF}
+\definecolor{ccomment}{HTML}{7FD18B}
+\definecolor{cstring}{HTML}{F0B866}
+\definecolor{ckw}{HTML}{C792EA}
+\definecolor{cbuiltin}{HTML}{82AAFF}
+\definecolor{outbg}{HTML}{F0F2F7}
+\definecolor{outtext}{HTML}{2F3646}
+\definecolor{outframe}{HTML}{9AA4B8}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+\definecolor{inlink}{HTML}{5A34D6}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
+  pdftitle={Customizando o pipeline do spaCy},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
+
+% --------------------------------------------------- estilo do codigo -------
+\lstset{
+  extendedchars=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  keepspaces=true,
+  columns=fullflexible,
+  tabsize=4,
+  showstringspaces=false,
+  literate=%
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
+    {—}{{---}}1 {–}{{--}}1
+    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+    {✔}{{[OK]}}4
+}
+
+\lstdefinestyle{pystyle}{
+  language=Python,
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{ckw}\bfseries,
+  keywordstyle=[2]\color{cbuiltin},
+  morekeywords=[2]{print,type,load,list,append,items,get,spacy,displacy,assert},
+  commentstyle=\color{ccomment}\itshape,
+  stringstyle=\color{cstring},
+}
+\lstdefinestyle{outstyle}{
+  basicstyle=\ttfamily\small\color{outtext},
+}
+
+% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
+\newtcblisting{pybox}{
+  breakable, enhanced,
+  listing only, listing options={style=pystyle},
+  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
+  borderline west={3pt}{0pt}{accent},
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+% caixa de saida (fundo claro)
+\newtcblisting{outbox}{
+  breakable, enhanced,
+  listing only, listing options={style=outstyle},
+  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+
+% ------------------------------------------------------ caixas de aviso -----
+\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
+  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
+  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
+  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
+  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
+  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
+
+% ------------------------------------------------------ titulos de secao ----
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
+  {\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+
+% codigo em linha (verbatim, colorido) via atalho @...@
+\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\begin{document}
+
+% --------------------------------------------------------------- capa -------
+\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
+  before skip=0pt, after skip=20pt]
+  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
+  {\Huge\bfseries Customizando o pipeline do spaCy}\\[8pt]
+  {\large Trabalhando com Texto em Python I \ --- \ Unidade 3}\\[6pt]
+  {\normalsize Modificar o pipeline, processar em lote, atributos personalizados, salvar em disco e mesclar sintagmas e entidades.}\\[10pt]
+  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
+\end{tcolorbox}
+
+\begin{objbox}
+Ao final desta unidade, você deverá saber:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item examinar e modificar o pipeline do spaCy;
+  \item processar textos com eficiência;
+  \item adicionar atributos personalizados a objetos do spaCy;
+  \item salvar em disco os textos processados;
+  \item mesclar sintagmas nominais e entidades nomeadas em tokens únicos.
+\end{itemize}
+\end{objbox}
+
+Vamos começar importando a biblioteca spaCy e o módulo @displacy@, usado para desenhar árvores de dependência, e carregando um modelo de linguagem para o inglês:
+
+\begin{pybox}
+# Importa a biblioteca spaCy e o modulo displacy
+from spacy import displacy
+import spacy
+
+# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+nlp = spacy.load('en_core_web_sm')
+
+# Chama a variavel para examinar o objeto
+nlp
+\end{pybox}
+\begin{outbox}
+<spacy.lang.en.English at 0x294522f10>
+\end{outbox}
+
+% =========================================================== 1 ==============
+\section{Modificando pipelines do spaCy}
+
+O objeto @Language@ é, essencialmente, um \textbf{pipeline} que aplica um modelo de linguagem ao texto, executando as tarefas para as quais o modelo foi treinado. As tarefas realizadas dependem dos \textbf{componentes} presentes no pipeline.
+
+Podemos examinar os componentes com o atributo @pipeline@ de um objeto @Language@:
+
+\begin{pybox}
+nlp.pipeline
+\end{pybox}
+\begin{outbox}
+[('tok2vec', <spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0>),
+ ('tagger', <spacy.pipeline.tagger.Tagger at 0x294cf3ca0>),
+ ('parser', <spacy.pipeline.dep_parser.DependencyParser at 0x294b566d0>),
+ ('attribute_ruler', <spacy.pipeline.attributeruler.AttributeRuler at 0x295187680>),
+ ('lemmatizer', <spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540>),
+ ('ner', <spacy.pipeline.ner.EntityRecognizer at 0x294b56740>)]
+\end{outbox}
+
+Isso retorna um objeto @SimpleFrozenList@ do spaCy, composto por \textbf{tuplas} com dois itens: o \textbf{nome} do componente (ex.: @tagger@) e o \textbf{componente} que executa a tarefa (ex.: @spacy.pipeline.tok2vec.Tok2Vec@).
+
+Componentes como @tagger@, @parser@, @ner@ e @lemmatizer@ já são familiares da unidade anterior. Há dois novos:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item \textbf{@tok2vec@} mapeia os tokens para suas representações numéricas (veremos na Parte III).
+  \item \textbf{@attribute_ruler@} aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.
+\end{itemize}
+
+\begin{notebox}
+A lista em @nlp.pipeline@ \textbf{não} inclui o @Tokenizer@, porque todo texto precisa ser tokenizado para qualquer processamento ocorrer. Por isso ele fica no atributo @tokenizer@, e não em @pipeline@.
+\end{notebox}
+
+\subsection{Excluindo componentes para ganhar desempenho}
+\textbf{Todo componente tem um custo computacional.} Se você não precisa da saída de um componente, não deve incluí-lo, pois o processamento fica mais lento. Para excluir, forneça o argumento @exclude@ com os nomes dos componentes ao chamar @load()@:
+
+\begin{pybox}
+# Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de
+# entidades nomeadas ('ner') e a analise de dependencias sintaticas ('parser').
+nlp = spacy.load('en_core_web_sm', exclude=['ner', 'parser'])
+
+# Examina os componentes ativos no objeto Language 'nlp'
+nlp.pipeline
+\end{pybox}
+\begin{outbox}
+[('tok2vec', <spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760>),
+ ('tagger', <spacy.pipeline.tagger.Tagger at 0x296c7ba00>),
+ ('attribute_ruler', <spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40>),
+ ('lemmatizer', <spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200>)]
+\end{outbox}
+
+Como mostra a saída, @ner@ e @parser@ não estão mais no pipeline.
+
+\subsection{Analisando o pipeline com \textnormal{@analyze_pipes()@}}
+O método @analyze_pipes()@ dá uma visão geral dos componentes. Definindo @pretty@ como @True@, o spaCy imprime uma tabela com os componentes e as anotações que produzem:
+
+\begin{pybox}
+# Analisa o pipeline e guarda a analise na variavel 'pipe_analysis'
+pipe_analysis = nlp.analyze_pipes(pretty=True)
+\end{pybox}
+\begin{outbox}
+============================= Pipeline Overview =============================
+
+#   Component         Assigns       Requires   Scores      Retokenizes
+-   ---------------   -----------   --------   ---------   -----------
+0   tok2vec           doc.tensor                           False
+1   tagger            token.tag                tag_acc     False
+2   attribute_ruler                                        False
+3   lemmatizer        token.lemma              lemma_acc   False
+
+✔ No problems found.
+\end{outbox}
+
+O método retorna um \textbf{dicionário} Python. Você pode usá-lo para verificar que nenhum problema foi encontrado \textbf{antes} de processar grandes volumes. Os relatórios ficam sob a chave @problems@:
+
+\begin{pybox}
+# Examina o valor guardado sob a chave 'problems'
+pipe_analysis['problems']
+\end{pybox}
+\begin{outbox}
+{'tok2vec': [], 'tagger': [], 'attribute_ruler': [], 'lemmatizer': []}
+\end{outbox}
+
+Podemos escrever um trecho que \textbf{verifica} isso. Percorremos o dicionário com @items()@ e usamos @assert@ com @len()@ e o operador @==@ para checar que a lista tem tamanho @0@; caso contrário, o Python levanta um @AssertionError@:
+
+\begin{pybox}
+# Percorre os pares chave/valor do dicionario. Atribui a chave e o valor
+# as variaveis 'component_name' e 'problem_list'.
+for component_name, problem_list in pipe_analysis['problems'].items():
+
+    # Usa 'assert' para checar a lista de problemas; levanta Error se necessario.
+    assert len(problem_list) == 0, f"There is a problem with {component_name}: {problem_list}!"
+\end{pybox}
+
+Usamos uma \textit{f-string}: o @f@ antes das aspas permite \textbf{inserir variáveis} entre chaves @{}@. Se nenhum problema for encontrado, o laço passa silenciosamente.
+
+% =========================================================== 2 ==============
+\section{Processando textos com eficiência}
+
+Ao trabalhar com grandes volumes, é desejável processá-los da forma mais eficiente possível. Vamos definir um exemplo com uma \textbf{lista} de três frases da Wikipédia em inglês:
+
+\begin{pybox}
+# Reinicializa o modelo de linguagem, pois precisamos da analise de
+# dependencias nas proximas secoes.
+nlp = spacy.load('en_core_web_sm')
+
+# Define uma lista de frases de exemplo
+sents = ["On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production.",
+         "The 'Complex Modernization' initiative expanded two existing nuclear sites to produce new bomb parts.",
+         "The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee."]
+
+# Chama a variavel para examinar a saida
+sents
+\end{pybox}
+
+Os objetos @Language@ têm um método específico, @pipe()@, para processar textos em uma \textbf{lista}. Ele foi otimizado para processar em \textbf{lotes} (\textit{batches}), sendo mais rápido que um laço @for@. O @pipe()@ recebe uma lista e retorna um \textbf{gerador} (\textit{generator}):
+
+\begin{pybox}
+# Alimenta a lista de frases ao metodo pipe()
+docs = nlp.pipe(sents)
+
+# Chama a variavel para examinar a saida
+docs
+\end{pybox}
+\begin{outbox}
+<generator object Language.pipe at 0x296d0b580>
+\end{outbox}
+
+Geradores contêm outros objetos e os \textbf{produzem} (\textit{yield}) quando chamados. Para recuperar todos, convertemos o gerador em uma \textbf{lista}:
+
+\begin{pybox}
+# Converte o gerador pipe em uma lista
+docs = list(docs)
+
+# Chama a variavel para examinar a saida
+docs
+\end{pybox}
+
+Isso nos dá uma lista de objetos @Doc@ prontos para processamento posterior.
+
+% =========================================================== 3 ==============
+\section{Adicionando atributos personalizados aos objetos do spaCy}
+
+O spaCy permite \textbf{definir atributos personalizados} para objetos @Doc@, @Span@ e @Token@ --- úteis para guardar informações adicionais sobre os textos. Usamos o método @set_extension()@. Como o atributo é adicionado a \textbf{todos} os @Doc@, primeiro importamos o objeto @Doc@ genérico:
+
+\begin{pybox}
+# Importa o objeto Doc do modulo 'tokens' do spaCy
+from spacy.tokens import Doc
+
+# Adiciona dois atributos personalizados ao objeto Doc, 'age' e 'location',
+# usando o metodo set_extension().
+Doc.set_extension("age", default=None)
+Doc.set_extension("location", default=None)
+\end{pybox}
+
+O argumento @default@ define um valor padrão, aqui a palavra-chave @None@.
+
+\begin{notebox}
+Diferentemente de atributos como @sents@ ou @heads@, os personalizados ficam sob um atributo que consiste no sublinhado @_@ --- por exemplo, @Doc._.age@.
+\end{notebox}
+
+Vamos definir um dicionário aninhado @sents_dict@ com três chaves (@0@, @1@, @2@), cujos valores são dicionários com @age@, @location@ e @text@:
+
+\begin{pybox}
+# Cria um dicionario cujos valores sao outros dicionarios
+# com tres chaves: 'age', 'location' e 'text'.
+sents_dict = {0: {"age": 23,
+                  "location": "Helsinki",
+                  "text": "The Senate Square is by far the most important landmark in Helsinki."
+                 },
+              1: {"age": 35,
+                  "location": "Tallinn",
+                  "text": "The Old Town, for sure."
+                 },
+              2: {"age": 58,
+                  "location": "Stockholm",
+                  "text": "Södermalm is interesting!"
+                 }
+             }
+\end{pybox}
+
+Percorremos o dicionário, processamos cada texto e definimos os atributos personalizados:
+
+\begin{pybox}
+# Prepara uma lista vazia para guardar os textos processados
+docs = []
+
+# Percorre os pares de chave e valor do dicionario 'sents_dict'.
+# Os pares chave/valor ficam disponiveis pelo metodo items().
+# Chamamos essas chaves e valores de 'key' e 'data'; ou seja, usamos
+# a variavel 'data' para se referir ao dicionario aninhado.
+for key, data in sents_dict.items():
+
+    # Recupera o valor da chave 'text' do dicionario aninhado.
+    # Alimenta esse texto ao modelo em 'nlp' e guarda o resultado em 'doc'.
+    doc = nlp(data['text'])
+
+    # Recupera os valores de 'age' e 'location' do dicionario aninhado.
+    # Atribui esses valores aos atributos personalizados do objeto Doc.
+    # Lembre-se: atributos personalizados ficam sob o pseudo-atributo '_'!
+    doc._.age = data['age']
+    doc._.location = data['location']
+
+    # Acrescenta o Doc atual em 'doc' a lista 'docs'
+    docs.append(doc)
+\end{pybox}
+
+Isso produz uma lista de @Doc@s. Vamos percorrê-la e imprimir cada um com seus atributos:
+
+\begin{pybox}
+# Percorre cada objeto Doc na lista 'docs'
+for doc in docs:
+
+    # Imprime cada Doc e os atributos 'age' e 'location'
+    print(doc, doc._.age, doc._.location)
+\end{pybox}
+\begin{outbox}
+The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki
+The Old Town, for sure. 35 Tallinn
+Södermalm is interesting! 58 Stockholm
+\end{outbox}
+
+\subsection{Filtrando dados com compreensão de lista}
+Os atributos personalizados podem ser usados para \textbf{filtrar} dados. Uma forma eficiente é a \textbf{compreensão de lista} (\textit{list comprehension}) --- como um laço @for@ declarado ``na hora'', entre colchetes @[]@, com três partes: (1) o que guardar na nova lista; (2) o @for ... in@ percorrendo os itens; (3) o @if@ com a condição:
+
+\begin{pybox}
+# Usa uma compreensao de lista para filtrar os Docs cujo atributo
+# 'age' tenha valor abaixo de 40.
+under_forty = [doc for doc in docs if doc._.get('age') < 40]
+
+# Chama a variavel para examinar a saida
+under_forty
+\end{pybox}
+\begin{outbox}
+[The Senate Square is by far the most important landmark in Helsinki.,
+ The Old Town, for sure.]
+\end{outbox}
+
+Isso retorna uma lista com apenas dois @Doc@s que atendem ao critério.
+
+% =========================================================== 4 ==============
+\section{Gravando textos processados em disco}
+
+Com grandes volumes, primeiro garanta que o pipeline funciona com \textbf{poucos} textos; depois processe tudo e \textbf{salve}. O spaCy oferece o tipo @DocBin@ para armazenar objetos @Doc@ com suas anotações:
+
+\begin{pybox}
+# Importa o objeto DocBin do modulo 'tokens' do spaCy
+from spacy.tokens import DocBin
+
+# Inicializa um objeto DocBin e adiciona os Docs de 'docs'
+docbin = DocBin(docs=docs)
+\end{pybox}
+
+\begin{warnbox}
+Se você adicionou \textbf{atributos personalizados} a @Doc@s, @Span@s ou @Token@s, também é preciso definir @store_user_data=True@ --- por exemplo, @DocBin(docs=docs, store_user_data=True)@.
+\end{warnbox}
+
+Verificamos que os três @Doc@s entraram no @DocBin@ com o método @__len__()@:
+
+\begin{pybox}
+# Obtem o numero de Docs no DocBin
+docbin.__len__()
+\end{pybox}
+\begin{outbox}
+3
+\end{outbox}
+
+O método @add()@ permite adicionar mais @Doc@s:
+
+\begin{pybox}
+# Define uma string, alimenta o modelo em 'nlp' e adiciona o
+# Doc resultante ao objeto DocBin 'docbin'
+docbin.add(nlp("Yet another Doc object."))
+
+# Verifica que o Doc foi adicionado; o tamanho agora deve ser 4
+docbin.__len__()
+\end{pybox}
+\begin{outbox}
+4
+\end{outbox}
+
+Gravamos o @DocBin@ em disco com @to_disk()@, que recebe o argumento @path@:
+
+\begin{pybox}
+# Grava o objeto DocBin em disco
+docbin.to_disk(path='data/docbin.spacy')
+\end{pybox}
+
+Para \textbf{carregar}, inicialize um @DocBin@ vazio e use @from_disk()@:
+
+\begin{pybox}
+# Inicializa um novo DocBin e usa 'from_disk' para carregar os dados do disco.
+# Atribui o resultado a variavel 'docbin_loaded'.
+docbin_loaded = DocBin().from_disk(path='data/docbin.spacy')
+
+# Chama a variavel para examinar a saida
+docbin_loaded
+\end{pybox}
+\begin{outbox}
+<spacy.tokens._serialize.DocBin at 0x2953a4c40>
+\end{outbox}
+
+Para acessar os @Doc@s guardados, use @get_docs()@, passando o \textbf{vocabulário} (@nlp.vocab@) necessário para reconstruir os dados:
+
+\begin{pybox}
+# Usa 'get_docs' para recuperar os Docs do DocBin, passando o
+# vocabulario em 'nlp.vocab' para reconstruir os dados.
+# Converte o gerador resultante em uma lista para exame.
+docs_loaded = list(docbin_loaded.get_docs(nlp.vocab))
+
+# Chama a variavel para examinar a saida
+docs_loaded
+\end{pybox}
+\begin{outbox}
+[The Senate Square is by far the most important landmark in Helsinki.,
+ The Old Town, for sure.,
+ Södermalm is interesting!,
+ Yet another Doc object.]
+\end{outbox}
+
+\begin{tipbox}[Resumindo]
+O ideal é processar os textos \textbf{uma vez}, gravá-los em disco e carregá-los para as análises seguintes.
+\end{tipbox}
+
+% =========================================================== 5 ==============
+\section{Simplificando a saída: sintagmas nominais e entidades nomeadas}
+
+\subsection{Mesclando sintagmas nominais}
+Às vezes é mais vantajoso operar com unidades maiores que tokens individuais, como \textbf{sintagmas nominais} (\textit{noun phrases}). O spaCy dá acesso a eles pelo atributo @noun_chunks@ de um @Doc@:
+
+\begin{pybox}
+# Primeiro laco: percorre a lista 'docs'; 'doc' se refere aos itens da lista
+for doc in docs:
+
+    # Percorre cada sintagma nominal do objeto Doc
+    for noun_chunk in doc.noun_chunks:
+
+        # Imprime o sintagma nominal
+        print(noun_chunk)
+\end{pybox}
+\begin{outbox}
+The Senate Square
+the most important landmark
+Helsinki
+The Old Town
+Södermalm
+\end{outbox}
+
+Para \textbf{mesclar} os sintagmas em um único token, o spaCy oferece a função @merge_noun_chunks@, adicionada ao pipeline com @add_pipe@:
+
+\begin{pybox}
+# Adiciona o componente que mescla sintagmas nominais em Tokens unicos
+nlp.add_pipe('merge_noun_chunks')
+\end{pybox}
+
+\begin{notebox}
+Não é preciso reatribuir o objeto @Language@ à mesma variável --- o @add_pipe@ adiciona o componente automaticamente.
+\end{notebox}
+
+Processando as frases novamente com @pipe()@, ao percorrer os tokens do primeiro @Doc@ (@[0]@) vemos os sintagmas \textbf{mesclados} e rotulados como @NOUN@:
+
+\begin{pybox}
+# Aplica o objeto Language 'nlp' a lista de frases em 'sents'
+docs = list(nlp.pipe(sents))
+
+# Percorre os Tokens do primeiro Doc da lista
+for token in docs[0]:
+
+    # Imprime o Token e sua classe gramatical
+    print(token, token.pos_)
+\end{pybox}
+\begin{outbox}
+On ADP
+October PROPN
+1 NUM
+, PUNCT
+2009 NUM
+, PUNCT
+the Obama administration NOUN
+went VERB
+ahead ADV
+with ADP
+a Bush administration program NOUN
+, PUNCT
+increasing VERB
+nuclear weapons production NOUN
+. PUNCT
+\end{outbox}
+
+Rotular como @NOUN@ é uma aproximação razoável, já que as palavras-núcleo são substantivos. Mesclar os sintagmas \textbf{simplifica} a árvore sintática:
+
+\begin{pybox}
+displacy.render(docs[0], style='dep')
+\end{pybox}
+
+Os sintagmas continuam disponíveis em @noun_chunks@, guardados como @Span@s com atributos @start@ e @end@:
+
+\begin{pybox}
+# Percorre os sintagmas nominais do primeiro Doc [0] na lista 'docs'
+for noun_chunk in docs[0].noun_chunks:
+
+    # Imprime o sintagma, seu tipo, e os indices onde comeca e termina
+    print(noun_chunk, type(noun_chunk), noun_chunk.start, noun_chunk.end)
+\end{pybox}
+\begin{outbox}
+October <class 'spacy.tokens.span.Span'> 1 2
+the Obama administration <class 'spacy.tokens.span.Span'> 6 7
+a Bush administration program <class 'spacy.tokens.span.Span'> 10 11
+nuclear weapons production <class 'spacy.tokens.span.Span'> 13 14
+\end{outbox}
+
+\subsection{Mesclando entidades nomeadas}
+Entidades nomeadas são mescladas do mesmo modo, com @merge_entities@. Primeiro removemos a função @merge_noun_chunks@ com @remove_pipe()@:
+
+\begin{pybox}
+# Remove a funcao 'merge_noun_chunks' do pipeline em 'nlp'
+nlp.remove_pipe('merge_noun_chunks')
+
+# Processa as frases originais novamente
+docs = list(nlp.pipe(sents))
+\end{pybox}
+
+Em seguida, adicionamos @merge_entities@ e reprocessamos, examinando o terceiro @Doc@:
+
+\begin{pybox}
+# Adiciona a funcao 'merge_entities' ao pipeline
+nlp.add_pipe('merge_entities')
+
+# Processa os dados novamente
+docs = list(nlp.pipe(sents))
+
+# Percorre os Tokens do terceiro Doc da lista
+for token in docs[2]:
+
+    # Imprime o Token e sua classe gramatical
+    print(token, token.pos_)
+\end{pybox}
+\begin{outbox}
+The DET
+administration NOUN
+built VERB
+new ADJ
+plutonium NOUN
+pits NOUN
+at ADP
+the DET
+Los Alamos PROPN
+lab NOUN
+in ADP
+New Mexico PROPN
+and CCONJ
+expanded VERB
+enriched ADJ
+uranium NOUN
+processing NOUN
+at ADP
+the DET
+Y-12 NUM
+facility NOUN
+in ADP
+Oak Ridge PROPN
+, PUNCT
+Tennessee PROPN
+. PUNCT
+\end{outbox}
+
+Entidades nomeadas com vários tokens --- como os topônimos \textit{``Los Alamos''} e \textit{``New Mexico''} --- foram \textbf{mescladas} em tokens únicos.
+
+% ======================================================= resumo ============
+\section*{Resumo da unidade}
+\addcontentsline{toc}{section}{Resumo da unidade}
+\begin{objbox}[Nesta unidade, você aprendeu a]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
+  \item examinar o pipeline com @nlp.pipeline@ e entender @tok2vec@/@attribute_ruler@;
+  \item excluir componentes (@exclude=[...]@) e auditar o pipeline com @analyze_pipes()@ e @assert@;
+  \item processar em lote com @nlp.pipe()@, entendendo geradores e conversão para lista;
+  \item adicionar atributos personalizados (@set_extension()@, @Doc._.@) e filtrar com compreensão de lista;
+  \item gravar e carregar com @DocBin@ (@to_disk()@, @from_disk()@, @get_docs()@);
+  \item mesclar sintagmas nominais e entidades com @add_pipe()@/@remove_pipe()@.
+\end{enumerate}
+\end{objbox}
+
+\begin{notebox}[Exercícios sugeridos]
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
+  \item Carregue o modelo excluindo apenas o @lemmatizer@ e confirme, com @nlp.pipeline@, que ele não está mais presente.
+  \item Adicione um atributo personalizado @source@ ao @Doc@ e preencha-o com o nome do arquivo de origem ao processar textos da Unidade 1.
+  \item Processe as notícias da Unidade 1 com @nlp.pipe()@, grave em um @DocBin@ e recarregue do disco, conferindo o número de @Doc@s.
+  \item Compare a árvore de dependências de uma frase \textbf{com} e \textbf{sem} @merge_noun_chunks@ e descreva a diferença.
+\end{enumerate}
+\end{notebox}
+
+\vspace{6pt}
+\noindent\rule{\linewidth}{0.4pt}\\[4pt]
+{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Honnibal, M.; Montani, I. et al. \textit{spaCy: Industrial-strength Natural Language Processing in Python} --- \href{https://spacy.io/}{spacy.io}.\par
+Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+
+\end{document}
