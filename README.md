@@ -24,6 +24,10 @@ Unidade-2/   Processando textos com spaCy
 Unidade-3/   Customizando o pipeline do spaCy
              (modificar o pipeline, processar em lote, atributos
               personalizados, DocBin, mesclar sintagmas e entidades)
+
+Unidade-4/   Avaliando modelos de linguagem
+             (padrão-ouro, concordância entre anotadores, kappa de
+              Cohen, matriz de confusão, precisão, revocação, F1)
 ```
 
 Cada unidade é entregue em três formatos:
