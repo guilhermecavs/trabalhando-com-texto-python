@@ -508,6 +508,53 @@ weighted avg       0.75      0.70      0.71        10
 
 As pontuações da linha @macro avg@ correspondem às que calculamos acima. A linha @weighted avg@ (média \textbf{ponderada}) leva em conta o número de instâncias de cada classe; a coluna @support@ conta quantas instâncias foram observadas em cada classe.
 
+% ======================================================= quiz ==============
+\section*{Quiz}
+\addcontentsline{toc}{section}{Quiz}
+Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+
+{\bfseries 1. Um padrão-ouro (\textit{gold standard}) é:}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Dados verificados por humanos, usados como referência \textcolor{tipc}{\textbf{(correta)}}
+  \item A saída bruta do modelo
+  \item Um dicionário do Python
+\end{enumerate}
+
+{\bfseries 2. Por que a concordância percentual é uma medida fraca?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Não distingue acerto real de acerto por acaso \textcolor{tipc}{\textbf{(correta)}}
+  \item É difícil de calcular
+  \item Só funciona com duas classes
+\end{enumerate}
+
+{\bfseries 3. O kappa de Cohen mede a concordância entre quantos anotadores?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Dois \textcolor{tipc}{\textbf{(correta)}}
+  \item Três
+  \item Qualquer número
+\end{enumerate}
+
+{\bfseries 4. A precisão de uma classe responde: das vezes em que o modelo previu essa classe,}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item quantas estavam certas \textcolor{tipc}{\textbf{(correta)}}
+  \item quantas existiam no total
+  \item quantas ele deixou de encontrar
+\end{enumerate}
+
+{\bfseries 5. A revocação de uma classe responde: dos exemplos que realmente são dessa classe,}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item quantos o modelo encontrou \textcolor{tipc}{\textbf{(correta)}}
+  \item quantos ele previu a mais
+  \item quantos estavam errados
+\end{enumerate}
+
+{\bfseries 6. O F1-score é:}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item A média equilibrada entre precisão e revocação \textcolor{tipc}{\textbf{(correta)}}
+  \item A soma da precisão com a revocação
+  \item O maior valor entre os dois
+\end{enumerate}
+
 % ======================================================= resumo ============
 \section*{Resumo da unidade}
 \addcontentsline{toc}{section}{Resumo da unidade}

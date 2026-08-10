@@ -348,6 +348,46 @@ spacy.explain('NORP')
 
 ---
 
+## Quiz
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+**1. A tarefa que quebra o texto em unidades menores chama‑se:**
+
+1. Tokenização ✅
+2. Lematização
+3. Segmentação de sentenças
+
+**2. Qual atributo do token dá a classe gramatical genérica?**
+
+1. `pos_` ✅
+2. `tag_`
+3. `dep_`
+
+**3. O lema de uma palavra é:**
+
+1. A forma base da palavra ✅
+2. Sempre o plural
+3. A raiz fonética
+
+**4. As entidades nomeadas de um `Doc` ficam em qual atributo?**
+
+1. `.ents` ✅
+2. `.sents`
+3. `.noun_chunks`
+
+**5. Por que muitos atributos têm uma versão terminada em sublinhado (ex.: `dep_`)?**
+
+1. Ela dá o texto legível, em vez do código numérico (hash) ✅
+2. Ela é mais rápida
+3. Ela é obrigatória
+
+**6. Uma entidade nomeada com vários tokens é representada por um objeto:**
+
+1. `Span` ✅
+2. `Token`
+3. `Doc`
+
 ## Resumo da unidade
 
 Nesta unidade, você aprendeu a:

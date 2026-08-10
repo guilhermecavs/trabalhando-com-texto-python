@@ -537,6 +537,46 @@ Entidades nomeadas com vários tokens — como os topônimos *"Los Alamos"* e *"
 
 ---
 
+## Quiz
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+**1. Por que remover do pipeline componentes que você não usa?**
+
+1. Cada componente tem um custo computacional ✅
+2. Deixa o código mais bonito
+3. É obrigatório
+
+**2. Qual argumento de `load()` exclui componentes do pipeline?**
+
+1. `exclude` ✅
+2. `remove`
+3. `skip`
+
+**3. Por que o `Tokenizer` não aparece em `nlp.pipeline`?**
+
+1. Ele sempre roda e fica em `nlp.tokenizer` ✅
+2. Foi removido do spaCy
+3. É opcional e estava desligado
+
+**4. Onde ficam os atributos personalizados de um `Doc`?**
+
+1. Sob um atributo que consiste no sublinhado (`Doc._`) ✅
+2. Numa coluna extra do texto
+3. Dentro de `nlp.meta`
+
+**5. Qual método processa uma lista de textos em lote (mais rápido)?**
+
+1. `pipe()` ✅
+2. `apply()`
+3. `map()`
+
+**6. Para que serve o `DocBin`?**
+
+1. Guardar e gravar `Doc`s processados em disco ✅
+2. Baixar modelos de linguagem
+3. Treinar o modelo
+
 ## Resumo da unidade
 
 Nesta unidade, você aprendeu a:

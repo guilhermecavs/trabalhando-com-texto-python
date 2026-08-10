@@ -494,6 +494,46 @@ Tudo `True` — os dados foram salvos e recarregados com sucesso.
 
 ---
 
+## Quiz
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+**1. Por convenção, o pandas é importado com qual apelido?**
+
+1. `pd` ✅
+2. `pandas`
+3. `dt`
+
+**2. Cada coluna de um `DataFrame` é, na verdade, um objeto:**
+
+1. `Series` ✅
+2. `DataFrame`
+3. `list`
+
+**3. Um valor `NaN` indica:**
+
+1. Um valor ausente ("não é um número") ✅
+2. O número zero
+3. Infinito
+
+**4. Qual operador combina dois critérios num filtro `.loc`?**
+
+1. `&` ✅
+2. `and`
+3. `+`
+
+**5. Por que criar uma cópia com `.copy()` de um recorte do `DataFrame`?**
+
+1. Para evitar o `SettingWithCopyWarning` e não alterar o original ✅
+2. Para acelerar o cálculo
+3. É obrigatório em toda operação
+
+**6. (Segurança) Por que *não* usar `read_pickle` em um arquivo de origem não confiável?**
+
+1. Porque pode executar código arbitrário na sua máquina ✅
+2. Porque é mais lento que o CSV
+3. Porque não consegue ler texto
+
 ## Resumo da unidade
 
 Nesta unidade, você aprendeu a:

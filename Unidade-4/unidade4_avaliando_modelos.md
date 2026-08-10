@@ -379,6 +379,46 @@ As pontuações da linha `macro avg` correspondem às que calculamos acima. A li
 
 ---
 
+## Quiz
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+**1. Um padrão‑ouro (*gold standard*) é:**
+
+1. Dados verificados por humanos, usados como referência ✅
+2. A saída bruta do modelo
+3. Um dicionário do Python
+
+**2. Por que a concordância percentual é uma medida fraca?**
+
+1. Não distingue acerto real de acerto por acaso ✅
+2. É difícil de calcular
+3. Só funciona com duas classes
+
+**3. O kappa de Cohen mede a concordância entre quantos anotadores?**
+
+1. Dois ✅
+2. Três
+3. Qualquer número
+
+**4. A precisão de uma classe responde: das vezes em que o modelo *previu* essa classe,**
+
+1. quantas estavam certas ✅
+2. quantas existiam no total
+3. quantas ele deixou de encontrar
+
+**5. A revocação de uma classe responde: dos exemplos que *realmente* são dessa classe,**
+
+1. quantos o modelo encontrou ✅
+2. quantos ele previu a mais
+3. quantos estavam errados
+
+**6. O F1‑score é:**
+
+1. A média equilibrada entre precisão e revocação ✅
+2. A soma da precisão com a revocação
+3. O maior valor entre os dois
+
 ## Resumo da unidade
 
 Nesta unidade, você aprendeu a:

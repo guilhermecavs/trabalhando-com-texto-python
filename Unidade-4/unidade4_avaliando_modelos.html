@@ -382,6 +382,45 @@ print(metrics.classification_report(gold_standard, predictions, zero_division=0)
 weighted avg       0.75      0.70      0.71        10</code></pre>
   <p>As pontuações da linha <code class="inl">macro avg</code> correspondem às que calculamos acima. A linha <code class="inl">weighted avg</code> (média <strong>ponderada</strong>) leva em conta o número de instâncias de cada classe; a coluna <code class="inl">support</code> conta quantas instâncias foram observadas em cada classe.</p>
 
+  <h2>Quiz</h2>
+  <p>Marque a alternativa correta (a resposta certa está destacada com ✅).</p>
+  <p><strong>1. Um padrão‑ouro (<em>gold standard</em>) é:</strong></p>
+  <ol>
+    <li>Dados verificados por humanos, usados como referência ✅</li>
+    <li>A saída bruta do modelo</li>
+    <li>Um dicionário do Python</li>
+  </ol>
+  <p><strong>2. Por que a concordância percentual é uma medida fraca?</strong></p>
+  <ol>
+    <li>Não distingue acerto real de acerto por acaso ✅</li>
+    <li>É difícil de calcular</li>
+    <li>Só funciona com duas classes</li>
+  </ol>
+  <p><strong>3. O kappa de Cohen mede a concordância entre quantos anotadores?</strong></p>
+  <ol>
+    <li>Dois ✅</li>
+    <li>Três</li>
+    <li>Qualquer número</li>
+  </ol>
+  <p><strong>4. A precisão de uma classe responde: das vezes em que o modelo <em>previu</em> essa classe,</strong></p>
+  <ol>
+    <li>quantas estavam certas ✅</li>
+    <li>quantas existiam no total</li>
+    <li>quantas ele deixou de encontrar</li>
+  </ol>
+  <p><strong>5. A revocação de uma classe responde: dos exemplos que <em>realmente</em> são dessa classe,</strong></p>
+  <ol>
+    <li>quantos o modelo encontrou ✅</li>
+    <li>quantos ele previu a mais</li>
+    <li>quantos estavam errados</li>
+  </ol>
+  <p><strong>6. O F1‑score é:</strong></p>
+  <ol>
+    <li>A média equilibrada entre precisão e revocação ✅</li>
+    <li>A soma da precisão com a revocação</li>
+    <li>O maior valor entre os dois</li>
+  </ol>
+
   <hr>
   <div class="obj">
     <h4>Resumo da unidade</h4>

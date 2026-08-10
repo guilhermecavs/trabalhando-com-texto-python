@@ -547,6 +547,46 @@ Como se vê, os objetos `Path` oferecem dois métodos convenientes para trabalha
 
 ---
 
+## Quiz
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+**1. Qual formato de texto é o mais interoperável para programação?**
+
+1. Texto formatado (*rich text*)
+2. Texto estruturado (*structured text*)
+3. Texto simples (*plain text*) ✅
+
+**2. Num texto, a sequência de dois caracteres "barra‑n" representa:**
+
+1. Um espaço em branco
+2. Uma quebra de linha ✅
+3. Uma tabulação
+
+**3. O UTF‑8 é retrocompatível com qual codificação?**
+
+1. ASCII ✅
+2. Latin‑1
+3. UTF‑16
+
+**4. Qual método de string divide o texto em uma lista?**
+
+1. `join()`
+2. `split()` ✅
+3. `replace()`
+
+**5. Numa expressão regular, o quantificador "dois ou mais" é escrito como:**
+
+1. `{2}`
+2. `{2,}` ✅
+3. `{,2}`
+
+**6. Qual método da classe `Path` coleta arquivos por um padrão com curinga (ex.: todos os `.txt`)?**
+
+1. `glob()` ✅
+2. `read_text()`
+3. `exists()`
+
 ## Resumo da unidade
 
 Nesta unidade, você aprendeu a:

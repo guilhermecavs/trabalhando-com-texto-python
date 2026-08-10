@@ -643,6 +643,53 @@ Tennessee PROPN
 
 Entidades nomeadas com vários tokens --- como os topônimos \textit{``Los Alamos''} e \textit{``New Mexico''} --- foram \textbf{mescladas} em tokens únicos.
 
+% ======================================================= quiz ==============
+\section*{Quiz}
+\addcontentsline{toc}{section}{Quiz}
+Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+
+{\bfseries 1. Por que remover do pipeline componentes que você não usa?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Cada componente tem um custo computacional \textcolor{tipc}{\textbf{(correta)}}
+  \item Deixa o código mais bonito
+  \item É obrigatório
+\end{enumerate}
+
+{\bfseries 2. Qual argumento de load() exclui componentes do pipeline?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item @exclude@ \textcolor{tipc}{\textbf{(correta)}}
+  \item @remove@
+  \item @skip@
+\end{enumerate}
+
+{\bfseries 3. Por que o Tokenizer não aparece em nlp.pipeline?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Ele sempre roda e fica em @nlp.tokenizer@ \textcolor{tipc}{\textbf{(correta)}}
+  \item Foi removido do spaCy
+  \item É opcional e estava desligado
+\end{enumerate}
+
+{\bfseries 4. Onde ficam os atributos personalizados de um Doc?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Sob um atributo que consiste no sublinhado (@Doc._@) \textcolor{tipc}{\textbf{(correta)}}
+  \item Numa coluna extra do texto
+  \item Dentro de @nlp.meta@
+\end{enumerate}
+
+{\bfseries 5. Qual método processa uma lista de textos em lote (mais rápido)?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item @pipe()@ \textcolor{tipc}{\textbf{(correta)}}
+  \item @apply()@
+  \item @map()@
+\end{enumerate}
+
+{\bfseries 6. Para que serve o DocBin?}
+\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
+  \item Guardar e gravar Docs processados em disco \textcolor{tipc}{\textbf{(correta)}}
+  \item Baixar modelos de linguagem
+  \item Treinar o modelo
+\end{enumerate}
+
 % ======================================================= resumo ============
 \section*{Resumo da unidade}
 \addcontentsline{toc}{section}{Resumo da unidade}
