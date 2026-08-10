@@ -109,19 +109,19 @@
 
 % ------------------------------------------------------ caixas de aviso -----
 \newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  colback=notec!6,colframe=notec,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  colback=accent!5,colframe=accent,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
 
@@ -144,7 +144,7 @@
 \begin{document}
 
 % --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
   boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
   before skip=0pt, after skip=20pt]
   {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
@@ -187,7 +187,7 @@ type(socc)
 pandas.core.frame.DataFrame
 \end{outbox}
 
-O pandas devolve o conteúdo do CSV em um \textbf{@DataFrame@}, sua estrutura de dados nativa. O método @head()@ mostra as primeiras linhas:
+O pandas devolve o conteúdo do CSV em um \textbf{\texttt{DataFrame}}, sua estrutura de dados nativa. O método @head()@ mostra as primeiras linhas:
 
 \begin{pybox}
 # Imprime as primeiras cinco linhas do DataFrame
@@ -329,7 +329,7 @@ socc['author']
 Name: author, Length: 10339, dtype: object
 \end{outbox}
 
-Cada coluna é, na verdade, um objeto \textbf{@Series@} --- pense no @DataFrame@ como a tabela inteira, cujas colunas são @Series@:
+Cada coluna é, na verdade, um objeto \textbf{\texttt{Series}} --- pense no @DataFrame@ como a tabela inteira, cujas colunas são @Series@:
 
 \begin{pybox}
 # Verifica o tipo de 'socc' e de 'socc['author']'
@@ -394,7 +394,7 @@ Name: ntop_level_comments, dtype: float64
 
 Lendo a saída: 10\,339 linhas; média (@mean@) $\approx 26$ comentários, com forte variação (desvio-padrão @std@ $\approx 40$); mínimo (@min@) 0; primeiro quartil (@25%@) $= 1$; mediana (@50%@) $= 14$; terceiro quartil (@75%@) $= 35$; máximo (@max@) $= 1\,378$.
 
-\subsection{Filtrando linhas com \textnormal{@.loc@}}
+\subsection{Filtrando linhas com \textnormal{\texttt{.loc}}}
 Como achar os artigos com \textbf{zero} comentários? Usamos @.loc@ para selecionar linhas por valor. Como @=@ é reservado para atribuição, a comparação ``é igual a'' usa \textbf{dois} sinais (@==@):
 
 \begin{pybox}
@@ -446,7 +446,7 @@ Uma amostra do resultado:
 \end{tabular}
 \end{center}
 
-Mas alguns artigos \textbf{não} receberam comentários --- nesses casos, dividiríamos zero por zero. Para essas linhas, @comments_ratio@ fica marcada como \textbf{@NaN@} (\textit{not a number}). O pandas \textbf{ignora automaticamente} os @NaN@ nos cálculos, como mostra o @describe()@:
+Mas alguns artigos \textbf{não} receberam comentários --- nesses casos, dividiríamos zero por zero. Para essas linhas, @comments_ratio@ fica marcada como \textbf{\texttt{NaN}} (\textit{not a number}). O pandas \textbf{ignora automaticamente} os @NaN@ nos cálculos, como mostra o @describe()@:
 
 \begin{pybox}
 # Estatisticas descritivas da coluna 'comments_ratio'
@@ -484,7 +484,7 @@ import spacy
 nlp = spacy.load('en_core_web_md')
 \end{pybox}
 
-Ao criar uma coluna nova em @talk@, o pandas emite um \textbf{@SettingWithCopyWarning@}, porque @talk@ é apenas um recorte (\textit{slice}) do @DataFrame@ original. A solução é criar uma \textbf{cópia profunda} com @.copy()@:
+Ao criar uma coluna nova em @talk@, o pandas emite um \textbf{\texttt{SettingWithCopyWarning}}, porque @talk@ é apenas um recorte (\textit{slice}) do @DataFrame@ original. A solução é criar uma \textbf{cópia profunda} com @.copy()@:
 
 \begin{pybox}
 # Cria uma copia profunda do DataFrame
@@ -501,7 +501,7 @@ Para processar os títulos, usamos @apply()@, que \textbf{aplica} o que recebe a
 talk['processed_title'] = talk['title'].apply(nlp)
 \end{pybox}
 
-Cada célula da coluna @processed_title@ agora contém um objeto \textbf{@Doc@} do spaCy:
+Cada célula da coluna @processed_title@ agora contém um objeto \textbf{\texttt{Doc}} do spaCy:
 
 \begin{pybox}
 # Pega o valor da coluna 'processed_title' na linha de indice 2
@@ -515,7 +515,7 @@ Too many first nations people live in a dream palace
 spacy.tokens.doc.Doc
 \end{outbox}
 
-\subsection{Definindo a própria função e aplicando com \textnormal{@apply()@}}
+\subsection{Definindo a própria função e aplicando com \textnormal{\texttt{apply()}}}
 Vamos definir uma função para buscar os \textbf{lemas de cada substantivo} do título. Funções são definidas com @def@, seguido do nome e dos parâmetros entre parênteses:
 
 \begin{pybox}

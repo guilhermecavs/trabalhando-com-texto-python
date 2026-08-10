@@ -109,19 +109,19 @@
 
 % ------------------------------------------------------ caixas de aviso -----
 \newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  colback=notec!6,colframe=notec,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  colback=accent!5,colframe=accent,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
 
@@ -142,7 +142,7 @@
 \begin{document}
 
 % --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
   boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
   before skip=0pt, after skip=20pt]
   {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]

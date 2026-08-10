@@ -106,19 +106,19 @@
 
 % ------------------------------------------------------ caixas de aviso -----
 \newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  colback=notec!6,colframe=notec,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  colback=accent!5,colframe=accent,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
 
@@ -139,7 +139,7 @@
 \begin{document}
 
 % --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
   boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
   before skip=0pt, after skip=20pt]
   {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
@@ -200,8 +200,8 @@ Isso retorna um objeto @SimpleFrozenList@ do spaCy, composto por \textbf{tuplas}
 
 Componentes como @tagger@, @parser@, @ner@ e @lemmatizer@ já são familiares da unidade anterior. Há dois novos:
 \begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item \textbf{@tok2vec@} mapeia os tokens para suas representações numéricas (veremos na Parte III).
-  \item \textbf{@attribute_ruler@} aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.
+  \item \textbf{\texttt{tok2vec}} mapeia os tokens para suas representações numéricas (veremos na Parte III).
+  \item \textbf{\texttt{attribute\_ruler}} aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.
 \end{itemize}
 
 \begin{notebox}
@@ -228,7 +228,7 @@ nlp.pipeline
 
 Como mostra a saída, @ner@ e @parser@ não estão mais no pipeline.
 
-\subsection{Analisando o pipeline com \textnormal{@analyze_pipes()@}}
+\subsection{Analisando o pipeline com \textnormal{\texttt{analyze\_pipes()}}}
 O método @analyze_pipes()@ dá uma visão geral dos componentes. Definindo @pretty@ como @True@, o spaCy imprime uma tabela com os componentes e as anotações que produzem:
 
 \begin{pybox}

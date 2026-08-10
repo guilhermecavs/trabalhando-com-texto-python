@@ -1,0 +1,2 @@
+# Compara os DataFrames 'df' e 'df_2'
+df == df_2

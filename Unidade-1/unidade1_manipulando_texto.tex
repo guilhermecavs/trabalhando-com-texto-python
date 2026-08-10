@@ -106,19 +106,19 @@
 
 % ------------------------------------------------------ caixas de aviso -----
 \newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title=#1,
+  colback=notec!6,colframe=notec,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title=#1,
+  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title=#1,
+  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
 \newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title=#1,
+  colback=accent!5,colframe=accent,coltitle=white,title={#1},
   fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
   left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
 
@@ -139,7 +139,7 @@
 \begin{document}
 
 % --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, left color=accent, right color=cyan, coltext=white,
+\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
   boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
   before skip=0pt, after skip=20pt]
   {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
@@ -284,7 +284,7 @@ O Python interpreta o @\n@ e insere a quebra de linha. As primeiras linhas cont�
 
 Como @text@ é um objeto \textit{string}, podemos usar todos os métodos de manipulação de \textit{strings} do Python.
 
-\subsection{Substituindo com \textnormal{@replace()@}}
+\subsection{Substituindo com \textnormal{\texttt{replace()}}}
 Vamos trocar todas as quebras de linha @"\n"@ por \textit{strings} vazias @""@:
 
 \begin{pybox}
@@ -302,7 +302,7 @@ Agora o texto ficou ``grudado'', mas ainda dá para identificar o início de cad
 Remover as quebras de linha também fundiu os metadados em um único parágrafo. Sempre fique atento aos \textbf{efeitos indesejados} de substituições e transformações!
 \end{warnbox}
 
-\subsection{Dividindo com \textnormal{@split()@}}
+\subsection{Dividindo com \textnormal{\texttt{split()}}}
 Sabendo que os metadados estão separados do corpo por três espaços, usamos @split()@ para \textbf{dividir a \textit{string} em uma lista}, com os três espaços como separador:
 
 \begin{pybox}
@@ -331,7 +331,7 @@ Os metadados ficaram no \textbf{primeiro item} (índice @0@ --- o Python conta d
 processed_text[0]
 \end{pybox}
 
-\subsection{Removendo itens com \textnormal{@pop()@}}
+\subsection{Removendo itens com \textnormal{\texttt{pop()}}}
 Para remover os metadados, usamos @pop()@, que espera o índice do item a remover:
 
 \begin{pybox}
@@ -347,7 +347,7 @@ Não atribuímos o resultado a uma variável porque as listas são \textbf{mutá
 processed_text[:3]
 \end{pybox}
 
-\subsection{Reunindo com \textnormal{@join()@}}
+\subsection{Reunindo com \textnormal{\texttt{join()}}}
 Para voltar de lista para \textit{string}, usamos @join()@, que espera um \textbf{iterável}. O ponto que confunde: o @join()@ é chamado \textbf{sobre a \textit{string} que serve de ``cola''}. Aqui, a cola é a sequência original de parágrafo (@'\n   '@ --- quebra de linha e três espaços):
 
 \begin{pybox}
@@ -363,7 +363,7 @@ print(processed_text[:1000])
 
 O @join()@ devolve uma \textit{string} com as quebras de parágrafo originais!
 
-\subsection{Um \textit{pipeline} de substituições com laço \textnormal{@for@}}
+\subsection{Um \textit{pipeline} de substituições com laço \textnormal{\texttt{for}}}
 O OCR deixou uma \textbf{mistura de aspas}. Para padronizar tudo em @"@ sem repetir @replace()@ à mão, combinamos \textbf{listas} e \textbf{tuplas}. Cada tupla guarda o caractere a substituir e o seu substituto:
 
 \begin{pybox}
