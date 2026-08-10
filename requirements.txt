@@ -1,0 +1,12 @@
+# Bibliotecas usadas no curso "Trabalhando com Texto em Python I".
+# Instale com:  pip install -r requirements.txt
+# Depois baixe o modelo do spaCy:  python -m spacy download en_core_web_sm
+#
+# OBS.: os TESTES dos exercicios (pasta exercicios/) usam apenas a biblioteca
+# padrao do Python e NAO precisam de nada abaixo.
+
+spacy>=3.4
+pandas>=1.4
+scikit-learn>=1.0
+matplotlib>=3.5
+jupyterlab>=3.0

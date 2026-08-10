@@ -1,0 +1,200 @@
+% !TEX program = pdflatex
+% ============================================================================
+%  Unidade 0 - Preparando o ambiente
+%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
+%  COMPILAR COM:  pdflatex unidade0_preparando_ambiente.tex   (rodar 2x)
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{codebg}{HTML}{1E2430}
+\definecolor{codetext}{HTML}{E6E9EF}
+\definecolor{outframe}{HTML}{9AA4B8}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+\definecolor{inlink}{HTML}{5A34D6}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
+  pdftitle={Preparando o ambiente},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
+
+\lstset{extendedchars=true,breaklines=true,keepspaces=true,columns=fullflexible,
+  tabsize=4,showstringspaces=false,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1
+    {ç}{{\c c}}1 {—}{{---}}1}
+
+\lstdefinestyle{cmdstyle}{basicstyle=\ttfamily\small\color{codetext}}
+
+% caixa de comandos de terminal
+\newtcblisting{cmdbox}{
+  breakable, enhanced,
+  listing only, listing options={style=cmdstyle},
+  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
+  borderline west={3pt}{0pt}{cyan},
+  left=10pt,right=10pt,top=6pt,bottom=6pt,
+  title=\textbf{Terminal}, coltitle=black, colbacktitle=cyan,
+  fonttitle=\sffamily\bfseries\scriptsize,
+  before skip=10pt, after skip=12pt,
+}
+
+\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,colback=notec!6,colframe=notec,
+  coltitle=white,title={#1},fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,
+  arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  coltitle=white,title={#1},fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,
+  arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}[1][Objetivos]{enhanced,breakable,colback=accent!5,colframe=accent,
+  coltitle=white,title={#1},fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,
+  arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
+
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+
+\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\begin{document}
+
+\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
+  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
+  before skip=0pt, after skip=20pt]
+  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
+  {\Huge\bfseries Preparando o ambiente}\\[8pt]
+  {\large Trabalhando com Texto em Python I \ --- \ Unidade 0}\\[6pt]
+  {\normalsize Instale o Python e as bibliotecas, baixe o modelo e os dados, e rode os exemplos e exercícios.}
+\end{tcolorbox}
+
+\begin{objbox}
+Antes de começar as unidades, você precisa deixar o computador pronto. Ao final desta preparação, você terá:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
+  \item \textbf{Python 3} instalado e funcionando;
+  \item um \textbf{ambiente virtual} isolado para o curso;
+  \item as \textbf{bibliotecas} (spaCy, pandas, scikit-learn, matplotlib, Jupyter);
+  \item o \textbf{modelo de linguagem} do spaCy baixado;
+  \item os \textbf{dados} (corpus) na pasta certa;
+  \item os \textbf{exercícios} rodando com correção automática.
+\end{itemize}
+\end{objbox}
+
+\begin{tipbox}
+Faça esta preparação \textbf{uma vez}. Depois, sempre que for estudar, basta \textbf{ativar o ambiente virtual} (passo 2) e começar.
+\end{tipbox}
+
+\section{Python 3}
+O curso usa \textbf{Python 3.9 ou mais novo}. Verifique se já tem, no terminal:
+\begin{cmdbox}
+python3 --version
+\end{cmdbox}
+Se aparecer algo como @Python 3.11.x@, está pronto. Se não tiver Python, baixe em \href{https://www.python.org/downloads/}{python.org/downloads} (Windows/macOS) ou instale pelo gerenciador do seu sistema (no macOS, via \href{https://brew.sh}{Homebrew}: @brew install python@).
+
+\section{Ambiente virtual (venv)}
+Um \textbf{ambiente virtual} isola as bibliotecas do curso, sem bagunçar o resto do sistema. Crie um na pasta do curso:
+\begin{cmdbox}
+python3 -m venv .venv
+\end{cmdbox}
+E \textbf{ative-o} (você repete este passo toda vez que for estudar):
+\begin{cmdbox}
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+\end{cmdbox}
+Quando ativo, o nome @(.venv)@ aparece no início da linha do terminal. Para sair, use @deactivate@.
+
+\section{Instalar as bibliotecas}
+Com o ambiente \textbf{ativado}, atualize o @pip@ e instale tudo de uma vez:
+\begin{cmdbox}
+pip install --upgrade pip
+pip install -r requirements.txt
+\end{cmdbox}
+Se preferir instalar manualmente:
+\begin{cmdbox}
+pip install spacy pandas scikit-learn matplotlib jupyterlab
+\end{cmdbox}
+
+\section{Baixar o modelo de linguagem do spaCy}
+O spaCy separa a biblioteca do \textbf{modelo} treinado. As Unidades 2 e 3 usam o modelo \textbf{pequeno} de inglês; a Unidade 5 usa o \textbf{médio}:
+\begin{cmdbox}
+python -m spacy download en_core_web_sm
+python -m spacy download en_core_web_md
+\end{cmdbox}
+Teste se carregou:
+\begin{cmdbox}
+python -c "import spacy; nlp = spacy.load('en_core_web_sm'); print('spaCy OK')"
+\end{cmdbox}
+
+\section{Os dados (corpus)}
+Os exemplos usam alguns arquivos de texto (notícias) e uma planilha de comentários (o corpus \textbf{SOCC}). Coloque-os numa pasta chamada @data/@, ao lado dos seus notebooks:
+\begin{cmdbox}
+data/
+  NYT_1991-01-16-A15.txt
+  WP_1990-08-10-25A.txt
+  WP_1991-01-17-A1B.txt
+  socc_gnm_articles.csv
+\end{cmdbox}
+Esses arquivos vêm do material do curso de referência \textit{Applied Language Technology} --- repositório em \href{https://github.com/Applied-Language-Technology}{github.com/Applied-Language-Technology}. Baixe-os de lá e salve na pasta @data/@.
+
+\begin{notebox}
+Os caminhos no material (ex.: @open('data/NYT_1991-01-16-A15.txt')@) supõem que você está rodando o Python \textbf{na pasta que contém} @data/@.
+\end{notebox}
+
+\section{Rodar os exemplos}
+Cada unidade traz blocos de código para você experimentar. A forma mais confortável é o \textbf{Jupyter}:
+\begin{cmdbox}
+jupyter lab
+\end{cmdbox}
+Isso abre o Jupyter no navegador; crie um notebook novo e cole os blocos de código da unidade, executando célula por célula (@Shift + Enter@). Você também pode salvar o código em um arquivo @.py@ e rodar com @python3 arquivo.py@.
+
+\section{Rodar os exercícios (correção automática)}
+Cada unidade tem um conjunto de exercícios com \textbf{testes automáticos}, na pasta @exercicios/@. Edite o arquivo da unidade (ex.: @unidade1_exercicios.py@), substituindo cada @todo(...)@ pela sua solução, e rode:
+\begin{cmdbox}
+cd exercicios
+python3 -m unittest unidade1_test
+\end{cmdbox}
+Quando aparecer @OK@, você acertou todos. Enquanto houver @todo(...)@, o teste falha de propósito.
+
+\begin{tipbox}[Bom saber]
+Os testes dos exercícios usam \textbf{só a biblioteca padrão} do Python --- não precisam do spaCy nem do pandas. Assim, eles rodam em qualquer lugar, inclusive em corretores automáticos como o \textbf{Judge0}.
+\end{tipbox}
+
+\section*{Checklist final}
+Antes de ir para a Unidade 1, confirme:
+\begin{itemize}[label=$\square$,leftmargin=1.5em,itemsep=2pt,topsep=3pt]
+  \item @python3 --version@ mostra \textbf{3.9 ou mais novo}
+  \item o ambiente virtual está \textbf{ativado} (@(.venv)@ aparece no terminal)
+  \item @pip install -r requirements.txt@ rodou sem erros
+  \item @python -c "import spacy; spacy.load('en_core_web_sm')"@ imprime \textbf{spaCy OK}
+  \item a pasta @data/@ contém os arquivos do corpus
+  \item @python3 -m unittest unidade1_test@ roda (mesmo que os exercícios ainda falhem)
+\end{itemize}
+
+\vspace{4pt}
+Tudo certo? \textbf{Vá para a Unidade 1 --- Manipulando texto com Python.}
+
+\vspace{10pt}
+\noindent\rule{\linewidth}{0.4pt}\\[4pt]
+{\footnotesize Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+
+\end{document}
