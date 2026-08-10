@@ -1,729 +1,1192 @@
-% !TEX program = pdflatex
-% ============================================================================
-%  Unidade 5 - Gerenciando dados textuais com pandas
-%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
-%
-%  COMPILAR COM:  pdflatex unidade5_gerenciando_dados_pandas.tex   (rodar 2x)
-%
-%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
-%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry, listings,
-%    tcolorbox, titlesec, enumitem, hyperref, microtype, booktabs, colortbl, array
-% ============================================================================
-\documentclass[11pt,a4paper]{article}
-
-\usepackage[utf8]{inputenc}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  brazilian,
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{35,38,41}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.58,0.85,0.30}{\textbf{\colorbox[rgb]{0.30,0.12,0.14}{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.25,0.50,0.35}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.48,0.49,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{\textbf{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.99,0.74,0.29}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.64,0.20,0.25}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.60,1.00}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.56,0.27,0.68}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.77,0.36,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{\colorbox[rgb]{0.08,0.19,0.26}{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.96,0.31,0.31}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% ==========================================================================
+%  Cabecalho LaTeX do curso "Trabalhando com Texto em Python I"
+%  Injetado pelo pandoc (-H) ao gerar o .tex de cada unidade.
+% ==========================================================================
 \usepackage[T1]{fontenc}
-\usepackage[brazilian]{babel}
 \usepackage{lmodern}
 \usepackage[scaled=0.92]{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
-\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
 \usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{array}
-\usepackage{listings}
 \usepackage[most]{tcolorbox}
-\tcbuselibrary{listings,skins,breakable}
+\tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
-\usepackage{booktabs}
-\usepackage{colortbl}
-\usepackage{hyperref}
+\usepackage{enumitem}
 
-% -------------------------------------------------------------- paleta ------
+% -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
 \definecolor{cyan}{HTML}{00B4D8}
 \definecolor{subink}{HTML}{2B3242}
-\definecolor{codebg}{HTML}{1E2430}
-\definecolor{codetext}{HTML}{E6E9EF}
-\definecolor{ccomment}{HTML}{7FD18B}
-\definecolor{cstring}{HTML}{F0B866}
-\definecolor{ckw}{HTML}{C792EA}
-\definecolor{cbuiltin}{HTML}{82AAFF}
-\definecolor{outbg}{HTML}{F0F2F7}
-\definecolor{outtext}{HTML}{2F3646}
-\definecolor{outframe}{HTML}{9AA4B8}
 \definecolor{notec}{HTML}{3B82F6}
 \definecolor{tipc}{HTML}{10B981}
 \definecolor{warnc}{HTML}{F59E0B}
+
+% -------- emojis / simbolos unicode que podem aparecer no texto --------
+% simbolos com significado
+\newunicodechar{✅}{{\color{tipc}\checkmark}}
+\newunicodechar{✔}{{\color{tipc}\checkmark}}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↹}{\ensuremath{\hookrightarrow}}
+\newunicodechar{°}{\textdegree}
+\newunicodechar{·}{\textperiodcentered}
+\newunicodechar{´}{'}
+\newunicodechar{‑}{-}
+% emojis decorativos -> removidos no PDF
+\newunicodechar{💡}{}
+\newunicodechar{🚀}{}
+\newunicodechar{📝}{}
+\newunicodechar{⚠}{}
+\newunicodechar{🐍}{}
+\newunicodechar{🎉}{}
+\newunicodechar{🍕}{}
+\newunicodechar{👍}{}
+\newunicodechar{💋}{}
+\newunicodechar{😚}{}
+\newunicodechar{🚂}{}
+\newunicodechar{❤}{}
+
+% -------- caixas de callout (usadas pelo filtro callouts.lua) --------
+\newtcolorbox{notebox}{enhanced,breakable,colback=notec!6,colframe=notec,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}{enhanced,breakable,colback=warnc!8,colframe=warnc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}{enhanced,breakable,colback=accent!5,colframe=accent,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,
+  before skip=10pt,after skip=14pt}
+
+% -------- titulos coloridos --------
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{subink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{cyan}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.1ex}
+
+% codigo inline colorido
 \definecolor{inlink}{HTML}{5A34D6}
-\definecolor{headrow}{HTML}{EFE9FF}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlink}\oldtexttt{#1}}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Gerenciando dados textuais com pandas},
+  pdfauthor={CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia},
+  pdflang={pt-BR},
+  colorlinks=true,
+  linkcolor={accent},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={cyan},
+  pdfcreator={LaTeX via pandoc}}
 
-\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
-  pdftitle={Gerenciando dados textuais com pandas},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
-
-% --------------------------------------------------- estilo do codigo -------
-\lstset{
-  extendedchars=true,
-  breaklines=true,
-  breakatwhitespace=false,
-  keepspaces=true,
-  columns=fullflexible,
-  tabsize=4,
-  showstringspaces=false,
-  literate=%
-    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
-    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-    {ç}{{\c c}}1 {Ç}{{\c C}}1
-    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
-    {—}{{---}}1 {–}{{--}}1
-    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+\title{Gerenciando dados textuais com pandas}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
-
-\lstdefinestyle{pystyle}{
-  language=Python,
-  basicstyle=\ttfamily\small\color{codetext},
-  keywordstyle=\color{ckw}\bfseries,
-  keywordstyle=[2]\color{cbuiltin},
-  morekeywords=[2]{print,type,len,range,enumerate,list,append,extend,read_csv,DataFrame,apply,spacy,pd},
-  commentstyle=\color{ccomment}\itshape,
-  stringstyle=\color{cstring},
-}
-\lstdefinestyle{outstyle}{
-  basicstyle=\ttfamily\small\color{outtext},
-}
-
-% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
-\newtcblisting{pybox}{
-  breakable, enhanced,
-  listing only, listing options={style=pystyle},
-  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
-  borderline west={3pt}{0pt}{accent},
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-% caixa de saida (fundo claro)
-\newtcblisting{outbox}{
-  breakable, enhanced,
-  listing only, listing options={style=outstyle},
-  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-
-% ------------------------------------------------------ caixas de aviso -----
-\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
-
-% ------------------------------------------------------ titulos de secao ----
-\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
-  {\thesection.}{0.5em}{}
-\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
-  {\thesubsection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{6pt}
-\titlespacing*{\subsection}{0pt}{12pt}{4pt}
-
-% codigo em linha (verbatim, colorido) via atalho @...@
-\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
-
-\newcommand{\thd}[1]{\textbf{#1}}
+\makeatother
+\subtitle{Trabalhando com Texto em Python I · Unidade 5}
+\author{CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia}
+\date{2026}
 
 \begin{document}
+\maketitle
 
-% --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
-  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
-  before skip=0pt, after skip=20pt]
-  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
-  {\Huge\bfseries Gerenciando dados textuais com pandas}\\[8pt]
-  {\large Trabalhando com Texto em Python I \ --- \ Unidade 5}\\[6pt]
-  {\normalsize Importar, examinar, estender e salvar DataFrames; aplicar PLN a colunas.}\\[10pt]
-  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
-\end{tcolorbox}
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\subsubsection{Objetivos de
+aprendizagem}\label{objetivos-de-aprendizagem}
 
-\begin{objbox}
 Ao final desta unidade, você deverá saber:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item importar dados para um @DataFrame@ do pandas;
-  \item explorar dados armazenados em um @DataFrame@;
-  \item acrescentar (estender) dados a um @DataFrame@;
-  \item salvar os dados de um @DataFrame@.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{importar dados} para um \texttt{DataFrame} do pandas;
+\item
+  \textbf{explorar} dados armazenados em um \texttt{DataFrame};
+\item
+  \textbf{acrescentar} (estender) dados a um \texttt{DataFrame};
+\item
+  \textbf{salvar} os dados de um \texttt{DataFrame}.
 \end{itemize}
-\end{objbox}
 
-O \textbf{pandas} é uma biblioteca do Python para trabalhar com \textbf{dados tabulares}. Começamos importando-a --- usamos @as@ para controlar o nome do módulo; por convenção, o pandas é abreviado como @pd@:
+O \textbf{pandas} é uma biblioteca do Python para trabalhar com
+\textbf{dados tabulares}. Começamos importando‑a --- usamos \texttt{as}
+para controlar o nome do módulo importado; por convenção, o pandas é
+abreviado como \texttt{pd}:
 
-\begin{pybox}
-import pandas as pd
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\end{Highlighting}
+\end{Shaded}
 
-% =========================================================== 1 ==============
-\section{Importando dados para o pandas}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{A partir de um único arquivo}
-Formatos típicos para distribuir corpora incluem \textbf{CSV} (\textit{Comma-separated Values}), \textbf{JSON} e texto simples. O pandas oferece muitas funções de leitura --- dá até para importar planilhas do Excel! O exemplo carrega um recorte do \textit{SFU Opinion and Comments Corpus} (SOCC), com artigos de opinião do jornal canadense \textit{The Globe and Mail}. A função @read_csv()@ recebe o \textbf{caminho} do arquivo:
+\subsection{1. Importando dados para o
+pandas}\label{importando-dados-para-o-pandas}
 
-\begin{pybox}
-# Le o arquivo CSV e atribui a saida a variavel 'socc'
-socc = pd.read_csv('data/socc_gnm_articles.csv')
+\subsubsection{1.1 A partir de um único
+arquivo}\label{a-partir-de-um-uxfanico-arquivo}
 
-# Examina o tipo do objeto guardado em 'socc'
-type(socc)
-\end{pybox}
-\begin{outbox}
-pandas.core.frame.DataFrame
-\end{outbox}
+Formatos típicos para distribuir corpora incluem arquivos \textbf{CSV}
+(\emph{Comma‑separated Values}, valores separados por vírgula),
+\textbf{JSON} (\emph{JavaScript Object Notation}) e texto simples. O
+pandas oferece muitas funções para ler dados em vários formatos --- dá
+até para importar planilhas do Excel!
 
-O pandas devolve o conteúdo do CSV em um \textbf{\texttt{DataFrame}}, sua estrutura de dados nativa. O método @head()@ mostra as primeiras linhas:
+O exemplo a seguir carrega um recorte do \emph{SFU Opinion and Comments
+Corpus} (SOCC), que reúne artigos de opinião do jornal canadense
+\emph{The Globe and Mail}. Usamos a função \texttt{read\_csv()}, que
+recebe uma \emph{string} com o \textbf{caminho} do arquivo:
 
-\begin{pybox}
-# Imprime as primeiras cinco linhas do DataFrame
-socc.head(5)
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Le o arquivo CSV e atribui a saida a variavel \textquotesingle{}socc\textquotesingle{}}
+\NormalTok{socc }\OperatorTok{=}\NormalTok{ pd.read\_csv(}\StringTok{\textquotesingle{}data/socc\_gnm\_articles.csv\textquotesingle{}}\NormalTok{)}
 
-O @DataFrame@ tem forma \textbf{tabular}, com colunas (@article_id@, @title@, @author@, @article_text@\ldots) e um \textbf{índice} por linha (0, 1, 2, \ldots). Versão compacta (algumas colunas omitidas para caber):
+\CommentTok{\# Examina o tipo do objeto guardado em \textquotesingle{}socc\textquotesingle{}}
+\BuiltInTok{type}\NormalTok{(socc)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{center}\small
-\begin{tabular}{c c p{5.2cm} p{3cm} c}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{article\_id} & \thd{title} & \thd{author} & \thd{ntop\_level\_comments} \\
-\midrule
-0 & 26842506 & The Tories deserve another mandate\ldots & GLOBE EDITORIAL & 1378.0 \\
-1 & 26055892 & Harper hysteria a sign of closed liberal minds & Konrad Yakabuski & 455.0 \\
-2 & 6929035 & Too many first nations people live in a dream\ldots & Jeffrey Simpson & 433.0 \\
-3 & 19047636 & The Globe's editorial board endorses Tim Hudak\ldots & GLOBE EDITORIAL & 432.0 \\
-4 & 11672346 & Disgruntled Arab states look to strip Canada\ldots & Campbell Clark & 411.0 \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pandas.core.frame.DataFrame}
+\end{Highlighting}
+\end{Shaded}
 
-O acessador @.at[]@ inspeciona \textbf{um único item}. O valor da coluna @title@ no índice 123:
+O pandas faz todo o trabalho pesado e devolve o conteúdo do CSV em um
+\textbf{\texttt{DataFrame}}, a estrutura de dados nativa do pandas.
+Usamos o método \texttt{head()} para ver as primeiras cinco linhas:
 
-\begin{pybox}
-socc.at[123, 'title']
-\end{pybox}
-\begin{outbox}
-"How Toronto got a 'world-class,' gold-plated, half-billion-dollar empty train"
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime as primeiras cinco linhas do DataFrame}
+\NormalTok{socc.head(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{A partir de múltiplos arquivos}
-Outro cenário comum é ter \textbf{vários arquivos} de texto. Primeiro, coletamos os arquivos com a classe @Path@ (vista na Unidade 1):
+O \texttt{DataFrame} tem forma \textbf{tabular}, com colunas como
+\texttt{article\_id}, \texttt{title}, \texttt{author},
+\texttt{article\_text} etc., além de um \textbf{índice} para cada linha
+(0, 1, 2, \ldots). Uma versão compacta (algumas colunas omitidas para
+caber):
 
-\begin{pybox}
-# Importa a classe Path
-from pathlib import Path
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+índice
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+article\_id
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+author
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+ntop\_level\_comments
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 26842506 & The Tories deserve another mandate\ldots{} & GLOBE
+EDITORIAL & 1378.0 \\
+1 & 26055892 & Harper hysteria a sign of closed liberal minds & Konrad
+Yakabuski & 455.0 \\
+2 & 6929035 & Too many first nations people live in a dream\ldots{} &
+Jeffrey Simpson & 433.0 \\
+3 & 19047636 & The Globe's editorial board endorses Tim Hudak\ldots{} &
+GLOBE EDITORIAL & 432.0 \\
+4 & 11672346 & Disgruntled Arab states look to strip Canada\ldots{} &
+Campbell Clark & 411.0 \\
+\end{longtable}
+}
 
-# Cria um objeto Path que aponta para o diretorio com os dados
-corpus_dir = Path('data')
+O acessador \texttt{.at{[}{]}} permite inspecionar \textbf{um único
+item}. Vamos ver o valor da coluna \texttt{title} no índice 123:
 
-# Coleta todos os arquivos .txt no diretorio do corpus
-corpus_files = list(corpus_dir.glob('*.txt'))
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{socc.at[}\DecValTok{123}\NormalTok{, }\StringTok{\textquotesingle{}title\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-# Verifica os arquivos do corpus
-corpus_files
-\end{pybox}
-\begin{outbox}
-[PosixPath('data/WP_1990-08-10-25A.txt'),
- PosixPath('data/NYT_1991-01-16-A15.txt'),
- PosixPath('data/WP_1991-01-17-A1B.txt')]
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{"How Toronto got a \textquotesingle{}world{-}class,\textquotesingle{} gold{-}plated, half{-}billion{-}dollar empty train"}
+\end{Highlighting}
+\end{Shaded}
 
-Criamos um @DataFrame@ \textbf{vazio} definindo a forma de antemão: o número de linhas (@index@, com @range()@ de 0 até @len(corpus_files)@) e os nomes das colunas (@columns@):
+\subsubsection{1.2 A partir de múltiplos
+arquivos}\label{a-partir-de-muxfaltiplos-arquivos}
 
-\begin{pybox}
-# Cria um DataFrame e atribui o resultado a variavel 'df'
-df = pd.DataFrame(index=range(0, len(corpus_files)), columns=['filename', 'text'])
+Outro cenário comum é ter \textbf{vários arquivos} de texto para
+carregar. Primeiro, coletamos os arquivos com a classe \texttt{Path}
+(vista na Unidade 1):
 
-# Chama a variavel para inspecionar a saida
-df
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa a classe Path}
+\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
 
-\begin{center}\small
-\begin{tabular}{c l l}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
-\midrule
+\CommentTok{\# Cria um objeto Path que aponta para o diretorio com os dados}
+\NormalTok{corpus\_dir }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Coleta todos os arquivos .txt no diretorio do corpus}
+\NormalTok{corpus\_files }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(corpus\_dir.glob(}\StringTok{\textquotesingle{}*.txt\textquotesingle{}}\NormalTok{))}
+
+\CommentTok{\# Verifica os arquivos do corpus}
+\NormalTok{corpus\_files}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[PosixPath(\textquotesingle{}data/WP\_1990{-}08{-}10{-}25A.txt\textquotesingle{}),}
+\NormalTok{ PosixPath(\textquotesingle{}data/NYT\_1991{-}01{-}16{-}A15.txt\textquotesingle{}),}
+\NormalTok{ PosixPath(\textquotesingle{}data/WP\_1991{-}01{-}17{-}A1B.txt\textquotesingle{})]}
+\end{Highlighting}
+\end{Shaded}
+
+Para acomodar os dados, criamos um \texttt{DataFrame} \textbf{vazio} e
+definimos sua forma de antemão: o número de linhas (\texttt{index}) e os
+nomes das colunas (\texttt{columns}). Determinamos o número de linhas
+com a função \texttt{range()}, entre 0 e a quantidade de arquivos
+(obtida com \texttt{len()}). Para as colunas, passamos uma lista de
+\emph{strings} ao argumento \texttt{columns}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cria um DataFrame e atribui o resultado a variavel \textquotesingle{}df\textquotesingle{}}
+\NormalTok{df }\OperatorTok{=}\NormalTok{ pd.DataFrame(index}\OperatorTok{=}\BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{, }\BuiltInTok{len}\NormalTok{(corpus\_files)), columns}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}filename\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{])}
+
+\CommentTok{\# Chama a variavel para inspecionar a saida}
+\NormalTok{df}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ccc@{}}
+\toprule\noalign{}
+índice & filename & text \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & NaN & NaN \\
 1 & NaN & NaN \\
 2 & NaN & NaN \\
-\bottomrule
-\end{tabular}
-\end{center}
+\end{longtable}
+}
 
-Percorremos os @Path@s, lemos o conteúdo e o adicionamos com o acessador @.at@:
+Agora percorremos os objetos \texttt{Path} em \texttt{corpus\_files},
+lemos o conteúdo e o adicionamos ao \texttt{DataFrame} com o acessador
+\texttt{.at}:
 
-\begin{pybox}
-# Percorre os arquivos do corpus e conta cada volta com enumerate()
-for i, f in enumerate(corpus_files):
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre os arquivos do corpus e conta cada volta com enumerate()}
+\ControlFlowTok{for}\NormalTok{ i, f }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(corpus\_files):}
 
-    # Le o conteudo do arquivo
-    text = f.read_text(encoding='utf-8')
+    \CommentTok{\# Le o conteudo do arquivo}
+\NormalTok{    text }\OperatorTok{=}\NormalTok{ f.read\_text(encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
 
-    # Pega o nome do arquivo do objeto Path
-    filename = f.name
+    \CommentTok{\# Pega o nome do arquivo do objeto Path}
+\NormalTok{    filename }\OperatorTok{=}\NormalTok{ f.name}
 
-    # Atribui o texto do arquivo ao indice 'i' na coluna 'text' usando
-    # o acessador .at -- isso modifica o DataFrame "no lugar" (in place);
-    # nao e preciso atribuir o resultado a uma variavel
-    df.at[i, 'text'] = text
+    \CommentTok{\# Atribui o texto do arquivo ao indice \textquotesingle{}i\textquotesingle{} na coluna \textquotesingle{}text\textquotesingle{} usando}
+    \CommentTok{\# o acessador .at {-}{-} isso modifica o DataFrame "no lugar" (in place);}
+    \CommentTok{\# nao e preciso atribuir o resultado a uma variavel}
+\NormalTok{    df.at[i, }\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ text}
 
-    # Faz o mesmo com o nome do arquivo
-    df.at[i, 'filename'] = filename
-\end{pybox}
+    \CommentTok{\# Faz o mesmo com o nome do arquivo}
+\NormalTok{    df.at[i, }\StringTok{\textquotesingle{}filename\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ filename}
+\end{Highlighting}
+\end{Shaded}
 
-O @DataFrame@ fica populado com os nomes dos arquivos e o texto:
+O \texttt{DataFrame} fica populado com os nomes dos arquivos e o texto:
 
-\begin{center}\small
-\begin{tabular}{c l p{7cm}}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
-\midrule
-0 & WP\_1990-08-10-25A.txt & *We Don't Stand for Bullies': Diverse Voices\ldots \\
-1 & NYT\_1991-01-16-A15.txt & U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. I\ldots \\
-2 & WP\_1991-01-17-A1B.txt & U.S., Allies Launch Massive Air War Against T\ldots \\
-\bottomrule
-\end{tabular}
-\end{center}
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+índice
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+filename
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+text
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & WP\_1990-08-10-25A.txt & *We Don't Stand for Bullies': Diverse
+Voices\ldots{} \\
+1 & NYT\_1991-01-16-A15.txt & U.S. TAKING STEPS TO CURB TERRORISM:
+F.B.I. I\ldots{} \\
+2 & WP\_1991-01-17-A1B.txt & U.S., Allies Launch Massive Air War Against
+T\ldots{} \\
+\end{longtable}
+}
 
-% =========================================================== 2 ==============
-\section{Examinando DataFrames}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Os @DataFrame@s guardam muita informação, organizada em \textbf{colunas}, acessíveis pelo atributo @columns@:
+\subsection{2. Examinando DataFrames}\label{examinando-dataframes}
 
-\begin{pybox}
-# Recupera as colunas e seus nomes
-socc.columns
-\end{pybox}
-\begin{outbox}
-Index(['article_id', 'title', 'article_url', 'author', 'published_date',
-       'ncomments', 'ntop_level_comments', 'article_text'],
-      dtype='object')
-\end{outbox}
+Os \texttt{DataFrame}s guardam muita informação, geralmente organizada
+em \textbf{colunas}, acessíveis pelo atributo \texttt{columns}:
 
-Uma coluna inteira é acessada com colchetes @[]@ e o nome como \textit{string} --- como as chaves de um dicionário:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recupera as colunas e seus nomes}
+\NormalTok{socc.columns}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Recupera o conteudo da coluna 'author' no DataFrame 'socc'
-socc['author']
-\end{pybox}
-\begin{outbox}
-0         GLOBE EDITORIAL
-1        Konrad Yakabuski
-2         Jeffrey Simpson
-             ...
-10337      Adam Radwanski
-10338     GLOBE EDITORIAL
-Name: author, Length: 10339, dtype: object
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Index([\textquotesingle{}article\_id\textquotesingle{}, \textquotesingle{}title\textquotesingle{}, \textquotesingle{}article\_url\textquotesingle{}, \textquotesingle{}author\textquotesingle{}, \textquotesingle{}published\_date\textquotesingle{},}
+\NormalTok{       \textquotesingle{}ncomments\textquotesingle{}, \textquotesingle{}ntop\_level\_comments\textquotesingle{}, \textquotesingle{}article\_text\textquotesingle{}],}
+\NormalTok{      dtype=\textquotesingle{}object\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
 
-Cada coluna é, na verdade, um objeto \textbf{\texttt{Series}} --- pense no @DataFrame@ como a tabela inteira, cujas colunas são @Series@:
+Uma coluna inteira é acessada com colchetes \texttt{{[}{]}}, colocando o
+nome da coluna como \emph{string} --- como as chaves de um dicionário.
+Vamos recuperar a coluna \texttt{author}:
 
-\begin{pybox}
-# Verifica o tipo de 'socc' e de 'socc['author']'
-type(socc), type(socc['author'])
-\end{pybox}
-\begin{outbox}
-(pandas.core.frame.DataFrame, pandas.core.series.Series)
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recupera o conteudo da coluna \textquotesingle{}author\textquotesingle{} no DataFrame \textquotesingle{}socc\textquotesingle{}}
+\NormalTok{socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0         GLOBE EDITORIAL}
+\NormalTok{1        Konrad Yakabuski}
+\NormalTok{2         Jeffrey Simpson}
+\NormalTok{             ...}
+\NormalTok{10337      Adam Radwanski}
+\NormalTok{10338     GLOBE EDITORIAL}
+\NormalTok{Name: author, Length: 10339, dtype: object}
+\end{Highlighting}
+\end{Shaded}
+
+A coluna contém 10 339 objetos (veja \texttt{Length} e \texttt{dtype});
+os números à esquerda são o índice. Cada coluna de um \texttt{DataFrame}
+é, na verdade, um objeto \textbf{\texttt{Series}} --- pense no
+\texttt{DataFrame} como a tabela inteira, cujas colunas são
+\texttt{Series}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Verifica o tipo de \textquotesingle{}socc\textquotesingle{} e de \textquotesingle{}socc[\textquotesingle{}author\textquotesingle{}]\textquotesingle{}}
+\BuiltInTok{type}\NormalTok{(socc), }\BuiltInTok{type}\NormalTok{(socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(pandas.core.frame.DataFrame, pandas.core.series.Series)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{notebox}
-Ao imprimir um @DataFrame@ ou @Series@, o pandas \textbf{omite} tudo entre as cinco primeiras e as cinco últimas linhas por padrão --- conveniente com milhares de linhas.
+
+\textbf{Nota:} ao imprimir um \texttt{DataFrame} ou \texttt{Series}, o
+pandas \textbf{omite} tudo entre as cinco primeiras e as cinco últimas
+linhas por padrão --- conveniente ao trabalhar com milhares de linhas.
+
 \end{notebox}
 
-O método @value_counts()@ conta os valores únicos de uma @Series@:
+O método \texttt{value\_counts()} conta os valores únicos de uma
+\texttt{Series}:
 
-\begin{pybox}
-# Conta os valores unicos na coluna 'author'
-socc['author'].value_counts()
-\end{pybox}
-\begin{outbox}
-GLOBE EDITORIAL                   2712
-Jeffrey Simpson                    649
-Margaret Wente                     547
-                                  ...
-Jessica Scott-Reid                   1
-Kenneth Oppel                        1
-Name: author, Length: 1896, dtype: int64
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Conta os valores unicos na coluna \textquotesingle{}author\textquotesingle{}}
+\NormalTok{socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{].value\_counts()}
+\end{Highlighting}
+\end{Shaded}
 
-Podemos \textbf{visualizar} o resultado com o método @.plot()@, que usa a biblioteca \textbf{matplotlib}. Passamos @bar@ ao argumento @kind@ e @[:10]@ para os dez autores mais prolíficos:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{GLOBE EDITORIAL                   2712}
+\NormalTok{Jeffrey Simpson                    649}
+\NormalTok{Margaret Wente                     547}
+\NormalTok{                                  ...}
+\NormalTok{Jessica Scott{-}Reid                   1}
+\NormalTok{Kenneth Oppel                        1}
+\NormalTok{Name: author, Length: 1896, dtype: int64}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Magia do Jupyter que permite renderizar graficos do matplotlib no notebook!
-# Voce so precisa executar este comando uma vez.
-%matplotlib inline
+Sem surpresa, a equipe editorial do \emph{The Globe and Mail} assina a
+maioria dos editoriais! Podemos \textbf{visualizar} o resultado chamando
+o método \texttt{.plot()}, que usa a biblioteca \textbf{matplotlib}.
+Passamos a \emph{string} \texttt{bar} ao argumento \texttt{kind} para um
+gráfico de barras, e \texttt{{[}:10{]}} para os dez autores mais
+prolíficos:
 
-# Conta os valores da coluna 'author' e limita ao top-10 antes de plotar.
-socc['author'].value_counts()[:10].plot(kind='bar')
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Magia do Jupyter que permite renderizar graficos do matplotlib no notebook!}
+\CommentTok{\# Voce so precisa executar este comando uma vez.}
+\OperatorTok{\%}\NormalTok{matplotlib inline}
+
+\CommentTok{\# Conta os valores da coluna \textquotesingle{}author\textquotesingle{} e limita ao top{-}10 antes de plotar.}
+\NormalTok{socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{].value\_counts()[:}\DecValTok{10}\NormalTok{].plot(kind}\OperatorTok{=}\StringTok{\textquotesingle{}bar\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{tipbox}
-O @.plot()@ gera uma \textbf{imagem} (gráfico de barras) exibida no notebook; a saída de texto é apenas @<AxesSubplot: >@. Para outros tipos, mude @kind@ (ex.: @'line'@, @'hist'@, @'pie'@).
+
+\textbf{Dica:} o \texttt{.plot()} gera uma \textbf{imagem} (gráfico de
+barras) exibida no notebook; a saída de texto é apenas
+\texttt{\textless{}AxesSubplot:\ \textgreater{}}. Para outros tipos de
+gráfico, mude o argumento \texttt{kind} (ex.:
+\texttt{\textquotesingle{}line\textquotesingle{}},
+\texttt{\textquotesingle{}hist\textquotesingle{}},
+\texttt{\textquotesingle{}pie\textquotesingle{}}).
+
 \end{tipbox}
 
-Para colunas \textbf{numéricas}, o método @describe()@ dá estatísticas descritivas:
+Para colunas \textbf{numéricas}, o método \texttt{describe()} dá
+estatísticas descritivas básicas:
 
-\begin{pybox}
-# Estatisticas descritivas basicas da coluna 'ntop_level_comments'
-socc['ntop_level_comments'].describe()
-\end{pybox}
-\begin{outbox}
-count    10339.000000
-mean        26.384273
-std         39.786923
-min          0.000000
-25%          1.000000
-50%         14.000000
-75%         35.000000
-max       1378.000000
-Name: ntop_level_comments, dtype: float64
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Estatisticas descritivas basicas da coluna \textquotesingle{}ntop\_level\_comments\textquotesingle{}}
+\NormalTok{socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{].describe()}
+\end{Highlighting}
+\end{Shaded}
 
-Lendo a saída: 10\,339 linhas; média (@mean@) $\approx 26$ comentários, com forte variação (desvio-padrão @std@ $\approx 40$); mínimo (@min@) 0; primeiro quartil (@25%@) $= 1$; mediana (@50%@) $= 14$; terceiro quartil (@75%@) $= 35$; máximo (@max@) $= 1\,378$.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{count    10339.000000}
+\NormalTok{mean        26.384273}
+\NormalTok{std         39.786923}
+\NormalTok{min          0.000000}
+\NormalTok{25\%          1.000000}
+\NormalTok{50\%         14.000000}
+\NormalTok{75\%         35.000000}
+\NormalTok{max       1378.000000}
+\NormalTok{Name: ntop\_level\_comments, dtype: float64}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Filtrando linhas com \textnormal{\texttt{.loc}}}
-Como achar os artigos com \textbf{zero} comentários? Usamos @.loc@ para selecionar linhas por valor. Como @=@ é reservado para atribuição, a comparação ``é igual a'' usa \textbf{dois} sinais (@==@):
+Lendo a saída: há 10 339 linhas; a média (\texttt{mean}) de comentários
+por editorial é ≈ 26, mas com forte variação (desvio‑padrão \texttt{std}
+de quase 40). O mínimo (\texttt{min}) é 0 (alguns editoriais não têm
+comentários). O primeiro quartil (\texttt{25\%}) mostra que 25\% dos
+dados têm 1 comentário ou menos; a mediana (\texttt{50\%}) é 14; o
+terceiro quartil (\texttt{75\%}) é 35; e o mais comentado (\texttt{max})
+tem 1 378 comentários.
 
-\begin{pybox}
-# Pega as linhas sem comentarios de nivel superior
-socc.loc[socc['ntop_level_comments'] == 0]
-\end{pybox}
-\begin{outbox}
-[... 2542 rows x 8 columns ...]
-\end{outbox}
+\subsubsection{\texorpdfstring{2.1 Filtrando linhas com
+\texttt{.loc}}{2.1 Filtrando linhas com .loc}}\label{filtrando-linhas-com-.loc}
 
-Retorna 2\,542 linhas. Para visões mais complexas, combinamos critérios com @&@ (``E'' lógico) --- cada critério entre \textbf{parênteses} @()@:
+Como encontrar os artigos com \textbf{zero} comentários? Usamos o
+acessador \texttt{.loc} para selecionar linhas com base em seus valores.
+Como \texttt{=} é reservado para atribuição, a comparação ``é igual a''
+usa \textbf{dois} sinais (\texttt{==}):
 
-\begin{pybox}
-# Numero de comentarios de nivel superior para o autor Hayden King
-socc.loc[(socc['ntop_level_comments'] == 0) & (socc['author'] == 'Hayden King')]
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Pega as linhas sem comentarios de nivel superior}
+\NormalTok{socc.loc[socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-Retorna apenas a linha de índice 7797 --- o único artigo dele sem comentários.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[... 2542 rows x 8 columns ...]}
+\end{Highlighting}
+\end{Shaded}
 
-% =========================================================== 3 ==============
-\section{Estendendo DataFrames}
+Isso retorna 2 542 linhas em que \texttt{ntop\_level\_comments} é zero.
+Para visões mais complexas, combinamos critérios com o operador
+\textbf{\texttt{\&}} (``E'' lógico) --- cada critério deve ficar entre
+\textbf{parênteses} \texttt{()}. Vamos verificar se o primeiro autor do
+resultado (Hayden King) escreveu outros artigos com zero comentários:
 
-É fácil \textbf{acrescentar} informação. Um cenário comum: carregar dados, analisar e guardar os resultados no mesmo @DataFrame@. Adicionamos uma coluna vazia com @[]@ e o tipo @None@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Numero de comentarios de nivel superior para o autor Hayden King}
+\NormalTok{socc.loc[(socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \StringTok{\textquotesingle{}Hayden King\textquotesingle{}}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Adiciona uma nova coluna chamada 'comments_ratio' ao DataFrame
-socc['comments_ratio'] = None
-\end{pybox}
+Isso retorna apenas a linha de índice 7797 --- o único artigo dele sem
+comentários.
 
-Preenchemos a coluna com a proporção de comentários de nível superior sobre o total --- dividindo uma coluna pela outra:
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\begin{pybox}
-# Preenche a coluna 'comments_ratio' com a razao entre comentarios de
-# nivel superior e o total de comentarios
-socc['comments_ratio'] = socc['ntop_level_comments'] / socc['ncomments']
-\end{pybox}
+\subsection{3. Estendendo DataFrames}\label{estendendo-dataframes}
 
-Uma amostra do resultado:
+É fácil \textbf{acrescentar} informação a um \texttt{DataFrame}. Um
+cenário comum: carregar dados de um arquivo, fazer análises e guardar os
+resultados no mesmo \texttt{DataFrame}. Adicionamos uma coluna vazia com
+o acessador de coluna \texttt{{[}{]}} e o tipo \texttt{None}:
 
-\begin{center}\small
-\begin{tabular}{c c c c}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{ntop\_level\_comments} & \thd{ncomments} & \thd{comments\_ratio} \\
-\midrule
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Adiciona uma nova coluna chamada \textquotesingle{}comments\_ratio\textquotesingle{} ao DataFrame}
+\NormalTok{socc[}\StringTok{\textquotesingle{}comments\_ratio\textquotesingle{}}\NormalTok{] }\OperatorTok{=} \VariableTok{None}
+\end{Highlighting}
+\end{Shaded}
+
+Vamos \textbf{preencher} a coluna calculando a proporção de comentários
+de nível superior (comentários sobre o artigo) em relação a todos os
+comentários --- basta dividir uma coluna pela outra:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Preenche a coluna \textquotesingle{}comments\_ratio\textquotesingle{} com a razao entre comentarios de}
+\CommentTok{\# nivel superior e o total de comentarios}
+\NormalTok{socc[}\StringTok{\textquotesingle{}comments\_ratio\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{/}\NormalTok{ socc[}\StringTok{\textquotesingle{}ncomments\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+Os acessadores de coluna podem ser usados de forma muito flexível para
+acessar e manipular dados, como nesta divisão. Uma amostra do resultado:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}cccc@{}}
+\toprule\noalign{}
+índice & ntop\_level\_comments & ncomments & comments\_ratio \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 1378.0 & 2187.0 & 0.630087 \\
 1 & 455.0 & 1103.0 & 0.412511 \\
 2 & 433.0 & 1164.0 & 0.371993 \\
-\bottomrule
-\end{tabular}
-\end{center}
+\end{longtable}
+}
 
-Mas alguns artigos \textbf{não} receberam comentários --- nesses casos, dividiríamos zero por zero. Para essas linhas, @comments_ratio@ fica marcada como \textbf{\texttt{NaN}} (\textit{not a number}). O pandas \textbf{ignora automaticamente} os @NaN@ nos cálculos, como mostra o @describe()@:
+Mas alguns artigos \textbf{não} receberam comentários --- nesses casos,
+teríamos dividido zero por zero:
 
-\begin{pybox}
-# Estatisticas descritivas da coluna 'comments_ratio'
-socc['comments_ratio'].describe()
-\end{pybox}
-\begin{outbox}
-count    7797.000000
-mean        0.537057
-std         0.205398
-min         0.083333
-25%         0.384615
-50%         0.485714
-75%         0.647059
-max         1.000000
-Name: comments_ratio, dtype: float64
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime os cinco primeiros artigos sem comentarios de nivel superior}
+\NormalTok{socc.loc[socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{].head(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-Note o @count@: só 7\,797 itens (dos 10\,339) entraram no cálculo --- os @NaN@ foram ignorados.
+Para essas linhas, \texttt{comments\_ratio} fica marcada como
+\textbf{\texttt{NaN}} (\emph{not a number}, ``não é um número''): a
+divisão foi feita, mas o resultado não é um número. O pandas
+\textbf{ignora automaticamente} os \texttt{NaN} nos cálculos, como
+mostra o \texttt{describe()}:
 
-\subsection{Aplicando processamento de linguagem a uma coluna}
-E se quiséssemos fazer PLN e guardar os resultados? Selecionamos artigos no primeiro quartil de @comments_ratio@ \textbf{e} com mais de 200 comentários, usando @&@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Estatisticas descritivas da coluna \textquotesingle{}comments\_ratio\textquotesingle{}}
+\NormalTok{socc[}\StringTok{\textquotesingle{}comments\_ratio\textquotesingle{}}\NormalTok{].describe()}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Filtra o DataFrame por artigos muito comentados e atribui o resultado a 'talk'
-talk = socc.loc[(socc['comments_ratio'] <= 0.384) & (socc['ncomments'] >= 200)]
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{count    7797.000000}
+\NormalTok{mean        0.537057}
+\NormalTok{std         0.205398}
+\NormalTok{min         0.083333}
+\NormalTok{25\%         0.384615}
+\NormalTok{50\%         0.485714}
+\NormalTok{75\%         0.647059}
+\NormalTok{max         1.000000}
+\NormalTok{Name: comments\_ratio, dtype: float64}
+\end{Highlighting}
+\end{Shaded}
+
+Note a diferença no \texttt{count}: só 7 797 itens (dos 10 339) entraram
+no cálculo --- os \texttt{NaN} foram ignorados.
+
+\subsubsection{3.1 Aplicando processamento de linguagem a uma
+coluna}\label{aplicando-processamento-de-linguagem-a-uma-coluna}
+
+E se quiséssemos fazer PLN e guardar os resultados no
+\texttt{DataFrame}? Vamos selecionar artigos no primeiro quartil de
+\texttt{comments\_ratio} \textbf{e} com mais de 200 comentários
+(\texttt{ncomments}), usando \texttt{\&}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Filtra o DataFrame por artigos muito comentados e atribui o resultado a \textquotesingle{}talk\textquotesingle{}}
+\NormalTok{talk }\OperatorTok{=}\NormalTok{ socc.loc[(socc[}\StringTok{\textquotesingle{}comments\_ratio\textquotesingle{}}\NormalTok{] }\OperatorTok{\textless{}=} \FloatTok{0.384}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (socc[}\StringTok{\textquotesingle{}ncomments\textquotesingle{}}\NormalTok{] }\OperatorTok{\textgreater{}=} \DecValTok{200}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
 
 Importamos o spaCy e carregamos um modelo \textbf{médio} para o inglês:
 
-\begin{pybox}
-# Importa a biblioteca spaCy
-import spacy
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa a biblioteca spaCy}
+\ImportTok{import}\NormalTok{ spacy}
 
-# Note que agora carregamos um modelo de tamanho medio!
-nlp = spacy.load('en_core_web_md')
-\end{pybox}
+\CommentTok{\# Note que agora carregamos um modelo de tamanho medio!}
+\NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_md\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-Ao criar uma coluna nova em @talk@, o pandas emite um \textbf{\texttt{SettingWithCopyWarning}}, porque @talk@ é apenas um recorte (\textit{slice}) do @DataFrame@ original. A solução é criar uma \textbf{cópia profunda} com @.copy()@:
+Ao criar uma coluna nova em \texttt{talk}, o pandas emite um
+\textbf{\texttt{SettingWithCopyWarning}}, porque \texttt{talk} é apenas
+um recorte (\emph{slice}) do \texttt{DataFrame} original. Atribuir uma
+coluna a apenas uma parte quebraria a estrutura tabular. A solução é
+criar uma \textbf{cópia profunda} (\emph{deep copy}) do recorte com o
+método \texttt{.copy()}:
 
-\begin{pybox}
-# Cria uma copia profunda do DataFrame
-talk = talk.copy()
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cria uma copia profunda do DataFrame}
+\NormalTok{talk }\OperatorTok{=}\NormalTok{ talk.copy()}
 
-# Cria uma nova coluna chamada 'processed_title'
-talk['processed_title'] = None
-\end{pybox}
+\CommentTok{\# Cria uma nova coluna chamada \textquotesingle{}processed\_title\textquotesingle{}}
+\NormalTok{talk[}\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{] }\OperatorTok{=} \VariableTok{None}
+\end{Highlighting}
+\end{Shaded}
 
-Para processar os títulos, usamos @apply()@, que \textbf{aplica} o que recebe a cada linha da coluna. Passamos o modelo @nlp@:
+Para processar os títulos, usamos o método \texttt{apply()} de um
+\texttt{DataFrame}, que \textbf{aplica} o que recebe a cada linha da
+coluna. Passamos o modelo \texttt{nlp} --- ou seja, aplicamos o modelo
+aos títulos (que são \emph{strings}) da coluna \texttt{title}:
 
-\begin{pybox}
-# Aplica o modelo de linguagem 'nlp' ao conteudo da coluna 'title'
-talk['processed_title'] = talk['title'].apply(nlp)
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Aplica o modelo de linguagem \textquotesingle{}nlp\textquotesingle{} ao conteudo da coluna \textquotesingle{}title\textquotesingle{}}
+\NormalTok{talk[}\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ talk[}\StringTok{\textquotesingle{}title\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(nlp)}
+\end{Highlighting}
+\end{Shaded}
 
-Cada célula da coluna @processed_title@ agora contém um objeto \textbf{\texttt{Doc}} do spaCy:
+Cada célula da coluna \texttt{processed\_title} agora contém um objeto
+\textbf{\texttt{Doc}} do spaCy:
 
-\begin{pybox}
-# Pega o valor da coluna 'processed_title' na linha de indice 2
-talk.at[2, 'processed_title']
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Pega o valor da coluna \textquotesingle{}processed\_title\textquotesingle{} na linha de indice 2}
+\NormalTok{talk.at[}\DecValTok{2}\NormalTok{, }\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{]}
 
-# Verifica o tipo do objeto contido
-type(talk.at[2, 'processed_title'])
-\end{pybox}
-\begin{outbox}
-Too many first nations people live in a dream palace
-spacy.tokens.doc.Doc
-\end{outbox}
+\CommentTok{\# Verifica o tipo do objeto contido}
+\BuiltInTok{type}\NormalTok{(talk.at[}\DecValTok{2}\NormalTok{, }\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Definindo a própria função e aplicando com \textnormal{\texttt{apply()}}}
-Vamos definir uma função para buscar os \textbf{lemas de cada substantivo} do título. Funções são definidas com @def@, seguido do nome e dos parâmetros entre parênteses:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Too many first nations people live in a dream palace}
+\NormalTok{spacy.tokens.doc.Doc}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Define uma funcao 'get_nouns' que recebe um unico objeto como entrada.
-# Referimo-nos a essa entrada pela variavel 'nlp_text'.
-def get_nouns(nlp_text):
+\subsubsection{\texorpdfstring{3.2 Definindo a própria função e
+aplicando com
+\texttt{apply()}}{3.2 Definindo a própria função e aplicando com apply()}}\label{definindo-a-pruxf3pria-funuxe7uxe3o-e-aplicando-com-apply}
 
-    # Primeiro garantimos que a entrada e do tipo correto,
-    # usando 'assert' para checar o tipo
-    assert type(nlp_text) == spacy.tokens.doc.Doc
+Vamos definir nossa própria função para buscar os \textbf{lemas de cada
+substantivo} do título. Funções em Python são definidas com
+\texttt{def}, seguido do nome e dos parâmetros entre parênteses:
 
-    # Prepara uma lista vazia para os lemas
-    lemmas = []
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define uma funcao \textquotesingle{}get\_nouns\textquotesingle{} que recebe um unico objeto como entrada.}
+\CommentTok{\# Referimo{-}nos a essa entrada pela variavel \textquotesingle{}nlp\_text\textquotesingle{}.}
+\KeywordTok{def}\NormalTok{ get\_nouns(nlp\_text):}
 
-    # Percorre o objeto Doc
-    for token in nlp_text:
+    \CommentTok{\# Primeiro garantimos que a entrada e do tipo correto,}
+    \CommentTok{\# usando \textquotesingle{}assert\textquotesingle{} para checar o tipo}
+    \ControlFlowTok{assert} \BuiltInTok{type}\NormalTok{(nlp\_text) }\OperatorTok{==}\NormalTok{ spacy.tokens.doc.Doc}
 
-        # Se a classe gramatical detalhada do token for substantivo (NN)
-        if token.tag_ == 'NN':
+    \CommentTok{\# Prepara uma lista vazia para os lemas}
+\NormalTok{    lemmas }\OperatorTok{=}\NormalTok{ []}
 
-            # Acrescenta o lema do token a lista de lemas
-            lemmas.append(token.lemma_)
+    \CommentTok{\# Percorre o objeto Doc}
+    \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ nlp\_text:}
 
-    # Ao fim do laco, retorna a lista de lemas
-    return lemmas
-\end{pybox}
+        \CommentTok{\# Se a classe gramatical detalhada do token for substantivo (NN)}
+        \ControlFlowTok{if}\NormalTok{ token.tag\_ }\OperatorTok{==} \StringTok{\textquotesingle{}NN\textquotesingle{}}\NormalTok{:}
 
-Aplicamos com @apply()@, criando a coluna @nouns@ automaticamente pela atribuição:
+            \CommentTok{\# Acrescenta o lema do token a lista de lemas}
+\NormalTok{            lemmas.append(token.lemma\_)}
 
-\begin{pybox}
-# Aplica a funcao 'get_nouns' a coluna 'processed_title'
-talk['nouns'] = talk['processed_title'].apply(get_nouns)
-\end{pybox}
+    \CommentTok{\# Ao fim do laco, retorna a lista de lemas}
+    \ControlFlowTok{return}\NormalTok{ lemmas}
+\end{Highlighting}
+\end{Shaded}
+
+Aplicamos a função com \texttt{apply()}, criando a coluna \texttt{nouns}
+automaticamente pela atribuição:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Aplica a funcao \textquotesingle{}get\_nouns\textquotesingle{} a coluna \textquotesingle{}processed\_title\textquotesingle{}}
+\NormalTok{talk[}\StringTok{\textquotesingle{}nouns\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ talk[}\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(get\_nouns)}
+\end{Highlighting}
+\end{Shaded}
 
 Uma amostra dos títulos processados e seus substantivos:
 
-\begin{center}\small
-\begin{tabular}{c p{7.5cm} l}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{title} & \thd{nouns} \\
-\midrule
-2 & Too many first nations people live in a dream\ldots & [dream, palace] \\
-5 & Fifty years in Canada, and now I feel like a s\ldots & [class, citizen] \\
-8 & A nation of \$100,000 firefighters & [nation] \\
-\bottomrule
-\end{tabular}
-\end{center}
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+índice
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+nouns
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & Too many first nations people live in a dream\ldots{} & {[}dream,
+palace{]} \\
+5 & Fifty years in Canada, and now I feel like a s\ldots{} & {[}class,
+citizen{]} \\
+8 & A nation of \$100,000 firefighters & {[}nation{]} \\
+\end{longtable}
+}
 
 \begin{notebox}
-Não é necessário criar uma coluna vazia antes --- o pandas cria a coluna nova automaticamente na atribuição, como em @talk['nouns']@.
+
+\textbf{Nota:} não é necessário criar uma coluna vazia antes --- o
+pandas cria a coluna nova automaticamente na atribuição, como em
+\texttt{talk{[}\textquotesingle{}nouns\textquotesingle{}{]}}.
+
 \end{notebox}
 
-\subsection{Extraindo dados para estruturas nativas do Python}
-O método @tolist()@ extrai o conteúdo de uma @Series@ para uma \textbf{lista}:
+\subsubsection{3.3 Extraindo dados para estruturas nativas do
+Python}\label{extraindo-dados-para-estruturas-nativas-do-python}
 
-\begin{pybox}
-# Converte a pandas Series em uma lista
-noun_list = talk['nouns'].tolist()
+O método \texttt{tolist()} extrai o conteúdo de uma \texttt{Series} para
+uma \textbf{lista}:
 
-# Mostra os dez primeiros
-noun_list[:10]
-\end{pybox}
-\begin{outbox}
-[['dream', 'palace'], ['agency'], ['class', 'citizen'], ['right'],
- ['nation'], [], ['reform'], ['leader', 'parade'], ['pm'],
- ['government', 'monopoly']]
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Converte a pandas Series em uma lista}
+\NormalTok{noun\_list }\OperatorTok{=}\NormalTok{ talk[}\StringTok{\textquotesingle{}nouns\textquotesingle{}}\NormalTok{].tolist()}
 
-Temos uma \textbf{lista de listas}. Vamos ``achatar'' tudo em uma única lista @final_list@ com @extend()@:
+\CommentTok{\# Mostra os dez primeiros}
+\NormalTok{noun\_list[:}\DecValTok{10}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Prepara a lista vazia
-final_list = []
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[[\textquotesingle{}dream\textquotesingle{}, \textquotesingle{}palace\textquotesingle{}], [\textquotesingle{}agency\textquotesingle{}], [\textquotesingle{}class\textquotesingle{}, \textquotesingle{}citizen\textquotesingle{}], [\textquotesingle{}right\textquotesingle{}],}
+\NormalTok{ [\textquotesingle{}nation\textquotesingle{}], [], [\textquotesingle{}reform\textquotesingle{}], [\textquotesingle{}leader\textquotesingle{}, \textquotesingle{}parade\textquotesingle{}], [\textquotesingle{}pm\textquotesingle{}],}
+\NormalTok{ [\textquotesingle{}government\textquotesingle{}, \textquotesingle{}monopoly\textquotesingle{}]]}
+\end{Highlighting}
+\end{Shaded}
 
-# Percorre cada lista dentro da lista de listas
-for nlist in noun_list:
+Temos uma \textbf{lista de listas} (cada linha da coluna \texttt{nouns}
+é uma lista). Vamos ``achatar'' tudo em uma única lista
+\texttt{final\_list} com o método \texttt{extend()}:
 
-    # Estende a lista final com a lista atual
-    final_list.extend(nlist)
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Prepara a lista vazia}
+\NormalTok{final\_list }\OperatorTok{=}\NormalTok{ []}
 
-# Verifica o tamanho da lista
-len(final_list)
-\end{pybox}
-\begin{outbox}
-884
-\end{outbox}
+\CommentTok{\# Percorre cada lista dentro da lista de listas}
+\ControlFlowTok{for}\NormalTok{ nlist }\KeywordTok{in}\NormalTok{ noun\_list:}
 
-Para plotar os 10 substantivos mais frequentes, convertemos em @Series@, contamos com @value_counts()@ e plotamos:
+    \CommentTok{\# Estende a lista final com a lista atual}
+\NormalTok{    final\_list.extend(nlist)}
 
-\begin{pybox}
-# Converte a lista em uma pandas Series, conta os substantivos unicos com
-# value_counts(), pega os 10 mais frequentes [:10] e plota em barras.
-pd.Series(final_list).value_counts()[:10].plot(kind='bar')
-\end{pybox}
+\CommentTok{\# Verifica o tamanho da lista}
+\BuiltInTok{len}\NormalTok{(final\_list)}
+\end{Highlighting}
+\end{Shaded}
 
-% =========================================================== 4 ==============
-\section{Salvando DataFrames}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{884}
+\end{Highlighting}
+\end{Shaded}
 
-@DataFrame@s podem ser salvos como objetos \textbf{serializados} (\textit{pickled}) com o método @to_pickle()@, que recebe o caminho do arquivo:
+Para plotar os 10 substantivos mais frequentes, convertemos
+\texttt{final\_list} em uma \texttt{Series}, contamos com
+\texttt{value\_counts()} e plotamos:
 
-\begin{pybox}
-# Grava o DataFrame em disco usando pickle
-df.to_pickle('data/pickled_df.pkl')
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Converte a lista em uma pandas Series, conta os substantivos unicos com}
+\CommentTok{\# value\_counts(), pega os 10 mais frequentes [:10] e plota em barras.}
+\NormalTok{pd.Series(final\_list).value\_counts()[:}\DecValTok{10}\NormalTok{].plot(kind}\OperatorTok{=}\StringTok{\textquotesingle{}bar\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{warnbox}[Segurança (importante no CiberExt)]
-O formato \textit{pickle} serializa objetos Python arbitrários e, ao ser \textbf{carregado}, pode \textbf{executar código arbitrário}. \textbf{Nunca} faça @read_pickle()@ (nem @pickle.load@, @joblib.load@, @numpy@ com @allow_pickle=True@ etc.) em arquivos de \textbf{fontes não confiáveis} --- um @.pkl@ malicioso compromete a máquina. Use \textit{pickle} só com dados que \textbf{você mesmo} gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não executam código, como \textbf{CSV}, \textbf{JSON} ou \textbf{Parquet}.
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Salvando DataFrames}\label{salvando-dataframes}
+
+\texttt{DataFrame}s podem ser salvos como objetos \textbf{serializados}
+(\emph{pickled}) com o método \texttt{to\_pickle()}, que recebe o
+caminho do arquivo. Vamos salvar o \texttt{df} com os três artigos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Grava o DataFrame em disco usando pickle}
+\NormalTok{df.to\_pickle(}\StringTok{\textquotesingle{}data/pickled\_df.pkl\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{warnbox}
+
+\textbf{Segurança (importante no CiberExt):} o formato \emph{pickle}
+serializa objetos Python arbitrários e, ao ser \textbf{carregado}, pode
+\textbf{executar código arbitrário}. \textbf{Nunca} faça
+\texttt{read\_pickle()} (nem \texttt{pickle.load}, \texttt{joblib.load},
+\texttt{numpy} com \texttt{allow\_pickle=True} etc.) em arquivos de
+\textbf{fontes não confiáveis} --- um \texttt{.pkl} malicioso compromete
+a máquina. Use \emph{pickle} apenas com dados que \textbf{você mesmo}
+gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não
+executam código, como \textbf{CSV}, \textbf{JSON} ou \textbf{Parquet}
+(\texttt{to\_csv}/\texttt{read\_csv},
+\texttt{to\_json}/\texttt{read\_json},
+\texttt{to\_parquet}/\texttt{read\_parquet}).
+
 \end{warnbox}
 
-Verificamos lendo de volta com @read_pickle()@:
+Verificamos lendo de volta com \texttt{read\_pickle()}:
 
-\begin{pybox}
-# Le o DataFrame serializado e atribui o resultado a 'df_2'
-df_2 = pd.read_pickle('data/pickled_df.pkl')
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Le o DataFrame serializado e atribui o resultado a \textquotesingle{}df\_2\textquotesingle{}}
+\NormalTok{df\_2 }\OperatorTok{=}\NormalTok{ pd.read\_pickle(}\StringTok{\textquotesingle{}data/pickled\_df.pkl\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-Comparando os dois @DataFrame@s com @==@, obtemos um booleano por célula:
+Comparando os dois \texttt{DataFrame}s com \texttt{==}, obtemos um valor
+booleano (\texttt{True}/\texttt{False}) para cada célula:
 
-\begin{pybox}
-# Compara os DataFrames 'df' e 'df_2'
-df == df_2
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compara os DataFrames \textquotesingle{}df\textquotesingle{} e \textquotesingle{}df\_2\textquotesingle{}}
+\NormalTok{df }\OperatorTok{==}\NormalTok{ df\_2}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{center}\small
-\begin{tabular}{c c c}
-\toprule
-\rowcolor{headrow}\thd{índice} & \thd{filename} & \thd{text} \\
-\midrule
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ccc@{}}
+\toprule\noalign{}
+índice & filename & text \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & True & True \\
 1 & True & True \\
 2 & True & True \\
-\bottomrule
-\end{tabular}
-\end{center}
+\end{longtable}
+}
 
-Tudo @True@ --- os dados foram salvos e recarregados com sucesso.
+Tudo \texttt{True} --- os dados foram salvos e recarregados com sucesso.
 
-% ======================================================= quiz ==============
-\section*{Quiz}
-\addcontentsline{toc}{section}{Quiz}
-Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-{\bfseries 1. Por convenção, o pandas é importado com qual apelido?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @pd@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @pandas@
-  \item @dt@
+\subsection{Quiz}\label{quiz}
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+\textbf{1. Por convenção, o pandas é importado com qual apelido?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{pd} ✅
+\item
+  \texttt{pandas}
+\item
+  \texttt{dt}
 \end{enumerate}
 
-{\bfseries 2. Cada coluna de um DataFrame é, na verdade, um objeto:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @Series@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @DataFrame@
-  \item @list@
+\textbf{2. Cada coluna de um \texttt{DataFrame} é, na verdade, um
+objeto:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{Series} ✅
+\item
+  \texttt{DataFrame}
+\item
+  \texttt{list}
 \end{enumerate}
 
-{\bfseries 3. Um valor NaN indica:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Um valor ausente (``não é um número'') \textcolor{tipc}{\textbf{(correta)}}
-  \item O número zero
-  \item Infinito
+\textbf{3. Um valor \texttt{NaN} indica:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Um valor ausente (``não é um número'') ✅
+\item
+  O número zero
+\item
+  Infinito
 \end{enumerate}
 
-{\bfseries 4. Qual operador combina dois critérios num filtro .loc?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @&@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @and@
-  \item @+@
+\textbf{4. Qual operador combina dois critérios num filtro
+\texttt{.loc}?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{\&} ✅
+\item
+  \texttt{and}
+\item
+  \texttt{+}
 \end{enumerate}
 
-{\bfseries 5. Por que criar uma cópia com .copy() de um recorte do DataFrame?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Para evitar o @SettingWithCopyWarning@ e não alterar o original \textcolor{tipc}{\textbf{(correta)}}
-  \item Para acelerar o cálculo
-  \item É obrigatório em toda operação
+\textbf{5. Por que criar uma cópia com \texttt{.copy()} de um recorte do
+\texttt{DataFrame}?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Para evitar o \texttt{SettingWithCopyWarning} e não alterar o original
+  ✅
+\item
+  Para acelerar o cálculo
+\item
+  É obrigatório em toda operação
 \end{enumerate}
 
-{\bfseries 6. (Segurança) Por que \textit{não} usar read\_pickle em um arquivo de origem não confiável?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Porque pode executar código arbitrário na sua máquina \textcolor{tipc}{\textbf{(correta)}}
-  \item Porque é mais lento que o CSV
-  \item Porque não consegue ler texto
+\textbf{6. (Segurança) Por que \emph{não} usar \texttt{read\_pickle} em
+um arquivo de origem não confiável?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Porque pode executar código arbitrário na sua máquina ✅
+\item
+  Porque é mais lento que o CSV
+\item
+  Porque não consegue ler texto
 \end{enumerate}
 
-% ======================================================= resumo ============
-\section*{Resumo da unidade}
-\addcontentsline{toc}{section}{Resumo da unidade}
-\begin{objbox}[Nesta unidade, você aprendeu a]
-\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
-  \item importar dados de um único arquivo (@read_csv()@) ou de vários (@Path@/@glob@ + laço com @.at@);
-  \item examinar @DataFrame@s: @columns@, colunas como @Series@, @value_counts()@, @describe()@, @.plot()@ e filtragem com @.loc@ (@&@, @==@);
-  \item estender: adicionar colunas, calcular entre colunas, lidar com @NaN@, usar @.copy()@ e aplicar funções com @apply()@;
-  \item extrair com @tolist()@/@extend()@ e salvar/carregar com @to_pickle()@/@read_pickle()@ (com cuidado de segurança).
-\end{enumerate}
-\end{objbox}
+\subsection{Resumo da unidade}\label{resumo-da-unidade}
 
-\begin{notebox}[Exercícios sugeridos]
-\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
-  \item Carregue os três arquivos de notícias da Unidade 1 em um @DataFrame@ (colunas @filename@ e @text@) e conte quantos caracteres cada texto tem, numa nova coluna @n_chars@.
-  \item No @DataFrame@ @socc@, use @.loc@ para selecionar os artigos de @GLOBE EDITORIAL@ com mais de 500 comentários.
-  \item Escreva uma função @get_verbs()@ (análoga a @get_nouns@) que colete os lemas dos \textbf{verbos} (@token.pos_ == 'VERB'@) e aplique-a a uma coluna de títulos processados.
-  \item Salve um @DataFrame@ em CSV com @to_csv('saida.csv', index=False)@ e recarregue com @read_csv()@, conferindo as colunas.
-\end{enumerate}
-\end{notebox}
+Nesta unidade, você aprendeu a:
 
-\vspace{6pt}
-\noindent\rule{\linewidth}{0.4pt}\\[4pt]
-{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Kolhatkar, V. et al. (2020). \textit{The SFU Opinion and Comments Corpus.} Corpus Pragmatics. McKinney, W. et al. \textit{pandas: powerful Python data analysis toolkit} --- \href{https://pandas.pydata.org/}{pandas.pydata.org}.\par
-Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{importar} dados para um \texttt{DataFrame} a partir de um
+  único arquivo (\texttt{read\_csv()}) ou de vários arquivos
+  (\texttt{Path}/\texttt{glob} + laço com \texttt{.at});
+\item
+  \textbf{examinar} \texttt{DataFrame}s: \texttt{columns}, colunas como
+  \texttt{Series}, \texttt{value\_counts()}, \texttt{describe()},
+  \texttt{.plot()} e filtragem com \texttt{.loc} e critérios combinados
+  (\texttt{\&}, \texttt{==});
+\item
+  \textbf{estender} \texttt{DataFrame}s: adicionar colunas, calcular
+  entre colunas, lidar com \texttt{NaN}, usar \texttt{.copy()} para
+  evitar o \texttt{SettingWithCopyWarning}, e aplicar funções (do spaCy
+  ou próprias) com \texttt{apply()};
+\item
+  \textbf{extrair} dados com \texttt{tolist()}/\texttt{extend()} e
+  \textbf{salvar/carregar} com
+  \texttt{to\_pickle()}/\texttt{read\_pickle()}.
+\end{enumerate}
+
+\subsubsection{Exercícios sugeridos}\label{exercuxedcios-sugeridos}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Carregue os três arquivos de notícias da Unidade 1 em um
+  \texttt{DataFrame} (colunas \texttt{filename} e \texttt{text}) e conte
+  quantos caracteres cada texto tem, guardando o resultado em uma nova
+  coluna \texttt{n\_chars}.
+\item
+  No \texttt{DataFrame} \texttt{socc}, use \texttt{.loc} para selecionar
+  os artigos do autor \texttt{GLOBE\ EDITORIAL} com mais de 500
+  comentários.
+\item
+  Escreva uma função \texttt{get\_verbs()} (análoga a
+  \texttt{get\_nouns}) que colete os lemas dos \textbf{verbos}
+  (\texttt{token.pos\_\ ==\ \textquotesingle{}VERB\textquotesingle{}}) e
+  aplique‑a a uma coluna de títulos processados.
+\item
+  Salve um \texttt{DataFrame} em CSV com
+  \texttt{to\_csv(\textquotesingle{}saida.csv\textquotesingle{},\ index=False)}
+  e recarregue‑o com \texttt{read\_csv()}, conferindo se as colunas
+  foram preservadas.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Referências}\label{referuxeancias}
+
+\begin{itemize}
+\tightlist
+\item
+  Rögnvaldsson, E. et al.~\emph{Applied Language Technology} (MOOC).
+  Universidade de Helsinque.
+  \url{https://applied-language-technology.mooc.fi/}
+\item
+  Kolhatkar, V. et al.~(2020). The SFU Opinion and Comments Corpus.
+  \emph{Corpus Pragmatics}.
+\item
+  McKinney, W. et al.~\emph{pandas: powerful Python data analysis
+  toolkit}. \url{https://pandas.pydata.org/}
+\end{itemize}
 
 \end{document}

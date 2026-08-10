@@ -1,280 +1,497 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unidade 5 — Gerenciando dados textuais com pandas</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
-    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
-    --code-bg:#1e2430; --code-ink:#e6e9ef;
-    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
-    --h3-ink:#2b3242; --table-head:#efe9ff; --table-stripe:#f8f9fc;
-    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
-    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
-    --border:#e6e8ef; --radius:16px;
-    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
-  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
-    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
-    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
-  header.hero .inner{max-width:900px;margin:0 auto}
-  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:700;opacity:.9;margin:0 0 12px}
-  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
-  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
-  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
-    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
-  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
-  .navlink:hover{opacity:1}
-  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
-    border-left:5px solid var(--accent);line-height:1.25}
-  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
-  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
-  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
-  p{margin:14px 0}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
-  a:hover{border-color:var(--accent)}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
-  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
-    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
-  strong{color:var(--ink-strong);font-weight:700}
-  ul,ol{margin:14px 0;padding-left:24px}
-  li{margin:7px 0}
-  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
-  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-  /* code */
-  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
-    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
-    font-size:14.5px;line-height:1.6;position:relative;
-    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
-  pre.code{border-top:3px solid var(--accent)}
-  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
-    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
-    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
-  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
-    box-shadow:none;border-top:3px solid var(--out-tag)}
-  pre.out .tag{background:var(--out-tag)}
-  pre code{font-family:inherit;white-space:pre}
-  .c{color:var(--c-comment);font-style:italic}
-  .s{color:var(--c-string)}
-  .k{color:var(--c-kw);font-weight:600}
-  .n{color:var(--c-num)}
-  /* tables */
-  .tbl-wrap{overflow-x:auto;margin:20px 0}
-  table{border-collapse:collapse;width:100%;font-size:.9rem;
-    border:1px solid var(--border);border-radius:12px;overflow:hidden}
-  th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
-  thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700}
-  tbody tr:nth-child(even){background:var(--table-stripe)}
-  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums}
-  /* callouts */
-  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
-    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
-  .call p{margin:6px 0}
-  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
-  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
-  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
-  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
-  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
-  footer{color:var(--muted);font-size:14px;margin-top:40px}
-  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
-  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .toc ol{margin:0;padding-left:20px}
-  .toc a{border:none}
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
-      --table-head:#241f43;--table-stripe:#171a23}
-  }
-  :root[data-theme="dark"]{
-    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
-    --table-head:#241f43;--table-stripe:#171a23;
-  }
-  :root[data-theme="light"]{
-    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
-    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
-    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
-    --table-head:#efe9ff;--table-stripe:#f8f9fc;
-  }
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Gerenciando dados textuais com pandas</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+background-color: #232629;
+color: #7a7c7d;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d; padding-left: 4px; }
+div.sourceCode
+{ color: #cfcfc2; background-color: #232629; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #cfcfc2; } 
+code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } 
+code span.an { color: #3f8058; } 
+code span.at { color: #2980b9; } 
+code span.bn { color: #f67400; } 
+code span.bu { color: #7f8c8d; } 
+code span.cf { color: #fdbc4b; font-weight: bold; } 
+code span.ch { color: #3daee9; } 
+code span.cn { color: #27aeae; font-weight: bold; } 
+code span.co { color: #7a7c7d; } 
+code span.cv { color: #7f8c8d; } 
+code span.do { color: #a43340; } 
+code span.dt { color: #2980b9; } 
+code span.dv { color: #f67400; } 
+code span.er { color: #da4453; text-decoration: underline; } 
+code span.ex { color: #0099ff; font-weight: bold; } 
+code span.fl { color: #f67400; } 
+code span.fu { color: #8e44ad; } 
+code span.im { color: #27ae60; } 
+code span.in { color: #c45b00; } 
+code span.kw { color: #cfcfc2; font-weight: bold; } 
+code span.op { color: #cfcfc2; } 
+code span.ot { color: #27ae60; } 
+code span.pp { color: #27ae60; } 
+code span.re { color: #2980b9; background-color: #153042; } 
+code span.sc { color: #3daee9; } 
+code span.ss { color: #da4453; } 
+code span.st { color: #f44f4f; } 
+code span.va { color: #27aeae; } 
+code span.vs { color: #da4453; } 
+code span.wa { color: #da4453; } 
+</style>
+  <style type="text/css">
+:root{
+--bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+--accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+--code-bg:#1e2430; --code-ink:#e6e9ef;
+--border:#e6e8ef; --radius:16px;
+--note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+--table-head:#efe9ff; --table-stripe:#f8f9fc;
+--mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+:root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;
+--table-head:#241f43;--table-stripe:#171a23}
+}
+:root[data-theme="dark"]{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--table-head:#241f43;--table-stripe:#171a23}
+:root[data-theme="light"]{--bg:#f6f7fb;--surface:#fff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+--accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--table-head:#efe9ff;--table-stripe:#f8f9fc}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+
+body > *{max-width:860px;margin-left:auto;margin-right:auto;padding-left:22px;padding-right:22px}
+header#title-block-header{max-width:none;padding:52px 22px 40px;margin-bottom:32px;
+background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);color:#fff;
+box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+header#title-block-header > *{max-width:860px;margin:0 auto;padding:0}
+header#title-block-header .title{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+header#title-block-header .subtitle{font-size:1.1rem;opacity:.95;margin:8px 0 0;font-weight:600}
+header#title-block-header .author,header#title-block-header .date{opacity:.9;font-size:.9rem;margin:6px 0 0}
+h1,h2,h3{line-height:1.25}
+h1{font-size:1.7rem;font-weight:800;color:var(--accent);margin:44px auto 14px;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:40px auto 12px;
+padding-left:14px;border-left:5px solid var(--accent)}
+h3{font-size:1.15rem;font-weight:700;color:var(--ink-strong);margin:28px auto 8px}
+p{margin:13px auto}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+a:hover{border-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+strong{color:var(--ink-strong);font-weight:700}
+ul,ol{margin:12px auto}
+li{margin:6px 0}
+
+code{font-family:var(--mono);font-size:.88em}
+p code,li code,td code{background:var(--accent-soft);color:var(--inl-ink);
+padding:2px 7px;border-radius:7px;font-weight:600;font-size:.84em}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:16px 18px;
+overflow-x:auto;margin:18px auto;border-top:3px solid var(--accent);
+box-shadow:0 16px 34px -22px rgba(0,0,0,.7);line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-weight:400;font-size:14px}
+
+div.dica,div.nota,div.atencao,div.objetivos{
+border:1px solid var(--border);border-left:5px solid var(--accent);
+background:var(--surface);border-radius:14px;padding:12px 18px;margin:20px auto}
+div.dica{border-left-color:var(--tip)}
+div.nota{border-left-color:var(--note)}
+div.atencao{border-left-color:var(--warn)}
+div.objetivos{border-left-color:var(--accent);background:var(--accent-soft)}
+div.dica::before{content:"Dica";color:var(--tip)}
+div.nota::before{content:"Nota";color:var(--note)}
+div.atencao::before{content:"Atenção";color:var(--warn)}
+div.objetivos::before{content:"Objetivos";color:var(--accent)}
+div.dica::before,div.nota::before,div.atencao::before,div.objetivos::before{
+display:block;font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+div.dica p:last-child,div.nota p:last-child,div.atencao p:last-child,div.objetivos :last-child{margin-bottom:0}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:18px auto;
+border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+blockquote{margin:16px auto;padding:4px 0 4px 16px;border-left:3px solid var(--border);
+color:var(--muted);font-style:italic}
+hr{border:none;border-top:1px solid var(--border);margin:40px auto}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="inner">
-    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
-    <h1>Gerenciando dados textuais com pandas</h1>
-    <p class="sub">Trabalhando com Texto em Python I — Unidade 5. Importar, examinar, estender e salvar DataFrames; aplicar PLN a colunas.</p>
-    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span><br>
-    <a class="navlink" href="../Unidade-4/unidade4_avaliando_modelos.html">&larr; Unidade 4 · Avaliando modelos de linguagem</a>
-  </div>
+<header id="title-block-header">
+<h1 class="title">Gerenciando dados textuais com pandas</h1>
+<p class="subtitle">Trabalhando com Texto em Python I · Unidade 5</p>
+<p class="author">CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia</p>
+<p class="date">2026</p>
 </header>
-
-<div class="wrap">
-
-  <nav class="toc">
-    <h4>Nesta unidade</h4>
-    <ol>
-      <li><a href="#s1">Importando dados para o pandas</a></li>
-      <li><a href="#s2">Examinando DataFrames</a></li>
-      <li><a href="#s3">Estendendo DataFrames</a></li>
-      <li><a href="#s4">Salvando DataFrames</a></li>
-    </ol>
-  </nav>
-
-  <div class="obj">
-    <h4>Objetivos de aprendizagem</h4>
-    <ul>
-      <li>Importar dados para um <code class="inl">DataFrame</code> do pandas.</li>
-      <li>Explorar dados armazenados em um <code class="inl">DataFrame</code>.</li>
-      <li>Acrescentar (estender) dados a um <code class="inl">DataFrame</code>.</li>
-      <li>Salvar os dados de um <code class="inl">DataFrame</code>.</li>
-    </ul>
-  </div>
-
-  <p>O <strong>pandas</strong> é uma biblioteca do Python para trabalhar com <strong>dados tabulares</strong>. Começamos importando‑a — usamos <code class="inl">as</code> para controlar o nome do módulo; por convenção, o pandas é abreviado como <code class="inl">pd</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">import pandas as pd</code></pre>
-
-  <h2 id="s1"><span class="num">1.</span> Importando dados para o pandas</h2>
-
-  <h3>1.1 A partir de um único arquivo</h3>
-  <p>Formatos típicos para distribuir corpora incluem <strong>CSV</strong> (<em>Comma‑separated Values</em>), <strong>JSON</strong> e texto simples. O pandas oferece muitas funções de leitura — dá até para importar planilhas do Excel! O exemplo carrega um recorte do <em>SFU Opinion and Comments Corpus</em> (SOCC), com artigos de opinião do jornal canadense <em>The Globe and Mail</em>. A função <code class="inl">read_csv()</code> recebe o <strong>caminho</strong> do arquivo:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Le o arquivo CSV e atribui a saida a variavel 'socc'
-socc = pd.read_csv('data/socc_gnm_articles.csv')
-
-# Examina o tipo do objeto guardado em 'socc'
-type(socc)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>pandas.core.frame.DataFrame</code></pre>
-  <p>O pandas devolve o conteúdo do CSV em um <strong><code class="inl">DataFrame</code></strong>, sua estrutura de dados nativa. O método <code class="inl">head()</code> mostra as primeiras linhas:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Imprime as primeiras cinco linhas do DataFrame
-socc.head(5)</code></pre>
-  <p>O <code class="inl">DataFrame</code> tem forma <strong>tabular</strong>, com colunas (<code class="inl">article_id</code>, <code class="inl">title</code>, <code class="inl">author</code>, <code class="inl">article_text</code>…) e um <strong>índice</strong> por linha (0, 1, 2, …). Versão compacta (algumas colunas omitidas para caber):</p>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th class="num">article_id</th><th>title</th><th>author</th><th class="num">ntop_level_comments</th></tr></thead>
-    <tbody>
-      <tr><td class="num">0</td><td class="num">26842506</td><td>The Tories deserve another mandate…</td><td>GLOBE EDITORIAL</td><td class="num">1378.0</td></tr>
-      <tr><td class="num">1</td><td class="num">26055892</td><td>Harper hysteria a sign of closed liberal minds</td><td>Konrad Yakabuski</td><td class="num">455.0</td></tr>
-      <tr><td class="num">2</td><td class="num">6929035</td><td>Too many first nations people live in a dream…</td><td>Jeffrey Simpson</td><td class="num">433.0</td></tr>
-      <tr><td class="num">3</td><td class="num">19047636</td><td>The Globe's editorial board endorses Tim Hudak…</td><td>GLOBE EDITORIAL</td><td class="num">432.0</td></tr>
-      <tr><td class="num">4</td><td class="num">11672346</td><td>Disgruntled Arab states look to strip Canada…</td><td>Campbell Clark</td><td class="num">411.0</td></tr>
-    </tbody>
-  </table></div>
-  <p>O acessador <code class="inl">.at[]</code> inspeciona <strong>um único item</strong>. O valor da coluna <code class="inl">title</code> no índice 123:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">socc.at[123, 'title']</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>"How Toronto got a 'world-class,' gold-plated, half-billion-dollar empty train"</code></pre>
-
-  <h3>1.2 A partir de múltiplos arquivos</h3>
-  <p>Outro cenário comum é ter <strong>vários arquivos</strong> de texto. Primeiro, coletamos os arquivos com a classe <code class="inl">Path</code> (vista na Unidade 1):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a classe Path
-from pathlib import Path
-
-# Cria um objeto Path que aponta para o diretorio com os dados
-corpus_dir = Path('data')
-
-# Coleta todos os arquivos .txt no diretorio do corpus
-corpus_files = list(corpus_dir.glob('*.txt'))
-
-# Verifica os arquivos do corpus
-corpus_files</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[PosixPath('data/WP_1990-08-10-25A.txt'),
- PosixPath('data/NYT_1991-01-16-A15.txt'),
- PosixPath('data/WP_1991-01-17-A1B.txt')]</code></pre>
-  <p>Criamos um <code class="inl">DataFrame</code> <strong>vazio</strong> definindo a forma de antemão: o número de linhas (<code class="inl">index</code>, com <code class="inl">range()</code> de 0 até <code class="inl">len(corpus_files)</code>) e os nomes das colunas (<code class="inl">columns</code>):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Cria um DataFrame e atribui o resultado a variavel 'df'
-df = pd.DataFrame(index=range(0, len(corpus_files)), columns=['filename', 'text'])
-
-# Chama a variavel para inspecionar a saida
-df</code></pre>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th>filename</th><th>text</th></tr></thead>
-    <tbody>
-      <tr><td class="num">0</td><td>NaN</td><td>NaN</td></tr>
-      <tr><td class="num">1</td><td>NaN</td><td>NaN</td></tr>
-      <tr><td class="num">2</td><td>NaN</td><td>NaN</td></tr>
-    </tbody>
-  </table></div>
-  <p>Percorremos os <code class="inl">Path</code>s, lemos o conteúdo e o adicionamos com o acessador <code class="inl">.at</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os arquivos do corpus e conta cada volta com enumerate()
-for i, f in enumerate(corpus_files):
-
-    # Le o conteudo do arquivo
-    text = f.read_text(encoding='utf-8')
-
-    # Pega o nome do arquivo do objeto Path
-    filename = f.name
-
-    # Atribui o texto do arquivo ao indice 'i' na coluna 'text' usando
-    # o acessador .at -- isso modifica o DataFrame "no lugar" (in place);
-    # nao e preciso atribuir o resultado a uma variavel
-    df.at[i, 'text'] = text
-
-    # Faz o mesmo com o nome do arquivo
-    df.at[i, 'filename'] = filename</code></pre>
-  <p>O <code class="inl">DataFrame</code> fica populado com os nomes dos arquivos e o texto:</p>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th>filename</th><th>text</th></tr></thead>
-    <tbody>
-      <tr><td class="num">0</td><td>WP_1990-08-10-25A.txt</td><td>*We Don't Stand for Bullies': Diverse Voices…</td></tr>
-      <tr><td class="num">1</td><td>NYT_1991-01-16-A15.txt</td><td>U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. I…</td></tr>
-      <tr><td class="num">2</td><td>WP_1991-01-17-A1B.txt</td><td>U.S., Allies Launch Massive Air War Against T…</td></tr>
-    </tbody>
-  </table></div>
-
-  <h2 id="s2"><span class="num">2.</span> Examinando DataFrames</h2>
-  <p>Os <code class="inl">DataFrame</code>s guardam muita informação, organizada em <strong>colunas</strong>, acessíveis pelo atributo <code class="inl">columns</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera as colunas e seus nomes
-socc.columns</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>Index(['article_id', 'title', 'article_url', 'author', 'published_date',
-       'ncomments', 'ntop_level_comments', 'article_text'],
-      dtype='object')</code></pre>
-  <p>Uma coluna inteira é acessada com colchetes <code class="inl">[]</code> e o nome como <em>string</em> — como as chaves de um dicionário:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Recupera o conteudo da coluna 'author' no DataFrame 'socc'
-socc['author']</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0         GLOBE EDITORIAL
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#importando-dados-para-o-pandas" id="toc-importando-dados-para-o-pandas">1. Importando dados para o
+pandas</a></li>
+<li><a href="#examinando-dataframes" id="toc-examinando-dataframes">2.
+Examinando DataFrames</a></li>
+<li><a href="#estendendo-dataframes" id="toc-estendendo-dataframes">3.
+Estendendo DataFrames</a></li>
+<li><a href="#salvando-dataframes" id="toc-salvando-dataframes">4.
+Salvando DataFrames</a></li>
+<li><a href="#quiz" id="toc-quiz">Quiz</a></li>
+<li><a href="#resumo-da-unidade" id="toc-resumo-da-unidade">Resumo da
+unidade</a></li>
+</ul>
+</nav>
+<h3 id="objetivos-de-aprendizagem">Objetivos de aprendizagem</h3>
+<p>Ao final desta unidade, você deverá saber:</p>
+<ul>
+<li><strong>importar dados</strong> para um <code>DataFrame</code> do
+pandas;</li>
+<li><strong>explorar</strong> dados armazenados em um
+<code>DataFrame</code>;</li>
+<li><strong>acrescentar</strong> (estender) dados a um
+<code>DataFrame</code>;</li>
+<li><strong>salvar</strong> os dados de um <code>DataFrame</code>.</li>
+</ul>
+<p>O <strong>pandas</strong> é uma biblioteca do Python para trabalhar
+com <strong>dados tabulares</strong>. Começamos importando‑a — usamos
+<code>as</code> para controlar o nome do módulo importado; por
+convenção, o pandas é abreviado como <code>pd</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div>
+<hr />
+<h2 id="importando-dados-para-o-pandas">1. Importando dados para o
+pandas</h2>
+<h3 id="a-partir-de-um-único-arquivo">1.1 A partir de um único
+arquivo</h3>
+<p>Formatos típicos para distribuir corpora incluem arquivos
+<strong>CSV</strong> (<em>Comma‑separated Values</em>, valores separados
+por vírgula), <strong>JSON</strong> (<em>JavaScript Object
+Notation</em>) e texto simples. O pandas oferece muitas funções para ler
+dados em vários formatos — dá até para importar planilhas do Excel!</p>
+<p>O exemplo a seguir carrega um recorte do <em>SFU Opinion and Comments
+Corpus</em> (SOCC), que reúne artigos de opinião do jornal canadense
+<em>The Globe and Mail</em>. Usamos a função <code>read_csv()</code>,
+que recebe uma <em>string</em> com o <strong>caminho</strong> do
+arquivo:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Le o arquivo CSV e atribui a saida a variavel &#39;socc&#39;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>socc <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/socc_gnm_articles.csv&#39;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Examina o tipo do objeto guardado em &#39;socc&#39;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(socc)</span></code></pre></div>
+<pre class="text"><code>pandas.core.frame.DataFrame</code></pre>
+<p>O pandas faz todo o trabalho pesado e devolve o conteúdo do CSV em um
+<strong><code>DataFrame</code></strong>, a estrutura de dados nativa do
+pandas. Usamos o método <code>head()</code> para ver as primeiras cinco
+linhas:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime as primeiras cinco linhas do DataFrame</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>socc.head(<span class="dv">5</span>)</span></code></pre></div>
+<p>O <code>DataFrame</code> tem forma <strong>tabular</strong>, com
+colunas como <code>article_id</code>, <code>title</code>,
+<code>author</code>, <code>article_text</code> etc., além de um
+<strong>índice</strong> para cada linha (0, 1, 2, …). Uma versão
+compacta (algumas colunas omitidas para caber):</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: center;">article_id</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">author</th>
+<th style="text-align: center;">ntop_level_comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">26842506</td>
+<td style="text-align: left;">The Tories deserve another mandate…</td>
+<td style="text-align: left;">GLOBE EDITORIAL</td>
+<td style="text-align: center;">1378.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">26055892</td>
+<td style="text-align: left;">Harper hysteria a sign of closed liberal
+minds</td>
+<td style="text-align: left;">Konrad Yakabuski</td>
+<td style="text-align: center;">455.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">6929035</td>
+<td style="text-align: left;">Too many first nations people live in a
+dream…</td>
+<td style="text-align: left;">Jeffrey Simpson</td>
+<td style="text-align: center;">433.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">19047636</td>
+<td style="text-align: left;">The Globe’s editorial board endorses Tim
+Hudak…</td>
+<td style="text-align: left;">GLOBE EDITORIAL</td>
+<td style="text-align: center;">432.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">11672346</td>
+<td style="text-align: left;">Disgruntled Arab states look to strip
+Canada…</td>
+<td style="text-align: left;">Campbell Clark</td>
+<td style="text-align: center;">411.0</td>
+</tr>
+</tbody>
+</table>
+<p>O acessador <code>.at[]</code> permite inspecionar <strong>um único
+item</strong>. Vamos ver o valor da coluna <code>title</code> no índice
+123:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>socc.at[<span class="dv">123</span>, <span class="st">&#39;title&#39;</span>]</span></code></pre></div>
+<pre class="text"><code>&quot;How Toronto got a &#39;world-class,&#39; gold-plated, half-billion-dollar empty train&quot;</code></pre>
+<h3 id="a-partir-de-múltiplos-arquivos">1.2 A partir de múltiplos
+arquivos</h3>
+<p>Outro cenário comum é ter <strong>vários arquivos</strong> de texto
+para carregar. Primeiro, coletamos os arquivos com a classe
+<code>Path</code> (vista na Unidade 1):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a classe Path</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um objeto Path que aponta para o diretorio com os dados</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>corpus_dir <span class="op">=</span> Path(<span class="st">&#39;data&#39;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta todos os arquivos .txt no diretorio do corpus</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>corpus_files <span class="op">=</span> <span class="bu">list</span>(corpus_dir.glob(<span class="st">&#39;*.txt&#39;</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica os arquivos do corpus</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>corpus_files</span></code></pre></div>
+<pre class="text"><code>[PosixPath(&#39;data/WP_1990-08-10-25A.txt&#39;),
+ PosixPath(&#39;data/NYT_1991-01-16-A15.txt&#39;),
+ PosixPath(&#39;data/WP_1991-01-17-A1B.txt&#39;)]</code></pre>
+<p>Para acomodar os dados, criamos um <code>DataFrame</code>
+<strong>vazio</strong> e definimos sua forma de antemão: o número de
+linhas (<code>index</code>) e os nomes das colunas
+(<code>columns</code>). Determinamos o número de linhas com a função
+<code>range()</code>, entre 0 e a quantidade de arquivos (obtida com
+<code>len()</code>). Para as colunas, passamos uma lista de
+<em>strings</em> ao argumento <code>columns</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um DataFrame e atribui o resultado a variavel &#39;df&#39;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(index<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(corpus_files)), columns<span class="op">=</span>[<span class="st">&#39;filename&#39;</span>, <span class="st">&#39;text&#39;</span>])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para inspecionar a saida</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: center;">filename</th>
+<th style="text-align: center;">text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">NaN</td>
+<td style="text-align: center;">NaN</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">NaN</td>
+<td style="text-align: center;">NaN</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">NaN</td>
+<td style="text-align: center;">NaN</td>
+</tr>
+</tbody>
+</table>
+<p>Agora percorremos os objetos <code>Path</code> em
+<code>corpus_files</code>, lemos o conteúdo e o adicionamos ao
+<code>DataFrame</code> com o acessador <code>.at</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os arquivos do corpus e conta cada volta com enumerate()</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, f <span class="kw">in</span> <span class="bu">enumerate</span>(corpus_files):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Le o conteudo do arquivo</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> f.read_text(encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pega o nome do arquivo do objeto Path</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    filename <span class="op">=</span> f.name</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Atribui o texto do arquivo ao indice &#39;i&#39; na coluna &#39;text&#39; usando</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># o acessador .at -- isso modifica o DataFrame &quot;no lugar&quot; (in place);</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># nao e preciso atribuir o resultado a uma variavel</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    df.at[i, <span class="st">&#39;text&#39;</span>] <span class="op">=</span> text</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Faz o mesmo com o nome do arquivo</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    df.at[i, <span class="st">&#39;filename&#39;</span>] <span class="op">=</span> filename</span></code></pre></div>
+<p>O <code>DataFrame</code> fica populado com os nomes dos arquivos e o
+texto:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: left;">filename</th>
+<th style="text-align: left;">text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">WP_1990-08-10-25A.txt</td>
+<td style="text-align: left;">*We Don’t Stand for Bullies’: Diverse
+Voices…</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">NYT_1991-01-16-A15.txt</td>
+<td style="text-align: left;">U.S. TAKING STEPS TO CURB TERRORISM:
+F.B.I. I…</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">WP_1991-01-17-A1B.txt</td>
+<td style="text-align: left;">U.S., Allies Launch Massive Air War
+Against T…</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="examinando-dataframes">2. Examinando DataFrames</h2>
+<p>Os <code>DataFrame</code>s guardam muita informação, geralmente
+organizada em <strong>colunas</strong>, acessíveis pelo atributo
+<code>columns</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera as colunas e seus nomes</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>socc.columns</span></code></pre></div>
+<pre class="text"><code>Index([&#39;article_id&#39;, &#39;title&#39;, &#39;article_url&#39;, &#39;author&#39;, &#39;published_date&#39;,
+       &#39;ncomments&#39;, &#39;ntop_level_comments&#39;, &#39;article_text&#39;],
+      dtype=&#39;object&#39;)</code></pre>
+<p>Uma coluna inteira é acessada com colchetes <code>[]</code>,
+colocando o nome da coluna como <em>string</em> — como as chaves de um
+dicionário. Vamos recuperar a coluna <code>author</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera o conteudo da coluna &#39;author&#39; no DataFrame &#39;socc&#39;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;author&#39;</span>]</span></code></pre></div>
+<pre class="text"><code>0         GLOBE EDITORIAL
 1        Konrad Yakabuski
 2         Jeffrey Simpson
              ...
 10337      Adam Radwanski
 10338     GLOBE EDITORIAL
 Name: author, Length: 10339, dtype: object</code></pre>
-  <p>Cada coluna é, na verdade, um objeto <strong><code class="inl">Series</code></strong> — pense no <code class="inl">DataFrame</code> como a tabela inteira, cujas colunas são <code class="inl">Series</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Verifica o tipo de 'socc' e de 'socc['author']'
-type(socc), type(socc['author'])</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>(pandas.core.frame.DataFrame, pandas.core.series.Series)</code></pre>
-  <div class="call note"><span class="lbl">Nota</span><p>Ao imprimir um <code class="inl">DataFrame</code> ou <code class="inl">Series</code>, o pandas <strong>omite</strong> tudo entre as cinco primeiras e as cinco últimas linhas por padrão — conveniente com milhares de linhas.</p></div>
-  <p>O método <code class="inl">value_counts()</code> conta os valores únicos de uma <code class="inl">Series</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Conta os valores unicos na coluna 'author'
-socc['author'].value_counts()</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>GLOBE EDITORIAL                   2712
+<p>A coluna contém 10 339 objetos (veja <code>Length</code> e
+<code>dtype</code>); os números à esquerda são o índice. Cada coluna de
+um <code>DataFrame</code> é, na verdade, um objeto
+<strong><code>Series</code></strong> — pense no <code>DataFrame</code>
+como a tabela inteira, cujas colunas são <code>Series</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica o tipo de &#39;socc&#39; e de &#39;socc[&#39;author&#39;]&#39;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(socc), <span class="bu">type</span>(socc[<span class="st">&#39;author&#39;</span>])</span></code></pre></div>
+<pre class="text"><code>(pandas.core.frame.DataFrame, pandas.core.series.Series)</code></pre>
+<div class="nota">
+<p><strong>Nota:</strong> ao imprimir um <code>DataFrame</code> ou
+<code>Series</code>, o pandas <strong>omite</strong> tudo entre as cinco
+primeiras e as cinco últimas linhas por padrão — conveniente ao
+trabalhar com milhares de linhas.</p>
+</div>
+<p>O método <code>value_counts()</code> conta os valores únicos de uma
+<code>Series</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conta os valores unicos na coluna &#39;author&#39;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;author&#39;</span>].value_counts()</span></code></pre></div>
+<pre class="text"><code>GLOBE EDITORIAL                   2712
 Jeffrey Simpson                    649
 Margaret Wente                     547
                                   ...
 Jessica Scott-Reid                   1
 Kenneth Oppel                        1
 Name: author, Length: 1896, dtype: int64</code></pre>
-  <p>Podemos <strong>visualizar</strong> o resultado com o método <code class="inl">.plot()</code>, que usa a biblioteca <strong>matplotlib</strong>. Passamos <code class="inl">bar</code> ao argumento <code class="inl">kind</code> e <code class="inl">[:10]</code> para os dez autores mais prolíficos:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Magia do Jupyter que permite renderizar graficos do matplotlib no notebook!
-# Voce so precisa executar este comando uma vez.
-%matplotlib inline
-
-# Conta os valores da coluna 'author' e limita ao top-10 antes de plotar.
-socc['author'].value_counts()[:10].plot(kind='bar')</code></pre>
-  <div class="call tip"><span class="lbl">Dica</span><p>O <code class="inl">.plot()</code> gera uma <strong>imagem</strong> (gráfico de barras) exibida no notebook; a saída de texto é apenas <code class="inl">&lt;AxesSubplot: &gt;</code>. Para outros tipos, mude <code class="inl">kind</code> (ex.: <code class="inl">'line'</code>, <code class="inl">'hist'</code>, <code class="inl">'pie'</code>).</p></div>
-  <p>Para colunas <strong>numéricas</strong>, o método <code class="inl">describe()</code> dá estatísticas descritivas:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Estatisticas descritivas basicas da coluna 'ntop_level_comments'
-socc['ntop_level_comments'].describe()</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>count    10339.000000
+<p>Sem surpresa, a equipe editorial do <em>The Globe and Mail</em>
+assina a maioria dos editoriais! Podemos <strong>visualizar</strong> o
+resultado chamando o método <code>.plot()</code>, que usa a biblioteca
+<strong>matplotlib</strong>. Passamos a <em>string</em> <code>bar</code>
+ao argumento <code>kind</code> para um gráfico de barras, e
+<code>[:10]</code> para os dez autores mais prolíficos:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Magia do Jupyter que permite renderizar graficos do matplotlib no notebook!</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Voce so precisa executar este comando uma vez.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conta os valores da coluna &#39;author&#39; e limita ao top-10 antes de plotar.</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;author&#39;</span>].value_counts()[:<span class="dv">10</span>].plot(kind<span class="op">=</span><span class="st">&#39;bar&#39;</span>)</span></code></pre></div>
+<div class="dica">
+<p><strong>Dica:</strong> o <code>.plot()</code> gera uma
+<strong>imagem</strong> (gráfico de barras) exibida no notebook; a saída
+de texto é apenas <code>&lt;AxesSubplot: &gt;</code>. Para outros tipos
+de gráfico, mude o argumento <code>kind</code> (ex.:
+<code>&#39;line&#39;</code>, <code>&#39;hist&#39;</code>, <code>&#39;pie&#39;</code>).</p>
+</div>
+<p>Para colunas <strong>numéricas</strong>, o método
+<code>describe()</code> dá estatísticas descritivas básicas:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estatisticas descritivas basicas da coluna &#39;ntop_level_comments&#39;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;ntop_level_comments&#39;</span>].describe()</span></code></pre></div>
+<pre class="text"><code>count    10339.000000
 mean        26.384273
 std         39.786923
 min          0.000000
@@ -283,39 +500,93 @@ min          0.000000
 75%         35.000000
 max       1378.000000
 Name: ntop_level_comments, dtype: float64</code></pre>
-  <p>Lendo a saída: 10 339 linhas; média (<code class="inl">mean</code>) ≈ 26 comentários, com forte variação (desvio‑padrão <code class="inl">std</code> ≈ 40); mínimo (<code class="inl">min</code>) 0; primeiro quartil (<code class="inl">25%</code>) = 1; mediana (<code class="inl">50%</code>) = 14; terceiro quartil (<code class="inl">75%</code>) = 35; máximo (<code class="inl">max</code>) = 1 378.</p>
-
-  <h3>2.1 Filtrando linhas com <code class="inl">.loc</code></h3>
-  <p>Como achar os artigos com <strong>zero</strong> comentários? Usamos <code class="inl">.loc</code> para selecionar linhas por valor. Como <code class="inl">=</code> é reservado para atribuição, a comparação "é igual a" usa <strong>dois</strong> sinais (<code class="inl">==</code>):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Pega as linhas sem comentarios de nivel superior
-socc.loc[socc['ntop_level_comments'] == 0]</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[... 2542 rows x 8 columns ...]</code></pre>
-  <p>Retorna 2 542 linhas. Para visões mais complexas, combinamos critérios com <strong><code class="inl">&amp;</code></strong> ("E" lógico) — cada critério entre <strong>parênteses</strong> <code class="inl">()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Numero de comentarios de nivel superior para o autor Hayden King
-socc.loc[(socc['ntop_level_comments'] == 0) & (socc['author'] == 'Hayden King')]</code></pre>
-  <p>Retorna apenas a linha de índice 7797 — o único artigo dele sem comentários.</p>
-
-  <h2 id="s3"><span class="num">3.</span> Estendendo DataFrames</h2>
-  <p>É fácil <strong>acrescentar</strong> informação. Um cenário comum: carregar dados, analisar e guardar os resultados no mesmo <code class="inl">DataFrame</code>. Adicionamos uma coluna vazia com <code class="inl">[]</code> e o tipo <code class="inl">None</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Adiciona uma nova coluna chamada 'comments_ratio' ao DataFrame
-socc['comments_ratio'] = None</code></pre>
-  <p>Preenchemos a coluna com a proporção de comentários de nível superior sobre o total — dividindo uma coluna pela outra:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Preenche a coluna 'comments_ratio' com a razao entre comentarios de
-# nivel superior e o total de comentarios
-socc['comments_ratio'] = socc['ntop_level_comments'] / socc['ncomments']</code></pre>
-  <p>Uma amostra do resultado:</p>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th class="num">ntop_level_comments</th><th class="num">ncomments</th><th class="num">comments_ratio</th></tr></thead>
-    <tbody>
-      <tr><td class="num">0</td><td class="num">1378.0</td><td class="num">2187.0</td><td class="num">0.630087</td></tr>
-      <tr><td class="num">1</td><td class="num">455.0</td><td class="num">1103.0</td><td class="num">0.412511</td></tr>
-      <tr><td class="num">2</td><td class="num">433.0</td><td class="num">1164.0</td><td class="num">0.371993</td></tr>
-    </tbody>
-  </table></div>
-  <p>Mas alguns artigos <strong>não</strong> receberam comentários — nesses casos, dividiríamos zero por zero. Para essas linhas, <code class="inl">comments_ratio</code> fica marcada como <strong><code class="inl">NaN</code></strong> (<em>not a number</em>). O pandas <strong>ignora automaticamente</strong> os <code class="inl">NaN</code> nos cálculos, como mostra o <code class="inl">describe()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Estatisticas descritivas da coluna 'comments_ratio'
-socc['comments_ratio'].describe()</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>count    7797.000000
+<p>Lendo a saída: há 10 339 linhas; a média (<code>mean</code>) de
+comentários por editorial é ≈ 26, mas com forte variação (desvio‑padrão
+<code>std</code> de quase 40). O mínimo (<code>min</code>) é 0 (alguns
+editoriais não têm comentários). O primeiro quartil (<code>25%</code>)
+mostra que 25% dos dados têm 1 comentário ou menos; a mediana
+(<code>50%</code>) é 14; o terceiro quartil (<code>75%</code>) é 35; e o
+mais comentado (<code>max</code>) tem 1 378 comentários.</p>
+<h3 id="filtrando-linhas-com-.loc">2.1 Filtrando linhas com
+<code>.loc</code></h3>
+<p>Como encontrar os artigos com <strong>zero</strong> comentários?
+Usamos o acessador <code>.loc</code> para selecionar linhas com base em
+seus valores. Como <code>=</code> é reservado para atribuição, a
+comparação “é igual a” usa <strong>dois</strong> sinais
+(<code>==</code>):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega as linhas sem comentarios de nivel superior</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>socc.loc[socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>]</span></code></pre></div>
+<pre class="text"><code>[... 2542 rows x 8 columns ...]</code></pre>
+<p>Isso retorna 2 542 linhas em que <code>ntop_level_comments</code> é
+zero. Para visões mais complexas, combinamos critérios com o operador
+<strong><code>&amp;</code></strong> (“E” lógico) — cada critério deve
+ficar entre <strong>parênteses</strong> <code>()</code>. Vamos verificar
+se o primeiro autor do resultado (Hayden King) escreveu outros artigos
+com zero comentários:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Numero de comentarios de nivel superior para o autor Hayden King</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>socc.loc[(socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (socc[<span class="st">&#39;author&#39;</span>] <span class="op">==</span> <span class="st">&#39;Hayden King&#39;</span>)]</span></code></pre></div>
+<p>Isso retorna apenas a linha de índice 7797 — o único artigo dele sem
+comentários.</p>
+<hr />
+<h2 id="estendendo-dataframes">3. Estendendo DataFrames</h2>
+<p>É fácil <strong>acrescentar</strong> informação a um
+<code>DataFrame</code>. Um cenário comum: carregar dados de um arquivo,
+fazer análises e guardar os resultados no mesmo <code>DataFrame</code>.
+Adicionamos uma coluna vazia com o acessador de coluna <code>[]</code> e
+o tipo <code>None</code>:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona uma nova coluna chamada &#39;comments_ratio&#39; ao DataFrame</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;comments_ratio&#39;</span>] <span class="op">=</span> <span class="va">None</span></span></code></pre></div>
+<p>Vamos <strong>preencher</strong> a coluna calculando a proporção de
+comentários de nível superior (comentários sobre o artigo) em relação a
+todos os comentários — basta dividir uma coluna pela outra:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preenche a coluna &#39;comments_ratio&#39; com a razao entre comentarios de</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nivel superior e o total de comentarios</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;comments_ratio&#39;</span>] <span class="op">=</span> socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">/</span> socc[<span class="st">&#39;ncomments&#39;</span>]</span></code></pre></div>
+<p>Os acessadores de coluna podem ser usados de forma muito flexível
+para acessar e manipular dados, como nesta divisão. Uma amostra do
+resultado:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: center;">ntop_level_comments</th>
+<th style="text-align: center;">ncomments</th>
+<th style="text-align: center;">comments_ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1378.0</td>
+<td style="text-align: center;">2187.0</td>
+<td style="text-align: center;">0.630087</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">455.0</td>
+<td style="text-align: center;">1103.0</td>
+<td style="text-align: center;">0.412511</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">433.0</td>
+<td style="text-align: center;">1164.0</td>
+<td style="text-align: center;">0.371993</td>
+</tr>
+</tbody>
+</table>
+<p>Mas alguns artigos <strong>não</strong> receberam comentários —
+nesses casos, teríamos dividido zero por zero:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime os cinco primeiros artigos sem comentarios de nivel superior</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>socc.loc[socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>].head(<span class="dv">5</span>)</span></code></pre></div>
+<p>Para essas linhas, <code>comments_ratio</code> fica marcada como
+<strong><code>NaN</code></strong> (<em>not a number</em>, “não é um
+número”): a divisão foi feita, mas o resultado não é um número. O pandas
+<strong>ignora automaticamente</strong> os <code>NaN</code> nos
+cálculos, como mostra o <code>describe()</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estatisticas descritivas da coluna &#39;comments_ratio&#39;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;comments_ratio&#39;</span>].describe()</span></code></pre></div>
+<pre class="text"><code>count    7797.000000
 mean        0.537057
 std         0.205398
 min         0.083333
@@ -324,223 +595,310 @@ min         0.083333
 75%         0.647059
 max         1.000000
 Name: comments_ratio, dtype: float64</code></pre>
-  <p>Note o <code class="inl">count</code>: só 7 797 itens (dos 10 339) entraram no cálculo — os <code class="inl">NaN</code> foram ignorados.</p>
-
-  <h3>3.1 Aplicando processamento de linguagem a uma coluna</h3>
-  <p>E se quiséssemos fazer PLN e guardar os resultados? Selecionamos artigos no primeiro quartil de <code class="inl">comments_ratio</code> <strong>e</strong> com mais de 200 comentários, usando <code class="inl">&amp;</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Filtra o DataFrame por artigos muito comentados e atribui o resultado a 'talk'
-talk = socc.loc[(socc['comments_ratio'] <= 0.384) & (socc['ncomments'] >= 200)]</code></pre>
-  <p>Importamos o spaCy e carregamos um modelo <strong>médio</strong> para o inglês:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a biblioteca spaCy
-import spacy
-
-# Note que agora carregamos um modelo de tamanho medio!
-nlp = spacy.load('en_core_web_md')</code></pre>
-  <p>Ao criar uma coluna nova em <code class="inl">talk</code>, o pandas emite um <strong><code class="inl">SettingWithCopyWarning</code></strong>, porque <code class="inl">talk</code> é apenas um recorte (<em>slice</em>) do <code class="inl">DataFrame</code> original. A solução é criar uma <strong>cópia profunda</strong> com <code class="inl">.copy()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Cria uma copia profunda do DataFrame
-talk = talk.copy()
-
-# Cria uma nova coluna chamada 'processed_title'
-talk['processed_title'] = None</code></pre>
-  <p>Para processar os títulos, usamos <code class="inl">apply()</code>, que <strong>aplica</strong> o que recebe a cada linha da coluna. Passamos o modelo <code class="inl">nlp</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Aplica o modelo de linguagem 'nlp' ao conteudo da coluna 'title'
-talk['processed_title'] = talk['title'].apply(nlp)</code></pre>
-  <p>Cada célula da coluna <code class="inl">processed_title</code> agora contém um objeto <strong><code class="inl">Doc</code></strong> do spaCy:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Pega o valor da coluna 'processed_title' na linha de indice 2
-talk.at[2, 'processed_title']
-
-# Verifica o tipo do objeto contido
-type(talk.at[2, 'processed_title'])</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>Too many first nations people live in a dream palace
+<p>Note a diferença no <code>count</code>: só 7 797 itens (dos 10 339)
+entraram no cálculo — os <code>NaN</code> foram ignorados.</p>
+<h3 id="aplicando-processamento-de-linguagem-a-uma-coluna">3.1 Aplicando
+processamento de linguagem a uma coluna</h3>
+<p>E se quiséssemos fazer PLN e guardar os resultados no
+<code>DataFrame</code>? Vamos selecionar artigos no primeiro quartil de
+<code>comments_ratio</code> <strong>e</strong> com mais de 200
+comentários (<code>ncomments</code>), usando <code>&amp;</code>:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtra o DataFrame por artigos muito comentados e atribui o resultado a &#39;talk&#39;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>talk <span class="op">=</span> socc.loc[(socc[<span class="st">&#39;comments_ratio&#39;</span>] <span class="op">&lt;=</span> <span class="fl">0.384</span>) <span class="op">&amp;</span> (socc[<span class="st">&#39;ncomments&#39;</span>] <span class="op">&gt;=</span> <span class="dv">200</span>)]</span></code></pre></div>
+<p>Importamos o spaCy e carregamos um modelo <strong>médio</strong> para
+o inglês:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a biblioteca spaCy</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Note que agora carregamos um modelo de tamanho medio!</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_md&#39;</span>)</span></code></pre></div>
+<p>Ao criar uma coluna nova em <code>talk</code>, o pandas emite um
+<strong><code>SettingWithCopyWarning</code></strong>, porque
+<code>talk</code> é apenas um recorte (<em>slice</em>) do
+<code>DataFrame</code> original. Atribuir uma coluna a apenas uma parte
+quebraria a estrutura tabular. A solução é criar uma <strong>cópia
+profunda</strong> (<em>deep copy</em>) do recorte com o método
+<code>.copy()</code>:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria uma copia profunda do DataFrame</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>talk <span class="op">=</span> talk.copy()</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria uma nova coluna chamada &#39;processed_title&#39;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>talk[<span class="st">&#39;processed_title&#39;</span>] <span class="op">=</span> <span class="va">None</span></span></code></pre></div>
+<p>Para processar os títulos, usamos o método <code>apply()</code> de um
+<code>DataFrame</code>, que <strong>aplica</strong> o que recebe a cada
+linha da coluna. Passamos o modelo <code>nlp</code> — ou seja, aplicamos
+o modelo aos títulos (que são <em>strings</em>) da coluna
+<code>title</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica o modelo de linguagem &#39;nlp&#39; ao conteudo da coluna &#39;title&#39;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>talk[<span class="st">&#39;processed_title&#39;</span>] <span class="op">=</span> talk[<span class="st">&#39;title&#39;</span>].<span class="bu">apply</span>(nlp)</span></code></pre></div>
+<p>Cada célula da coluna <code>processed_title</code> agora contém um
+objeto <strong><code>Doc</code></strong> do spaCy:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega o valor da coluna &#39;processed_title&#39; na linha de indice 2</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>talk.at[<span class="dv">2</span>, <span class="st">&#39;processed_title&#39;</span>]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica o tipo do objeto contido</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(talk.at[<span class="dv">2</span>, <span class="st">&#39;processed_title&#39;</span>])</span></code></pre></div>
+<pre class="text"><code>Too many first nations people live in a dream palace
 spacy.tokens.doc.Doc</code></pre>
-
-  <h3>3.2 Definindo a própria função e aplicando com <code class="inl">apply()</code></h3>
-  <p>Vamos definir uma função para buscar os <strong>lemas de cada substantivo</strong> do título. Funções são definidas com <code class="inl">def</code>, seguido do nome e dos parâmetros entre parênteses:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define uma funcao 'get_nouns' que recebe um unico objeto como entrada.
-# Referimo-nos a essa entrada pela variavel 'nlp_text'.
-def get_nouns(nlp_text):
-
-    # Primeiro garantimos que a entrada e do tipo correto,
-    # usando 'assert' para checar o tipo
-    assert type(nlp_text) == spacy.tokens.doc.Doc
-
-    # Prepara uma lista vazia para os lemas
-    lemmas = []
-
-    # Percorre o objeto Doc
-    for token in nlp_text:
-
-        # Se a classe gramatical detalhada do token for substantivo (NN)
-        if token.tag_ == 'NN':
-
-            # Acrescenta o lema do token a lista de lemas
-            lemmas.append(token.lemma_)
-
-    # Ao fim do laco, retorna a lista de lemas
-    return lemmas</code></pre>
-  <p>Aplicamos com <code class="inl">apply()</code>, criando a coluna <code class="inl">nouns</code> automaticamente pela atribuição:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Aplica a funcao 'get_nouns' a coluna 'processed_title'
-talk['nouns'] = talk['processed_title'].apply(get_nouns)</code></pre>
-  <p>Uma amostra dos títulos processados e seus substantivos:</p>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th>title</th><th>nouns</th></tr></thead>
-    <tbody>
-      <tr><td class="num">2</td><td>Too many first nations people live in a dream…</td><td>[dream, palace]</td></tr>
-      <tr><td class="num">5</td><td>Fifty years in Canada, and now I feel like a s…</td><td>[class, citizen]</td></tr>
-      <tr><td class="num">8</td><td>A nation of $100,000 firefighters</td><td>[nation]</td></tr>
-    </tbody>
-  </table></div>
-  <div class="call note"><span class="lbl">Nota</span><p>Não é necessário criar uma coluna vazia antes — o pandas cria a coluna nova automaticamente na atribuição, como em <code class="inl">talk['nouns']</code>.</p></div>
-
-  <h3>3.3 Extraindo dados para estruturas nativas do Python</h3>
-  <p>O método <code class="inl">tolist()</code> extrai o conteúdo de uma <code class="inl">Series</code> para uma <strong>lista</strong>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Converte a pandas Series em uma lista
-noun_list = talk['nouns'].tolist()
-
-# Mostra os dez primeiros
-noun_list[:10]</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[['dream', 'palace'], ['agency'], ['class', 'citizen'], ['right'],
- ['nation'], [], ['reform'], ['leader', 'parade'], ['pm'],
- ['government', 'monopoly']]</code></pre>
-  <p>Temos uma <strong>lista de listas</strong>. Vamos "achatar" tudo em uma única lista <code class="inl">final_list</code> com <code class="inl">extend()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Prepara a lista vazia
-final_list = []
-
-# Percorre cada lista dentro da lista de listas
-for nlist in noun_list:
-
-    # Estende a lista final com a lista atual
-    final_list.extend(nlist)
-
-# Verifica o tamanho da lista
-len(final_list)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>884</code></pre>
-  <p>Para plotar os 10 substantivos mais frequentes, convertemos em <code class="inl">Series</code>, contamos com <code class="inl">value_counts()</code> e plotamos:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Converte a lista em uma pandas Series, conta os substantivos unicos com
-# value_counts(), pega os 10 mais frequentes [:10] e plota em barras.
-pd.Series(final_list).value_counts()[:10].plot(kind='bar')</code></pre>
-
-  <h2 id="s4"><span class="num">4.</span> Salvando DataFrames</h2>
-  <p><code class="inl">DataFrame</code>s podem ser salvos como objetos <strong>serializados</strong> (<em>pickled</em>) com o método <code class="inl">to_pickle()</code>, que recebe o caminho do arquivo:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Grava o DataFrame em disco usando pickle
-df.to_pickle('data/pickled_df.pkl')</code></pre>
-  <div class="call warn"><span class="lbl">Segurança (importante no CiberExt)</span><p>O formato <em>pickle</em> serializa objetos Python arbitrários e, ao ser <strong>carregado</strong>, pode <strong>executar código arbitrário</strong>. <strong>Nunca</strong> faça <code class="inl">read_pickle()</code> (nem <code class="inl">pickle.load</code>, <code class="inl">joblib.load</code>, <code class="inl">numpy</code> com <code class="inl">allow_pickle=True</code> etc.) em arquivos de <strong>fontes não confiáveis</strong> — um <code class="inl">.pkl</code> malicioso compromete a máquina. Use <em>pickle</em> só com dados que <strong>você mesmo</strong> gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não executam código, como <strong>CSV</strong>, <strong>JSON</strong> ou <strong>Parquet</strong>.</p></div>
-  <p>Verificamos lendo de volta com <code class="inl">read_pickle()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Le o DataFrame serializado e atribui o resultado a 'df_2'
-df_2 = pd.read_pickle('data/pickled_df.pkl')</code></pre>
-  <p>Comparando os dois <code class="inl">DataFrame</code>s com <code class="inl">==</code>, obtemos um booleano por célula:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Compara os DataFrames 'df' e 'df_2'
-df == df_2</code></pre>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th class="num">índice</th><th class="num">filename</th><th class="num">text</th></tr></thead>
-    <tbody>
-      <tr><td class="num">0</td><td class="num">True</td><td class="num">True</td></tr>
-      <tr><td class="num">1</td><td class="num">True</td><td class="num">True</td></tr>
-      <tr><td class="num">2</td><td class="num">True</td><td class="num">True</td></tr>
-    </tbody>
-  </table></div>
-  <p>Tudo <code class="inl">True</code> — os dados foram salvos e recarregados com sucesso.</p>
-
-  <h2>Quiz</h2>
-  <p>Marque a alternativa correta (a resposta certa está destacada com ✅).</p>
-  <p><strong>1. Por convenção, o pandas é importado com qual apelido?</strong></p>
-  <ol>
-    <li><code class="inl">pd</code> ✅</li>
-    <li><code class="inl">pandas</code></li>
-    <li><code class="inl">dt</code></li>
-  </ol>
-  <p><strong>2. Cada coluna de um <code class="inl">DataFrame</code> é, na verdade, um objeto:</strong></p>
-  <ol>
-    <li><code class="inl">Series</code> ✅</li>
-    <li><code class="inl">DataFrame</code></li>
-    <li><code class="inl">list</code></li>
-  </ol>
-  <p><strong>3. Um valor <code class="inl">NaN</code> indica:</strong></p>
-  <ol>
-    <li>Um valor ausente ("não é um número") ✅</li>
-    <li>O número zero</li>
-    <li>Infinito</li>
-  </ol>
-  <p><strong>4. Qual operador combina dois critérios num filtro <code class="inl">.loc</code>?</strong></p>
-  <ol>
-    <li><code class="inl">&amp;</code> ✅</li>
-    <li><code class="inl">and</code></li>
-    <li><code class="inl">+</code></li>
-  </ol>
-  <p><strong>5. Por que criar uma cópia com <code class="inl">.copy()</code> de um recorte do <code class="inl">DataFrame</code>?</strong></p>
-  <ol>
-    <li>Para evitar o <code class="inl">SettingWithCopyWarning</code> e não alterar o original ✅</li>
-    <li>Para acelerar o cálculo</li>
-    <li>É obrigatório em toda operação</li>
-  </ol>
-  <p><strong>6. (Segurança) Por que <em>não</em> usar <code class="inl">read_pickle</code> em um arquivo de origem não confiável?</strong></p>
-  <ol>
-    <li>Porque pode executar código arbitrário na sua máquina ✅</li>
-    <li>Porque é mais lento que o CSV</li>
-    <li>Porque não consegue ler texto</li>
-  </ol>
-
-  <hr>
-  <div class="obj">
-    <h4>Resumo da unidade</h4>
-    <ol>
-      <li>Importar dados de um único arquivo (<code class="inl">read_csv()</code>) ou de vários (<code class="inl">Path</code>/<code class="inl">glob</code> + laço com <code class="inl">.at</code>).</li>
-      <li>Examinar <code class="inl">DataFrame</code>s: <code class="inl">columns</code>, colunas como <code class="inl">Series</code>, <code class="inl">value_counts()</code>, <code class="inl">describe()</code>, <code class="inl">.plot()</code> e filtragem com <code class="inl">.loc</code> (<code class="inl">&amp;</code>, <code class="inl">==</code>).</li>
-      <li>Estender: adicionar colunas, calcular entre colunas, lidar com <code class="inl">NaN</code>, usar <code class="inl">.copy()</code> e aplicar funções com <code class="inl">apply()</code>.</li>
-      <li>Extrair com <code class="inl">tolist()</code>/<code class="inl">extend()</code> e salvar/carregar com <code class="inl">to_pickle()</code>/<code class="inl">read_pickle()</code> (com cuidado de segurança).</li>
-    </ol>
-  </div>
-
-  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
-    <ol>
-      <li>Carregue os três arquivos de notícias da Unidade 1 em um <code class="inl">DataFrame</code> (colunas <code class="inl">filename</code> e <code class="inl">text</code>) e conte quantos caracteres cada texto tem, numa nova coluna <code class="inl">n_chars</code>.</li>
-      <li>No <code class="inl">DataFrame</code> <code class="inl">socc</code>, use <code class="inl">.loc</code> para selecionar os artigos de <code class="inl">GLOBE EDITORIAL</code> com mais de 500 comentários.</li>
-      <li>Escreva uma função <code class="inl">get_verbs()</code> (análoga a <code class="inl">get_nouns</code>) que colete os lemas dos <strong>verbos</strong> (<code class="inl">token.pos_ == 'VERB'</code>) e aplique‑a a uma coluna de títulos processados.</li>
-      <li>Salve um <code class="inl">DataFrame</code> em CSV com <code class="inl">to_csv('saida.csv', index=False)</code> e recarregue com <code class="inl">read_csv()</code>, conferindo as colunas.</li>
-    </ol>
-  </div>
-
-  <footer>
-    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. Kolhatkar, V. et al. (2020). <em>The SFU Opinion and Comments Corpus.</em> Corpus Pragmatics. McKinney, W. et al. <em>pandas: powerful Python data analysis toolkit</em> — <a href="https://pandas.pydata.org/">pandas.pydata.org</a>.</p>
-    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
-  </footer>
+<h3 id="definindo-a-própria-função-e-aplicando-com-apply">3.2 Definindo
+a própria função e aplicando com <code>apply()</code></h3>
+<p>Vamos definir nossa própria função para buscar os <strong>lemas de
+cada substantivo</strong> do título. Funções em Python são definidas com
+<code>def</code>, seguido do nome e dos parâmetros entre parênteses:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma funcao &#39;get_nouns&#39; que recebe um unico objeto como entrada.</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Referimo-nos a essa entrada pela variavel &#39;nlp_text&#39;.</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_nouns(nlp_text):</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Primeiro garantimos que a entrada e do tipo correto,</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># usando &#39;assert&#39; para checar o tipo</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">type</span>(nlp_text) <span class="op">==</span> spacy.tokens.doc.Doc</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prepara uma lista vazia para os lemas</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    lemmas <span class="op">=</span> []</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Percorre o objeto Doc</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> token <span class="kw">in</span> nlp_text:</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Se a classe gramatical detalhada do token for substantivo (NN)</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> token.tag_ <span class="op">==</span> <span class="st">&#39;NN&#39;</span>:</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Acrescenta o lema do token a lista de lemas</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>            lemmas.append(token.lemma_)</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ao fim do laco, retorna a lista de lemas</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> lemmas</span></code></pre></div>
+<p>Aplicamos a função com <code>apply()</code>, criando a coluna
+<code>nouns</code> automaticamente pela atribuição:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a funcao &#39;get_nouns&#39; a coluna &#39;processed_title&#39;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>talk[<span class="st">&#39;nouns&#39;</span>] <span class="op">=</span> talk[<span class="st">&#39;processed_title&#39;</span>].<span class="bu">apply</span>(get_nouns)</span></code></pre></div>
+<p>Uma amostra dos títulos processados e seus substantivos:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">nouns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Too many first nations people live in a
+dream…</td>
+<td style="text-align: left;">[dream, palace]</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Fifty years in Canada, and now I feel like
+a s…</td>
+<td style="text-align: left;">[class, citizen]</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">A nation of $100,000 firefighters</td>
+<td style="text-align: left;">[nation]</td>
+</tr>
+</tbody>
+</table>
+<div class="nota">
+<p><strong>Nota:</strong> não é necessário criar uma coluna vazia antes
+— o pandas cria a coluna nova automaticamente na atribuição, como em
+<code>talk[&#39;nouns&#39;]</code>.</p>
 </div>
-
-<script>
-(function(){
-  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
-    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except','assert']);
-  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function hlLine(line){
-    var out='', i=0, n=line.length;
-    while(i<n){
-      var c=line[i];
-      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
-      if(c==="'"||c==='"'){
-        var q=c, j=i+1;
-        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
-        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
-        i=j+1; continue;
-      }
-      if(/[A-Za-z_]/.test(c)){
-        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
-        var w=line.slice(i,j2);
-        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
-        i=j2; continue;
-      }
-      if(/[0-9]/.test(c)){
-        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
-        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
-      }
-      out+=esc(c); i++;
-    }
-    return out;
-  }
-  document.querySelectorAll('code.lang-python').forEach(function(el){
-    var src=el.textContent;
-    el.innerHTML=src.split('\n').map(hlLine).join('\n');
-  });
-})();
-</script>
+<h3 id="extraindo-dados-para-estruturas-nativas-do-python">3.3 Extraindo
+dados para estruturas nativas do Python</h3>
+<p>O método <code>tolist()</code> extrai o conteúdo de uma
+<code>Series</code> para uma <strong>lista</strong>:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte a pandas Series em uma lista</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>noun_list <span class="op">=</span> talk[<span class="st">&#39;nouns&#39;</span>].tolist()</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostra os dez primeiros</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>noun_list[:<span class="dv">10</span>]</span></code></pre></div>
+<pre class="text"><code>[[&#39;dream&#39;, &#39;palace&#39;], [&#39;agency&#39;], [&#39;class&#39;, &#39;citizen&#39;], [&#39;right&#39;],
+ [&#39;nation&#39;], [], [&#39;reform&#39;], [&#39;leader&#39;, &#39;parade&#39;], [&#39;pm&#39;],
+ [&#39;government&#39;, &#39;monopoly&#39;]]</code></pre>
+<p>Temos uma <strong>lista de listas</strong> (cada linha da coluna
+<code>nouns</code> é uma lista). Vamos “achatar” tudo em uma única lista
+<code>final_list</code> com o método <code>extend()</code>:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepara a lista vazia</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>final_list <span class="op">=</span> []</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre cada lista dentro da lista de listas</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nlist <span class="kw">in</span> noun_list:</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Estende a lista final com a lista atual</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    final_list.extend(nlist)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica o tamanho da lista</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(final_list)</span></code></pre></div>
+<pre class="text"><code>884</code></pre>
+<p>Para plotar os 10 substantivos mais frequentes, convertemos
+<code>final_list</code> em uma <code>Series</code>, contamos com
+<code>value_counts()</code> e plotamos:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte a lista em uma pandas Series, conta os substantivos unicos com</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># value_counts(), pega os 10 mais frequentes [:10] e plota em barras.</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>pd.Series(final_list).value_counts()[:<span class="dv">10</span>].plot(kind<span class="op">=</span><span class="st">&#39;bar&#39;</span>)</span></code></pre></div>
+<hr />
+<h2 id="salvando-dataframes">4. Salvando DataFrames</h2>
+<p><code>DataFrame</code>s podem ser salvos como objetos
+<strong>serializados</strong> (<em>pickled</em>) com o método
+<code>to_pickle()</code>, que recebe o caminho do arquivo. Vamos salvar
+o <code>df</code> com os três artigos:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grava o DataFrame em disco usando pickle</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>df.to_pickle(<span class="st">&#39;data/pickled_df.pkl&#39;</span>)</span></code></pre></div>
+<div class="atencao">
+<p><strong>Segurança (importante no CiberExt):</strong> o formato
+<em>pickle</em> serializa objetos Python arbitrários e, ao ser
+<strong>carregado</strong>, pode <strong>executar código
+arbitrário</strong>. <strong>Nunca</strong> faça
+<code>read_pickle()</code> (nem <code>pickle.load</code>,
+<code>joblib.load</code>, <code>numpy</code> com
+<code>allow_pickle=True</code> etc.) em arquivos de <strong>fontes não
+confiáveis</strong> — um <code>.pkl</code> malicioso compromete a
+máquina. Use <em>pickle</em> apenas com dados que <strong>você
+mesmo</strong> gerou; para intercâmbio entre pessoas/sistemas, prefira
+formatos que não executam código, como <strong>CSV</strong>,
+<strong>JSON</strong> ou <strong>Parquet</strong>
+(<code>to_csv</code>/<code>read_csv</code>,
+<code>to_json</code>/<code>read_json</code>,
+<code>to_parquet</code>/<code>read_parquet</code>).</p>
+</div>
+<p>Verificamos lendo de volta com <code>read_pickle()</code>:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Le o DataFrame serializado e atribui o resultado a &#39;df_2&#39;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>df_2 <span class="op">=</span> pd.read_pickle(<span class="st">&#39;data/pickled_df.pkl&#39;</span>)</span></code></pre></div>
+<p>Comparando os dois <code>DataFrame</code>s com <code>==</code>,
+obtemos um valor booleano (<code>True</code>/<code>False</code>) para
+cada célula:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compara os DataFrames &#39;df&#39; e &#39;df_2&#39;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">==</span> df_2</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">índice</th>
+<th style="text-align: center;">filename</th>
+<th style="text-align: center;">text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">True</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">True</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">True</td>
+<td style="text-align: center;">True</td>
+</tr>
+</tbody>
+</table>
+<p>Tudo <code>True</code> — os dados foram salvos e recarregados com
+sucesso.</p>
+<hr />
+<h2 id="quiz">Quiz</h2>
+<p>Marque a alternativa correta (a resposta certa está destacada com
+✅).</p>
+<p><strong>1. Por convenção, o pandas é importado com qual
+apelido?</strong></p>
+<ol type="1">
+<li><code>pd</code> ✅</li>
+<li><code>pandas</code></li>
+<li><code>dt</code></li>
+</ol>
+<p><strong>2. Cada coluna de um <code>DataFrame</code> é, na verdade, um
+objeto:</strong></p>
+<ol type="1">
+<li><code>Series</code> ✅</li>
+<li><code>DataFrame</code></li>
+<li><code>list</code></li>
+</ol>
+<p><strong>3. Um valor <code>NaN</code> indica:</strong></p>
+<ol type="1">
+<li>Um valor ausente (“não é um número”) ✅</li>
+<li>O número zero</li>
+<li>Infinito</li>
+</ol>
+<p><strong>4. Qual operador combina dois critérios num filtro
+<code>.loc</code>?</strong></p>
+<ol type="1">
+<li><code>&amp;</code> ✅</li>
+<li><code>and</code></li>
+<li><code>+</code></li>
+</ol>
+<p><strong>5. Por que criar uma cópia com <code>.copy()</code> de um
+recorte do <code>DataFrame</code>?</strong></p>
+<ol type="1">
+<li>Para evitar o <code>SettingWithCopyWarning</code> e não alterar o
+original ✅</li>
+<li>Para acelerar o cálculo</li>
+<li>É obrigatório em toda operação</li>
+</ol>
+<p><strong>6. (Segurança) Por que <em>não</em> usar
+<code>read_pickle</code> em um arquivo de origem não
+confiável?</strong></p>
+<ol type="1">
+<li>Porque pode executar código arbitrário na sua máquina ✅</li>
+<li>Porque é mais lento que o CSV</li>
+<li>Porque não consegue ler texto</li>
+</ol>
+<h2 id="resumo-da-unidade">Resumo da unidade</h2>
+<p>Nesta unidade, você aprendeu a:</p>
+<ol type="1">
+<li><strong>importar</strong> dados para um <code>DataFrame</code> a
+partir de um único arquivo (<code>read_csv()</code>) ou de vários
+arquivos (<code>Path</code>/<code>glob</code> + laço com
+<code>.at</code>);</li>
+<li><strong>examinar</strong> <code>DataFrame</code>s:
+<code>columns</code>, colunas como <code>Series</code>,
+<code>value_counts()</code>, <code>describe()</code>,
+<code>.plot()</code> e filtragem com <code>.loc</code> e critérios
+combinados (<code>&amp;</code>, <code>==</code>);</li>
+<li><strong>estender</strong> <code>DataFrame</code>s: adicionar
+colunas, calcular entre colunas, lidar com <code>NaN</code>, usar
+<code>.copy()</code> para evitar o <code>SettingWithCopyWarning</code>,
+e aplicar funções (do spaCy ou próprias) com <code>apply()</code>;</li>
+<li><strong>extrair</strong> dados com
+<code>tolist()</code>/<code>extend()</code> e
+<strong>salvar/carregar</strong> com
+<code>to_pickle()</code>/<code>read_pickle()</code>.</li>
+</ol>
+<h3 id="exercícios-sugeridos">Exercícios sugeridos</h3>
+<ol type="1">
+<li>Carregue os três arquivos de notícias da Unidade 1 em um
+<code>DataFrame</code> (colunas <code>filename</code> e
+<code>text</code>) e conte quantos caracteres cada texto tem, guardando
+o resultado em uma nova coluna <code>n_chars</code>.</li>
+<li>No <code>DataFrame</code> <code>socc</code>, use <code>.loc</code>
+para selecionar os artigos do autor <code>GLOBE EDITORIAL</code> com
+mais de 500 comentários.</li>
+<li>Escreva uma função <code>get_verbs()</code> (análoga a
+<code>get_nouns</code>) que colete os lemas dos <strong>verbos</strong>
+(<code>token.pos_ == &#39;VERB&#39;</code>) e aplique‑a a uma coluna de títulos
+processados.</li>
+<li>Salve um <code>DataFrame</code> em CSV com
+<code>to_csv(&#39;saida.csv&#39;, index=False)</code> e recarregue‑o com
+<code>read_csv()</code>, conferindo se as colunas foram
+preservadas.</li>
+</ol>
+<hr />
+<h3 id="referências">Referências</h3>
+<ul>
+<li>Rögnvaldsson, E. et al. <em>Applied Language Technology</em> (MOOC).
+Universidade de Helsinque. <a href="https://applied-language-technology.mooc.fi/" class="uri">https://applied-language-technology.mooc.fi/</a></li>
+<li>Kolhatkar, V. et al. (2020). The SFU Opinion and Comments Corpus.
+<em>Corpus Pragmatics</em>.</li>
+<li>McKinney, W. et al. <em>pandas: powerful Python data analysis
+toolkit</em>. <a href="https://pandas.pydata.org/" class="uri">https://pandas.pydata.org/</a></li>
+</ul>
 </body>
 </html>

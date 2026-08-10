@@ -1,9 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 4 — Avaliando modelos de linguagem
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-> Material adaptado e traduzido a partir do curso *Applied Language Technology* (Universidade de Helsinque), disponível em <https://applied-language-technology.mooc.fi/>.
-
+---
+title: "Avaliando modelos de linguagem"
+subtitle: "Trabalhando com Texto em Python I · Unidade 4"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos de aprendizagem
@@ -113,7 +113,9 @@ both_neutral = neutral * nb_neutral
 both_negative = negative * nb_negative
 ```
 
-> 📝 **Nota:** se um anotador não colocou nenhum *tweet* em uma categoria (por exemplo, `negative`) e o outro colocou, isso **anula** a chance de concordância por acaso naquela categoria — multiplicar por zero resulta em zero.
+::: nota
+**Nota:** se um anotador não colocou nenhum *tweet* em uma categoria (por exemplo, `negative`) e o outro colocou, isso **anula** a chance de concordância por acaso naquela categoria — multiplicar por zero resulta em zero.
+:::
 
 ### Passo 4 — Estimar a concordância esperada (por acaso)
 
@@ -184,7 +186,9 @@ cohen_kappa_score(a1, a2)
 
 Segundo o *benchmark* de Landis e Koch, esse valor indicaria concordância **moderada**.
 
-> 💡 **Dica:** raramente é preciso anotar o conjunto inteiro para medir a concordância — uma **amostra aleatória** costuma bastar. Se o κ sugere que os anotadores concordam, assumimos que as anotações são confiáveis (não aleatórias). Ainda assim, toda medida de concordância entre anotadores depende de suas próprias suposições sobre o que é "concordar" — nenhuma representa a verdade absoluta.
+::: dica
+**Dica:** raramente é preciso anotar o conjunto inteiro para medir a concordância — uma **amostra aleatória** costuma bastar. Se o κ sugere que os anotadores concordam, assumimos que as anotações são confiáveis (não aleatórias). Ainda assim, toda medida de concordância entre anotadores depende de suas próprias suposições sobre o que é "concordar" — nenhuma representa a verdade absoluta.
+:::
 
 ---
 

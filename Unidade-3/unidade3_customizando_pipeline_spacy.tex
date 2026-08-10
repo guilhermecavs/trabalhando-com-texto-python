@@ -1,721 +1,1178 @@
-% !TEX program = pdflatex
-% ============================================================================
-%  Unidade 3 - Customizando o pipeline do spaCy
-%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
-%
-%  COMPILAR COM:  pdflatex unidade3_customizando_pipeline_spacy.tex   (rodar 2x)
-%
-%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
-%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry,
-%    listings, tcolorbox, titlesec, enumitem, hyperref, microtype
-% ============================================================================
-\documentclass[11pt,a4paper]{article}
-
-\usepackage[utf8]{inputenc}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  brazilian,
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{35,38,41}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.58,0.85,0.30}{\textbf{\colorbox[rgb]{0.30,0.12,0.14}{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.25,0.50,0.35}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.48,0.49,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{\textbf{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.99,0.74,0.29}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.64,0.20,0.25}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.60,1.00}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.56,0.27,0.68}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.77,0.36,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{\colorbox[rgb]{0.08,0.19,0.26}{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.96,0.31,0.31}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% ==========================================================================
+%  Cabecalho LaTeX do curso "Trabalhando com Texto em Python I"
+%  Injetado pelo pandoc (-H) ao gerar o .tex de cada unidade.
+% ==========================================================================
 \usepackage[T1]{fontenc}
-\usepackage[brazilian]{babel}
 \usepackage{lmodern}
 \usepackage[scaled=0.92]{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
-\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
 \usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{listings}
 \usepackage[most]{tcolorbox}
-\tcbuselibrary{listings,skins,breakable}
+\tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
-\usepackage{hyperref}
+\usepackage{enumitem}
 
-% -------------------------------------------------------------- paleta ------
+% -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
 \definecolor{cyan}{HTML}{00B4D8}
 \definecolor{subink}{HTML}{2B3242}
-\definecolor{codebg}{HTML}{1E2430}
-\definecolor{codetext}{HTML}{E6E9EF}
-\definecolor{ccomment}{HTML}{7FD18B}
-\definecolor{cstring}{HTML}{F0B866}
-\definecolor{ckw}{HTML}{C792EA}
-\definecolor{cbuiltin}{HTML}{82AAFF}
-\definecolor{outbg}{HTML}{F0F2F7}
-\definecolor{outtext}{HTML}{2F3646}
-\definecolor{outframe}{HTML}{9AA4B8}
 \definecolor{notec}{HTML}{3B82F6}
 \definecolor{tipc}{HTML}{10B981}
 \definecolor{warnc}{HTML}{F59E0B}
+
+% -------- emojis / simbolos unicode que podem aparecer no texto --------
+% simbolos com significado
+\newunicodechar{✅}{{\color{tipc}\checkmark}}
+\newunicodechar{✔}{{\color{tipc}\checkmark}}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↹}{\ensuremath{\hookrightarrow}}
+\newunicodechar{°}{\textdegree}
+\newunicodechar{·}{\textperiodcentered}
+\newunicodechar{´}{'}
+\newunicodechar{‑}{-}
+% emojis decorativos -> removidos no PDF
+\newunicodechar{💡}{}
+\newunicodechar{🚀}{}
+\newunicodechar{📝}{}
+\newunicodechar{⚠}{}
+\newunicodechar{🐍}{}
+\newunicodechar{🎉}{}
+\newunicodechar{🍕}{}
+\newunicodechar{👍}{}
+\newunicodechar{💋}{}
+\newunicodechar{😚}{}
+\newunicodechar{🚂}{}
+\newunicodechar{❤}{}
+
+% -------- caixas de callout (usadas pelo filtro callouts.lua) --------
+\newtcolorbox{notebox}{enhanced,breakable,colback=notec!6,colframe=notec,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}{enhanced,breakable,colback=warnc!8,colframe=warnc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}{enhanced,breakable,colback=accent!5,colframe=accent,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,
+  before skip=10pt,after skip=14pt}
+
+% -------- titulos coloridos --------
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{subink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{cyan}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.1ex}
+
+% codigo inline colorido
 \definecolor{inlink}{HTML}{5A34D6}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlink}\oldtexttt{#1}}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Customizando o pipeline do spaCy},
+  pdfauthor={CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia},
+  pdflang={pt-BR},
+  colorlinks=true,
+  linkcolor={accent},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={cyan},
+  pdfcreator={LaTeX via pandoc}}
 
-\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
-  pdftitle={Customizando o pipeline do spaCy},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
-
-% --------------------------------------------------- estilo do codigo -------
-\lstset{
-  extendedchars=true,
-  breaklines=true,
-  breakatwhitespace=false,
-  keepspaces=true,
-  columns=fullflexible,
-  tabsize=4,
-  showstringspaces=false,
-  literate=%
-    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
-    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-    {ç}{{\c c}}1 {Ç}{{\c C}}1
-    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
-    {—}{{---}}1 {–}{{--}}1
-    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
-    {✔}{{[OK]}}4
+\title{Customizando o pipeline do spaCy}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
-
-\lstdefinestyle{pystyle}{
-  language=Python,
-  basicstyle=\ttfamily\small\color{codetext},
-  keywordstyle=\color{ckw}\bfseries,
-  keywordstyle=[2]\color{cbuiltin},
-  morekeywords=[2]{print,type,load,list,append,items,get,spacy,displacy,assert},
-  commentstyle=\color{ccomment}\itshape,
-  stringstyle=\color{cstring},
-}
-\lstdefinestyle{outstyle}{
-  basicstyle=\ttfamily\small\color{outtext},
-}
-
-% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
-\newtcblisting{pybox}{
-  breakable, enhanced,
-  listing only, listing options={style=pystyle},
-  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
-  borderline west={3pt}{0pt}{accent},
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-% caixa de saida (fundo claro)
-\newtcblisting{outbox}{
-  breakable, enhanced,
-  listing only, listing options={style=outstyle},
-  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-
-% ------------------------------------------------------ caixas de aviso -----
-\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
-
-% ------------------------------------------------------ titulos de secao ----
-\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
-  {\thesection.}{0.5em}{}
-\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
-  {\thesubsection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{6pt}
-\titlespacing*{\subsection}{0pt}{12pt}{4pt}
-
-% codigo em linha (verbatim, colorido) via atalho @...@
-\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
+\makeatother
+\subtitle{Trabalhando com Texto em Python I · Unidade 3}
+\author{CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia}
+\date{2026}
 
 \begin{document}
+\maketitle
 
-% --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
-  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
-  before skip=0pt, after skip=20pt]
-  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
-  {\Huge\bfseries Customizando o pipeline do spaCy}\\[8pt]
-  {\large Trabalhando com Texto em Python I \ --- \ Unidade 3}\\[6pt]
-  {\normalsize Modificar o pipeline, processar em lote, atributos personalizados, salvar em disco e mesclar sintagmas e entidades.}\\[10pt]
-  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
-\end{tcolorbox}
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\subsubsection{Objetivos de
+aprendizagem}\label{objetivos-de-aprendizagem}
 
-\begin{objbox}
 Ao final desta unidade, você deverá saber:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item examinar e modificar o pipeline do spaCy;
-  \item processar textos com eficiência;
-  \item adicionar atributos personalizados a objetos do spaCy;
-  \item salvar em disco os textos processados;
-  \item mesclar sintagmas nominais e entidades nomeadas em tokens únicos.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{examinar e modificar} o pipeline do spaCy;
+\item
+  \textbf{processar textos com eficiência};
+\item
+  \textbf{adicionar atributos personalizados} a objetos do spaCy;
+\item
+  \textbf{salvar em disco} os textos processados;
+\item
+  \textbf{mesclar} sintagmas nominais e entidades nomeadas em tokens
+  únicos.
 \end{itemize}
-\end{objbox}
 
-Vamos começar importando a biblioteca spaCy e o módulo @displacy@, usado para desenhar árvores de dependência, e carregando um modelo de linguagem para o inglês:
+Vamos começar importando a biblioteca spaCy e o módulo
+\texttt{displacy}, usado para desenhar árvores de dependência, e
+carregando um modelo de linguagem para o inglês:
 
-\begin{pybox}
-# Importa a biblioteca spaCy e o modulo displacy
-from spacy import displacy
-import spacy
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa a biblioteca spaCy e o modulo displacy}
+\ImportTok{from}\NormalTok{ spacy }\ImportTok{import}\NormalTok{ displacy}
+\ImportTok{import}\NormalTok{ spacy}
 
-# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
-nlp = spacy.load('en_core_web_sm')
+\CommentTok{\# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel \textquotesingle{}nlp\textquotesingle{}}
+\NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{)}
 
-# Chama a variavel para examinar o objeto
-nlp
-\end{pybox}
-\begin{outbox}
-<spacy.lang.en.English at 0x294522f10>
-\end{outbox}
+\CommentTok{\# Chama a variavel para examinar o objeto}
+\NormalTok{nlp}
+\end{Highlighting}
+\end{Shaded}
 
-% =========================================================== 1 ==============
-\section{Modificando pipelines do spaCy}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\textless{}spacy.lang.en.English at 0x294522f10\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
 
-O objeto @Language@ é, essencialmente, um \textbf{pipeline} que aplica um modelo de linguagem ao texto, executando as tarefas para as quais o modelo foi treinado. As tarefas realizadas dependem dos \textbf{componentes} presentes no pipeline.
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Podemos examinar os componentes com o atributo @pipeline@ de um objeto @Language@:
+\subsection{1. Modificando pipelines do
+spaCy}\label{modificando-pipelines-do-spacy}
 
-\begin{pybox}
-nlp.pipeline
-\end{pybox}
-\begin{outbox}
-[('tok2vec', <spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0>),
- ('tagger', <spacy.pipeline.tagger.Tagger at 0x294cf3ca0>),
- ('parser', <spacy.pipeline.dep_parser.DependencyParser at 0x294b566d0>),
- ('attribute_ruler', <spacy.pipeline.attributeruler.AttributeRuler at 0x295187680>),
- ('lemmatizer', <spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540>),
- ('ner', <spacy.pipeline.ner.EntityRecognizer at 0x294b56740>)]
-\end{outbox}
+O objeto \texttt{Language} é, essencialmente, um \textbf{pipeline} que
+aplica um modelo de linguagem ao texto, executando as tarefas para as
+quais o modelo foi treinado. As tarefas realizadas dependem dos
+\textbf{componentes} presentes no pipeline.
 
-Isso retorna um objeto @SimpleFrozenList@ do spaCy, composto por \textbf{tuplas} com dois itens: o \textbf{nome} do componente (ex.: @tagger@) e o \textbf{componente} que executa a tarefa (ex.: @spacy.pipeline.tok2vec.Tok2Vec@).
+Podemos examinar os componentes de um pipeline usando o atributo
+\texttt{pipeline} de um objeto \texttt{Language}:
 
-Componentes como @tagger@, @parser@, @ner@ e @lemmatizer@ já são familiares da unidade anterior. Há dois novos:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item \textbf{\texttt{tok2vec}} mapeia os tokens para suas representações numéricas (veremos na Parte III).
-  \item \textbf{\texttt{attribute\_ruler}} aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nlp.pipeline}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[(\textquotesingle{}tok2vec\textquotesingle{}, \textless{}spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0\textgreater{}),}
+\NormalTok{ (\textquotesingle{}tagger\textquotesingle{}, \textless{}spacy.pipeline.tagger.Tagger at 0x294cf3ca0\textgreater{}),}
+\NormalTok{ (\textquotesingle{}parser\textquotesingle{}, \textless{}spacy.pipeline.dep\_parser.DependencyParser at 0x294b566d0\textgreater{}),}
+\NormalTok{ (\textquotesingle{}attribute\_ruler\textquotesingle{}, \textless{}spacy.pipeline.attributeruler.AttributeRuler at 0x295187680\textgreater{}),}
+\NormalTok{ (\textquotesingle{}lemmatizer\textquotesingle{}, \textless{}spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540\textgreater{}),}
+\NormalTok{ (\textquotesingle{}ner\textquotesingle{}, \textless{}spacy.pipeline.ner.EntityRecognizer at 0x294b56740\textgreater{})]}
+\end{Highlighting}
+\end{Shaded}
+
+Isso retorna um objeto \texttt{SimpleFrozenList} do spaCy, composto por
+\textbf{tuplas} do Python com dois itens:
+
+\begin{itemize}
+\tightlist
+\item
+  o \textbf{nome} do componente (por exemplo, \texttt{tagger});
+\item
+  o \textbf{componente} que efetivamente executa a tarefa (por exemplo,
+  \texttt{spacy.pipeline.tok2vec.Tok2Vec}).
+\end{itemize}
+
+Componentes como \texttt{tagger}, \texttt{parser}, \texttt{ner} e
+\texttt{lemmatizer} já devem ser familiares da unidade anterior. Há,
+porém, dois componentes que ainda não encontramos:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\texttt{tok2vec}} mapeia os tokens para suas representações
+  numéricas (veremos essas representações na Parte III).
+\item
+  \textbf{\texttt{attribute\_ruler}} aplica regras definidas pelo
+  usuário aos tokens --- por exemplo, correspondências a um dado padrão
+  linguístico --- e adiciona essa informação ao token como um atributo,
+  se solicitado.
 \end{itemize}
 
 \begin{notebox}
-A lista em @nlp.pipeline@ \textbf{não} inclui o @Tokenizer@, porque todo texto precisa ser tokenizado para qualquer processamento ocorrer. Por isso ele fica no atributo @tokenizer@, e não em @pipeline@.
+
+\textbf{Nota:} a lista de componentes em \texttt{nlp.pipeline}
+\textbf{não} inclui o \texttt{Tokenizer}, porque todo texto precisa ser
+tokenizado para que qualquer processamento ocorra. Por isso, o
+\texttt{Tokenizer} fica no atributo \texttt{tokenizer} do objeto
+\texttt{Language}, e não no atributo \texttt{pipeline}.
+
 \end{notebox}
 
-\subsection{Excluindo componentes para ganhar desempenho}
-\textbf{Todo componente tem um custo computacional.} Se você não precisa da saída de um componente, não deve incluí-lo, pois o processamento fica mais lento. Para excluir, forneça o argumento @exclude@ com os nomes dos componentes ao chamar @load()@:
+\subsubsection{1.1 Excluindo componentes para ganhar
+desempenho}\label{excluindo-componentes-para-ganhar-desempenho}
 
-\begin{pybox}
-# Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de
-# entidades nomeadas ('ner') e a analise de dependencias sintaticas ('parser').
-nlp = spacy.load('en_core_web_sm', exclude=['ner', 'parser'])
+É importante entender que \textbf{todo componente do pipeline tem um
+custo computacional}. Se você não precisa da saída de um componente, não
+deve incluí‑lo no pipeline, pois o processamento ficará mais lento.
 
-# Examina os componentes ativos no objeto Language 'nlp'
-nlp.pipeline
-\end{pybox}
-\begin{outbox}
-[('tok2vec', <spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760>),
- ('tagger', <spacy.pipeline.tagger.Tagger at 0x296c7ba00>),
- ('attribute_ruler', <spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40>),
- ('lemmatizer', <spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200>)]
-\end{outbox}
+Para excluir um componente, forneça o argumento \texttt{exclude} com uma
+\emph{string} (ou uma lista) contendo os nomes dos componentes a
+excluir, ao inicializar o objeto \texttt{Language} com a função
+\texttt{load()}:
 
-Como mostra a saída, @ner@ e @parser@ não estão mais no pipeline.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de}
+\CommentTok{\# entidades nomeadas (\textquotesingle{}ner\textquotesingle{}) e a analise de dependencias sintaticas (\textquotesingle{}parser\textquotesingle{}).}
+\NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{, exclude}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}ner\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}parser\textquotesingle{}}\NormalTok{])}
 
-\subsection{Analisando o pipeline com \textnormal{\texttt{analyze\_pipes()}}}
-O método @analyze_pipes()@ dá uma visão geral dos componentes. Definindo @pretty@ como @True@, o spaCy imprime uma tabela com os componentes e as anotações que produzem:
+\CommentTok{\# Examina os componentes ativos no objeto Language \textquotesingle{}nlp\textquotesingle{}}
+\NormalTok{nlp.pipeline}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Analisa o pipeline e guarda a analise na variavel 'pipe_analysis'
-pipe_analysis = nlp.analyze_pipes(pretty=True)
-\end{pybox}
-\begin{outbox}
-============================= Pipeline Overview =============================
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[(\textquotesingle{}tok2vec\textquotesingle{}, \textless{}spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760\textgreater{}),}
+\NormalTok{ (\textquotesingle{}tagger\textquotesingle{}, \textless{}spacy.pipeline.tagger.Tagger at 0x296c7ba00\textgreater{}),}
+\NormalTok{ (\textquotesingle{}attribute\_ruler\textquotesingle{}, \textless{}spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40\textgreater{}),}
+\NormalTok{ (\textquotesingle{}lemmatizer\textquotesingle{}, \textless{}spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200\textgreater{})]}
+\end{Highlighting}
+\end{Shaded}
 
-#   Component         Assigns       Requires   Scores      Retokenizes
--   ---------------   -----------   --------   ---------   -----------
-0   tok2vec           doc.tensor                           False
-1   tagger            token.tag                tag_acc     False
-2   attribute_ruler                                        False
-3   lemmatizer        token.lemma              lemma_acc   False
+Como mostra a saída, os componentes \texttt{ner} e \texttt{parser}
+\textbf{não} estão mais no pipeline.
 
-✔ No problems found.
-\end{outbox}
+\subsubsection{\texorpdfstring{1.2 Analisando o pipeline com
+\texttt{analyze\_pipes()}}{1.2 Analisando o pipeline com analyze\_pipes()}}\label{analisando-o-pipeline-com-analyze_pipes}
 
-O método retorna um \textbf{dicionário} Python. Você pode usá-lo para verificar que nenhum problema foi encontrado \textbf{antes} de processar grandes volumes. Os relatórios ficam sob a chave @problems@:
+O objeto \texttt{Language} também fornece o método
+\texttt{analyze\_pipes()}, que dá uma visão geral dos componentes e de
+suas interações. Definindo o atributo \texttt{pretty} como
+\texttt{True}, o spaCy imprime uma tabela com os componentes e as
+anotações que produzem:
 
-\begin{pybox}
-# Examina o valor guardado sob a chave 'problems'
-pipe_analysis['problems']
-\end{pybox}
-\begin{outbox}
-{'tok2vec': [], 'tagger': [], 'attribute_ruler': [], 'lemmatizer': []}
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Analisa o pipeline e guarda a analise na variavel \textquotesingle{}pipe\_analysis\textquotesingle{}}
+\NormalTok{pipe\_analysis }\OperatorTok{=}\NormalTok{ nlp.analyze\_pipes(pretty}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-Podemos escrever um trecho que \textbf{verifica} isso. Percorremos o dicionário com @items()@ e usamos @assert@ com @len()@ e o operador @==@ para checar que a lista tem tamanho @0@; caso contrário, o Python levanta um @AssertionError@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{============================= Pipeline Overview =============================}
 
-\begin{pybox}
-# Percorre os pares chave/valor do dicionario. Atribui a chave e o valor
-# as variaveis 'component_name' e 'problem_list'.
-for component_name, problem_list in pipe_analysis['problems'].items():
+\NormalTok{\#   Component         Assigns       Requires   Scores      Retokenizes}
+\NormalTok{{-}   {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}   {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}   {-}{-}{-}{-}{-}{-}{-}{-}   {-}{-}{-}{-}{-}{-}{-}{-}{-}   {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{0   tok2vec           doc.tensor                           False}
+\NormalTok{1   tagger            token.tag                tag\_acc     False}
+\NormalTok{2   attribute\_ruler                                        False}
+\NormalTok{3   lemmatizer        token.lemma              lemma\_acc   False}
 
-    # Usa 'assert' para checar a lista de problemas; levanta Error se necessario.
-    assert len(problem_list) == 0, f"There is a problem with {component_name}: {problem_list}!"
-\end{pybox}
+\NormalTok{✔ No problems found.}
+\end{Highlighting}
+\end{Shaded}
 
-Usamos uma \textit{f-string}: o @f@ antes das aspas permite \textbf{inserir variáveis} entre chaves @{}@. Se nenhum problema for encontrado, o laço passa silenciosamente.
+O método \texttt{analyze\_pipes()} retorna um \textbf{dicionário}
+Python, com a mesma informação da tabela. Você pode usá‑lo para
+verificar que nenhum problema foi encontrado \textbf{antes} de processar
+grandes volumes de dados. Os relatórios de problemas ficam guardados sob
+a chave \texttt{problems}:
 
-% =========================================================== 2 ==============
-\section{Processando textos com eficiência}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Examina o valor guardado sob a chave \textquotesingle{}problems\textquotesingle{}}
+\NormalTok{pipe\_analysis[}\StringTok{\textquotesingle{}problems\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-Ao trabalhar com grandes volumes, é desejável processá-los da forma mais eficiente possível. Vamos definir um exemplo com uma \textbf{lista} de três frases da Wikipédia em inglês:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\{\textquotesingle{}tok2vec\textquotesingle{}: [], \textquotesingle{}tagger\textquotesingle{}: [], \textquotesingle{}attribute\_ruler\textquotesingle{}: [], \textquotesingle{}lemmatizer\textquotesingle{}: []\}}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Reinicializa o modelo de linguagem, pois precisamos da analise de
-# dependencias nas proximas secoes.
-nlp = spacy.load('en_core_web_sm')
+Isso retorna um dicionário com os nomes dos componentes como chaves,
+cujos valores são \textbf{listas de problemas}. Neste caso, as listas
+estão vazias, porque não há problemas.
 
-# Define uma lista de frases de exemplo
-sents = ["On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production.",
-         "The 'Complex Modernization' initiative expanded two existing nuclear sites to produce new bomb parts.",
-         "The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee."]
+Podemos escrever facilmente um trecho de código que \textbf{verifica} se
+isso é realmente verdade. Para isso, percorremos o dicionário
+\texttt{pipe\_analysis} usando o método \texttt{items()} para obter os
+pares chave/valor, e usamos a instrução \texttt{assert} com a função
+\texttt{len()} e o operador de comparação \texttt{==} para checar que a
+lista tem tamanho \texttt{0}. Se essa afirmação \textbf{não} for
+verdadeira (ou seja, se houver algum problema), o Python levanta um
+\texttt{AssertionError} e para:
 
-# Chama a variavel para examinar a saida
-sents
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre os pares chave/valor do dicionario. Atribui a chave e o valor}
+\CommentTok{\# as variaveis \textquotesingle{}component\_name\textquotesingle{} e \textquotesingle{}problem\_list\textquotesingle{}.}
+\ControlFlowTok{for}\NormalTok{ component\_name, problem\_list }\KeywordTok{in}\NormalTok{ pipe\_analysis[}\StringTok{\textquotesingle{}problems\textquotesingle{}}\NormalTok{].items():}
 
-Os objetos @Language@ têm um método específico, @pipe()@, para processar textos em uma \textbf{lista}. Ele foi otimizado para processar em \textbf{lotes} (\textit{batches}), sendo mais rápido que um laço @for@. O @pipe()@ recebe uma lista e retorna um \textbf{gerador} (\textit{generator}):
+    \CommentTok{\# Usa \textquotesingle{}assert\textquotesingle{} para checar a lista de problemas; levanta Error se necessario.}
+    \ControlFlowTok{assert} \BuiltInTok{len}\NormalTok{(problem\_list) }\OperatorTok{==} \DecValTok{0}\NormalTok{, }\SpecialStringTok{f"There is a problem with }\SpecialCharTok{\{}\NormalTok{component\_name}\SpecialCharTok{\}}\SpecialStringTok{: }\SpecialCharTok{\{}\NormalTok{problem\_list}\SpecialCharTok{\}}\SpecialStringTok{!"}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Alimenta a lista de frases ao metodo pipe()
-docs = nlp.pipe(sents)
+Aqui também imprimimos uma mensagem de erro usando uma \emph{f‑string}:
+o \texttt{f} antes das aspas declara que a \emph{string} pode ser
+formatada, permitindo \textbf{inserir variáveis} entre chaves
+\texttt{\{\}}. Se um erro for levantado, essas partes serão preenchidas
+com os valores atuais de \texttt{component\_name} e
+\texttt{problem\_list}. Se nenhum problema for encontrado, o laço passa
+silenciosamente.
 
-# Chama a variavel para examinar a saida
-docs
-\end{pybox}
-\begin{outbox}
-<generator object Language.pipe at 0x296d0b580>
-\end{outbox}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Geradores contêm outros objetos e os \textbf{produzem} (\textit{yield}) quando chamados. Para recuperar todos, convertemos o gerador em uma \textbf{lista}:
+\subsection{2. Processando textos com
+eficiência}\label{processando-textos-com-eficiuxeancia}
 
-\begin{pybox}
-# Converte o gerador pipe em uma lista
-docs = list(docs)
+Ao trabalhar com grandes volumes de dados, é altamente desejável
+processá‑los da forma mais eficiente possível. Para ilustrar as boas
+práticas, vamos definir um exemplo com uma \textbf{lista} de três frases
+da Wikipédia em inglês:
 
-# Chama a variavel para examinar a saida
-docs
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reinicializa o modelo de linguagem, pois precisamos da analise de}
+\CommentTok{\# dependencias nas proximas secoes.}
+\NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{)}
 
-Isso nos dá uma lista de objetos @Doc@ prontos para processamento posterior.
+\CommentTok{\# Define uma lista de frases de exemplo}
+\NormalTok{sents }\OperatorTok{=}\NormalTok{ [}\StringTok{"On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production."}\NormalTok{,}
+         \StringTok{"The \textquotesingle{}Complex Modernization\textquotesingle{} initiative expanded two existing nuclear sites to produce new bomb parts."}\NormalTok{,}
+         \StringTok{"The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y{-}12 facility in Oak Ridge, Tennessee."}\NormalTok{]}
 
-% =========================================================== 3 ==============
-\section{Adicionando atributos personalizados aos objetos do spaCy}
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{sents}
+\end{Highlighting}
+\end{Shaded}
 
-O spaCy permite \textbf{definir atributos personalizados} para objetos @Doc@, @Span@ e @Token@ --- úteis para guardar informações adicionais sobre os textos. Usamos o método @set_extension()@. Como o atributo é adicionado a \textbf{todos} os @Doc@, primeiro importamos o objeto @Doc@ genérico:
+Os objetos \texttt{Language} do spaCy têm um método específico,
+\texttt{pipe()}, para processar textos guardados em uma \textbf{lista}.
+Esse método foi otimizado para essa finalidade: ele processa os textos
+em \textbf{lotes} (\emph{batches}), em vez de individualmente, o que o
+torna mais rápido do que processar cada item com um laço \texttt{for}.
 
-\begin{pybox}
-# Importa o objeto Doc do modulo 'tokens' do spaCy
-from spacy.tokens import Doc
+O método \texttt{pipe()} recebe uma lista como entrada e retorna um
+\textbf{gerador} (\emph{generator}) do Python:
 
-# Adiciona dois atributos personalizados ao objeto Doc, 'age' e 'location',
-# usando o metodo set_extension().
-Doc.set_extension("age", default=None)
-Doc.set_extension("location", default=None)
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Alimenta a lista de frases ao metodo pipe()}
+\NormalTok{docs }\OperatorTok{=}\NormalTok{ nlp.pipe(sents)}
 
-O argumento @default@ define um valor padrão, aqui a palavra-chave @None@.
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{docs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\textless{}generator object Language.pipe at 0x296d0b580\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+Geradores são objetos do Python que contêm outros objetos. Quando
+chamado, um gerador \textbf{produz} (\emph{yields}) os objetos contidos
+nele. Para recuperar todos os objetos de um gerador, precisamos
+convertê‑lo em outro tipo, como uma \textbf{lista} --- pense na lista
+como uma estrutura capaz de coletar a saída do gerador para exame:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Converte o gerador pipe em uma lista}
+\NormalTok{docs }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(docs)}
+
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{docs}
+\end{Highlighting}
+\end{Shaded}
+
+Isso nos dá uma lista de objetos \texttt{Doc} do spaCy prontos para
+processamento posterior.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Adicionando atributos personalizados aos objetos do
+spaCy}\label{adicionando-atributos-personalizados-aos-objetos-do-spacy}
+
+A unidade anterior mostrou como acessar as anotações linguísticas do
+spaCy por meio de seus atributos. Além disso, o spaCy permite
+\textbf{definir atributos personalizados} para objetos \texttt{Doc},
+\texttt{Span} e \texttt{Token}. Esses atributos podem guardar, por
+exemplo, informações adicionais sobre os textos --- se você trabalha com
+textos que trazem dados sobre os usuários da língua, pode incorporar
+essa informação diretamente nos objetos do spaCy.
+
+Atributos personalizados são adicionados ao objeto \texttt{Doc} com o
+método \texttt{set\_extension()}. Como esses atributos são adicionados a
+\textbf{todos} os objetos \texttt{Doc} (e não a um \texttt{Doc}
+individual), primeiro importamos o objeto \texttt{Doc} genérico do
+módulo \texttt{tokens} do spaCy:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa o objeto Doc do modulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
+\ImportTok{from}\NormalTok{ spacy.tokens }\ImportTok{import}\NormalTok{ Doc}
+
+\CommentTok{\# Adiciona dois atributos personalizados ao objeto Doc, \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{},}
+\CommentTok{\# usando o metodo set\_extension().}
+\NormalTok{Doc.set\_extension(}\StringTok{"age"}\NormalTok{, default}\OperatorTok{=}\VariableTok{None}\NormalTok{)}
+\NormalTok{Doc.set\_extension(}\StringTok{"location"}\NormalTok{, default}\OperatorTok{=}\VariableTok{None}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Usamos o argumento \texttt{default} para definir um valor padrão para
+ambos, com a palavra‑chave \texttt{None} do Python.
 
 \begin{notebox}
-Diferentemente de atributos como @sents@ ou @heads@, os personalizados ficam sob um atributo que consiste no sublinhado @_@ --- por exemplo, @Doc._.age@.
+
+\textbf{Nota:} diferentemente de atributos como \texttt{sents} ou
+\texttt{heads}, os atributos personalizados ficam sob um atributo que
+consiste no caractere sublinhado \texttt{\_} --- por exemplo,
+\texttt{Doc.\_.age}.
+
 \end{notebox}
 
-Vamos definir um dicionário aninhado @sents_dict@ com três chaves (@0@, @1@, @2@), cujos valores são dicionários com @age@, @location@ e @text@:
+Para exemplificar, vamos definir um dicionário Python. O dicionário
+\texttt{sents\_dict} tem três chaves (\texttt{0}, \texttt{1} e
+\texttt{2}), cujos valores são, por sua vez, dicionários com três
+chaves: \texttt{age}, \texttt{location} e \texttt{text}. Isso mostra
+como as estruturas de dados do Python costumam ser \textbf{aninhadas}:
 
-\begin{pybox}
-# Cria um dicionario cujos valores sao outros dicionarios
-# com tres chaves: 'age', 'location' e 'text'.
-sents_dict = {0: {"age": 23,
-                  "location": "Helsinki",
-                  "text": "The Senate Square is by far the most important landmark in Helsinki."
-                 },
-              1: {"age": 35,
-                  "location": "Tallinn",
-                  "text": "The Old Town, for sure."
-                 },
-              2: {"age": 58,
-                  "location": "Stockholm",
-                  "text": "Södermalm is interesting!"
-                 }
-             }
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cria um dicionario cujos valores sao outros dicionarios}
+\CommentTok{\# com tres chaves: \textquotesingle{}age\textquotesingle{}, \textquotesingle{}location\textquotesingle{} e \textquotesingle{}text\textquotesingle{}.}
+\NormalTok{sents\_dict }\OperatorTok{=}\NormalTok{ \{}\DecValTok{0}\NormalTok{: \{}\StringTok{"age"}\NormalTok{: }\DecValTok{23}\NormalTok{,}
+                  \StringTok{"location"}\NormalTok{: }\StringTok{"Helsinki"}\NormalTok{,}
+                  \StringTok{"text"}\NormalTok{: }\StringTok{"The Senate Square is by far the most important landmark in Helsinki."}
+\NormalTok{                 \},}
+              \DecValTok{1}\NormalTok{: \{}\StringTok{"age"}\NormalTok{: }\DecValTok{35}\NormalTok{,}
+                  \StringTok{"location"}\NormalTok{: }\StringTok{"Tallinn"}\NormalTok{,}
+                  \StringTok{"text"}\NormalTok{: }\StringTok{"The Old Town, for sure."}
+\NormalTok{                 \},}
+              \DecValTok{2}\NormalTok{: \{}\StringTok{"age"}\NormalTok{: }\DecValTok{58}\NormalTok{,}
+                  \StringTok{"location"}\NormalTok{: }\StringTok{"Stockholm"}\NormalTok{,}
+                  \StringTok{"text"}\NormalTok{: }\StringTok{"Södermalm is interesting!"}
+\NormalTok{                 \}}
+\NormalTok{             \}}
+\end{Highlighting}
+\end{Shaded}
 
-Percorremos o dicionário, processamos cada texto e definimos os atributos personalizados:
+Vamos percorrer o dicionário \texttt{sents\_dict} para processar os
+exemplos e adicionar os atributos personalizados aos objetos
+\texttt{Doc} resultantes:
 
-\begin{pybox}
-# Prepara uma lista vazia para guardar os textos processados
-docs = []
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Prepara uma lista vazia para guardar os textos processados}
+\NormalTok{docs }\OperatorTok{=}\NormalTok{ []}
 
-# Percorre os pares de chave e valor do dicionario 'sents_dict'.
-# Os pares chave/valor ficam disponiveis pelo metodo items().
-# Chamamos essas chaves e valores de 'key' e 'data'; ou seja, usamos
-# a variavel 'data' para se referir ao dicionario aninhado.
-for key, data in sents_dict.items():
+\CommentTok{\# Percorre os pares de chave e valor do dicionario \textquotesingle{}sents\_dict\textquotesingle{}.}
+\CommentTok{\# Os pares chave/valor ficam disponiveis pelo metodo items().}
+\CommentTok{\# Chamamos essas chaves e valores de \textquotesingle{}key\textquotesingle{} e \textquotesingle{}data\textquotesingle{}; ou seja, usamos}
+\CommentTok{\# a variavel \textquotesingle{}data\textquotesingle{} para se referir ao dicionario aninhado.}
+\ControlFlowTok{for}\NormalTok{ key, data }\KeywordTok{in}\NormalTok{ sents\_dict.items():}
 
-    # Recupera o valor da chave 'text' do dicionario aninhado.
-    # Alimenta esse texto ao modelo em 'nlp' e guarda o resultado em 'doc'.
-    doc = nlp(data['text'])
+    \CommentTok{\# Recupera o valor da chave \textquotesingle{}text\textquotesingle{} do dicionario aninhado.}
+    \CommentTok{\# Alimenta esse texto ao modelo em \textquotesingle{}nlp\textquotesingle{} e guarda o resultado em \textquotesingle{}doc\textquotesingle{}.}
+\NormalTok{    doc }\OperatorTok{=}\NormalTok{ nlp(data[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{])}
 
-    # Recupera os valores de 'age' e 'location' do dicionario aninhado.
-    # Atribui esses valores aos atributos personalizados do objeto Doc.
-    # Lembre-se: atributos personalizados ficam sob o pseudo-atributo '_'!
-    doc._.age = data['age']
-    doc._.location = data['location']
+    \CommentTok{\# Recupera os valores de \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{} do dicionario aninhado.}
+    \CommentTok{\# Atribui esses valores aos atributos personalizados do objeto Doc.}
+    \CommentTok{\# Lembre{-}se: atributos personalizados ficam sob o pseudo{-}atributo \textquotesingle{}\_\textquotesingle{}!}
+\NormalTok{    doc.\_.age }\OperatorTok{=}\NormalTok{ data[}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{]}
+\NormalTok{    doc.\_.location }\OperatorTok{=}\NormalTok{ data[}\StringTok{\textquotesingle{}location\textquotesingle{}}\NormalTok{]}
 
-    # Acrescenta o Doc atual em 'doc' a lista 'docs'
-    docs.append(doc)
-\end{pybox}
+    \CommentTok{\# Acrescenta o Doc atual em \textquotesingle{}doc\textquotesingle{} a lista \textquotesingle{}docs\textquotesingle{}}
+\NormalTok{    docs.append(doc)}
+\end{Highlighting}
+\end{Shaded}
 
-Isso produz uma lista de @Doc@s. Vamos percorrê-la e imprimir cada um com seus atributos:
+Isso produz uma lista de objetos \texttt{Doc}, guardada em
+\texttt{docs}. Vamos percorrê‑la e imprimir cada \texttt{Doc} com seus
+atributos personalizados:
 
-\begin{pybox}
-# Percorre cada objeto Doc na lista 'docs'
-for doc in docs:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre cada objeto Doc na lista \textquotesingle{}docs\textquotesingle{}}
+\ControlFlowTok{for}\NormalTok{ doc }\KeywordTok{in}\NormalTok{ docs:}
 
-    # Imprime cada Doc e os atributos 'age' e 'location'
-    print(doc, doc._.age, doc._.location)
-\end{pybox}
-\begin{outbox}
-The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki
-The Old Town, for sure. 35 Tallinn
-Södermalm is interesting! 58 Stockholm
-\end{outbox}
+    \CommentTok{\# Imprime cada Doc e os atributos \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{}}
+    \BuiltInTok{print}\NormalTok{(doc, doc.\_.age, doc.\_.location)}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Filtrando dados com compreensão de lista}
-Os atributos personalizados podem ser usados para \textbf{filtrar} dados. Uma forma eficiente é a \textbf{compreensão de lista} (\textit{list comprehension}) --- como um laço @for@ declarado ``na hora'', entre colchetes @[]@, com três partes: (1) o que guardar na nova lista; (2) o @for ... in@ percorrendo os itens; (3) o @if@ com a condição:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki}
+\NormalTok{The Old Town, for sure. 35 Tallinn}
+\NormalTok{Södermalm is interesting! 58 Stockholm}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Usa uma compreensao de lista para filtrar os Docs cujo atributo
-# 'age' tenha valor abaixo de 40.
-under_forty = [doc for doc in docs if doc._.get('age') < 40]
+\subsubsection{3.1 Filtrando dados com compreensão de
+lista}\label{filtrando-dados-com-compreensuxe3o-de-lista}
 
-# Chama a variavel para examinar a saida
-under_forty
-\end{pybox}
-\begin{outbox}
-[The Senate Square is by far the most important landmark in Helsinki.,
- The Old Town, for sure.]
-\end{outbox}
+Os atributos personalizados podem ser usados, por exemplo, para
+\textbf{filtrar} os dados. Uma forma eficiente é a \textbf{compreensão
+de lista} (\emph{list comprehension}), que avalia o conteúdo de uma
+lista existente e monta uma nova lista com base em algum critério --- é
+como um laço \texttt{for} declarado ``na hora'', entre colchetes
+\texttt{{[}{]}}. Ela tem três componentes:
 
-Isso retorna uma lista com apenas dois @Doc@s que atendem ao critério.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  a referência a \texttt{doc} \textbf{à esquerda} do \texttt{for} define
+  o que será guardado na nova lista (no caso, o próprio objeto
+  \texttt{Doc});
+\item
+  o \texttt{for\ ...\ in} funciona como num laço comum, percorrendo os
+  itens de \texttt{docs};
+\item
+  o \texttt{if} define uma \textbf{condição}: só incluímos objetos
+  \texttt{Doc} cujo atributo \texttt{age} tenha valor abaixo de 40.
+\end{enumerate}
 
-% =========================================================== 4 ==============
-\section{Gravando textos processados em disco}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa uma compreensao de lista para filtrar os Docs cujo atributo}
+\CommentTok{\# \textquotesingle{}age\textquotesingle{} tenha valor abaixo de 40.}
+\NormalTok{under\_forty }\OperatorTok{=}\NormalTok{ [doc }\ControlFlowTok{for}\NormalTok{ doc }\KeywordTok{in}\NormalTok{ docs }\ControlFlowTok{if}\NormalTok{ doc.\_.get(}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{) }\OperatorTok{\textless{}} \DecValTok{40}\NormalTok{]}
 
-Com grandes volumes, primeiro garanta que o pipeline funciona com \textbf{poucos} textos; depois processe tudo e \textbf{salve}. O spaCy oferece o tipo @DocBin@ para armazenar objetos @Doc@ com suas anotações:
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{under\_forty}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Importa o objeto DocBin do modulo 'tokens' do spaCy
-from spacy.tokens import DocBin
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[The Senate Square is by far the most important landmark in Helsinki.,}
+\NormalTok{ The Old Town, for sure.]}
+\end{Highlighting}
+\end{Shaded}
 
-# Inicializa um objeto DocBin e adiciona os Docs de 'docs'
-docbin = DocBin(docs=docs)
-\end{pybox}
+Isso retorna uma lista com apenas dois objetos \texttt{Doc} que atendem
+ao critério.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Gravando textos processados em
+disco}\label{gravando-textos-processados-em-disco}
+
+Ao trabalhar com grandes volumes de textos, primeiro garanta que o
+pipeline produz o resultado desejado usando \textbf{poucos} textos.
+Quando tudo estiver funcionando, processe o conjunto completo e
+\textbf{salve o resultado}, pois processar grandes volumes consome tempo
+e recursos.
+
+O spaCy oferece um tipo de objeto especial, o \texttt{DocBin}, para
+armazenar objetos \texttt{Doc} com suas anotações linguísticas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa o objeto DocBin do modulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
+\ImportTok{from}\NormalTok{ spacy.tokens }\ImportTok{import}\NormalTok{ DocBin}
+
+\CommentTok{\# Inicializa um objeto DocBin e adiciona os Docs de \textquotesingle{}docs\textquotesingle{}}
+\NormalTok{docbin }\OperatorTok{=}\NormalTok{ DocBin(docs}\OperatorTok{=}\NormalTok{docs)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{warnbox}
-Se você adicionou \textbf{atributos personalizados} a @Doc@s, @Span@s ou @Token@s, também é preciso definir @store_user_data=True@ --- por exemplo, @DocBin(docs=docs, store_user_data=True)@.
+
+\textbf{Atenção:} se você adicionou \textbf{atributos personalizados} a
+\texttt{Doc}s, \texttt{Span}s ou \texttt{Token}s, também é preciso
+definir o argumento \texttt{store\_user\_data} como \texttt{True} ---
+por exemplo, \texttt{DocBin(docs=docs,\ store\_user\_data=True)}.
+
 \end{warnbox}
 
-Verificamos que os três @Doc@s entraram no @DocBin@ com o método @__len__()@:
+Podemos verificar que os três \texttt{Doc}s entraram no \texttt{DocBin}
+examinando a saída do método \texttt{\_\_len\_\_()}:
 
-\begin{pybox}
-# Obtem o numero de Docs no DocBin
-docbin.__len__()
-\end{pybox}
-\begin{outbox}
-3
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Obtem o numero de Docs no DocBin}
+\NormalTok{docbin.}\FunctionTok{\_\_len\_\_}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
 
-O método @add()@ permite adicionar mais @Doc@s:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{3}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Define uma string, alimenta o modelo em 'nlp' e adiciona o
-# Doc resultante ao objeto DocBin 'docbin'
-docbin.add(nlp("Yet another Doc object."))
+O método \texttt{add()} permite adicionar mais objetos \texttt{Doc} ao
+\texttt{DocBin}, se necessário:
 
-# Verifica que o Doc foi adicionado; o tamanho agora deve ser 4
-docbin.__len__()
-\end{pybox}
-\begin{outbox}
-4
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define uma string, alimenta o modelo em \textquotesingle{}nlp\textquotesingle{} e adiciona o}
+\CommentTok{\# Doc resultante ao objeto DocBin \textquotesingle{}docbin\textquotesingle{}}
+\NormalTok{docbin.add(nlp(}\StringTok{"Yet another Doc object."}\NormalTok{))}
 
-Gravamos o @DocBin@ em disco com @to_disk()@, que recebe o argumento @path@:
+\CommentTok{\# Verifica que o Doc foi adicionado; o tamanho agora deve ser 4}
+\NormalTok{docbin.}\FunctionTok{\_\_len\_\_}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Grava o objeto DocBin em disco
-docbin.to_disk(path='data/docbin.spacy')
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{4}
+\end{Highlighting}
+\end{Shaded}
 
-Para \textbf{carregar}, inicialize um @DocBin@ vazio e use @from_disk()@:
+Depois de populado, o \texttt{DocBin} deve ser \textbf{gravado em disco}
+com o método \texttt{to\_disk()}, que recebe um único argumento,
+\texttt{path}, definindo o caminho do arquivo. Vamos gravar o
+\texttt{DocBin} em um arquivo chamado \texttt{docbin.spacy}, no
+diretório \texttt{data}:
 
-\begin{pybox}
-# Inicializa um novo DocBin e usa 'from_disk' para carregar os dados do disco.
-# Atribui o resultado a variavel 'docbin_loaded'.
-docbin_loaded = DocBin().from_disk(path='data/docbin.spacy')
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Grava o objeto DocBin em disco}
+\NormalTok{docbin.to\_disk(path}\OperatorTok{=}\StringTok{\textquotesingle{}data/docbin.spacy\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-# Chama a variavel para examinar a saida
-docbin_loaded
-\end{pybox}
-\begin{outbox}
-<spacy.tokens._serialize.DocBin at 0x2953a4c40>
-\end{outbox}
+Para \textbf{carregar} um \texttt{DocBin} do disco, primeiro inicialize
+um \texttt{DocBin} vazio com \texttt{DocBin()} e use o método
+\texttt{from\_disk()}:
 
-Para acessar os @Doc@s guardados, use @get_docs()@, passando o \textbf{vocabulário} (@nlp.vocab@) necessário para reconstruir os dados:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Inicializa um novo DocBin e usa \textquotesingle{}from\_disk\textquotesingle{} para carregar os dados do disco.}
+\CommentTok{\# Atribui o resultado a variavel \textquotesingle{}docbin\_loaded\textquotesingle{}.}
+\NormalTok{docbin\_loaded }\OperatorTok{=}\NormalTok{ DocBin().from\_disk(path}\OperatorTok{=}\StringTok{\textquotesingle{}data/docbin.spacy\textquotesingle{}}\NormalTok{)}
 
-\begin{pybox}
-# Usa 'get_docs' para recuperar os Docs do DocBin, passando o
-# vocabulario em 'nlp.vocab' para reconstruir os dados.
-# Converte o gerador resultante em uma lista para exame.
-docs_loaded = list(docbin_loaded.get_docs(nlp.vocab))
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{docbin\_loaded}
+\end{Highlighting}
+\end{Shaded}
 
-# Chama a variavel para examinar a saida
-docs_loaded
-\end{pybox}
-\begin{outbox}
-[The Senate Square is by far the most important landmark in Helsinki.,
- The Old Town, for sure.,
- Södermalm is interesting!,
- Yet another Doc object.]
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\textless{}spacy.tokens.\_serialize.DocBin at 0x2953a4c40\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{tipbox}[Resumindo]
-O ideal é processar os textos \textbf{uma vez}, gravá-los em disco e carregá-los para as análises seguintes.
+Por fim, para acessar os objetos \texttt{Doc} guardados no
+\texttt{DocBin}, use o método \texttt{get\_docs()}. Ele recebe um único
+argumento, \texttt{vocab}, que precisa do \textbf{vocabulário} de um
+objeto \texttt{Language} (guardado no atributo \texttt{vocab}) para
+reconstruir a informação armazenada no \texttt{DocBin}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa \textquotesingle{}get\_docs\textquotesingle{} para recuperar os Docs do DocBin, passando o}
+\CommentTok{\# vocabulario em \textquotesingle{}nlp.vocab\textquotesingle{} para reconstruir os dados.}
+\CommentTok{\# Converte o gerador resultante em uma lista para exame.}
+\NormalTok{docs\_loaded }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(docbin\_loaded.get\_docs(nlp.vocab))}
+
+\CommentTok{\# Chama a variavel para examinar a saida}
+\NormalTok{docs\_loaded}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[The Senate Square is by far the most important landmark in Helsinki.,}
+\NormalTok{ The Old Town, for sure.,}
+\NormalTok{ Södermalm is interesting!,}
+\NormalTok{ Yet another Doc object.]}
+\end{Highlighting}
+\end{Shaded}
+
+Isso retorna uma lista com os quatro \texttt{Doc}s adicionados ao
+\texttt{DocBin}.
+
+\begin{tipbox}
+
+\textbf{Resumindo:} o ideal é processar os textos \textbf{uma vez},
+gravá‑los em disco e carregá‑los para as análises seguintes.
+
 \end{tipbox}
 
-% =========================================================== 5 ==============
-\section{Simplificando a saída: sintagmas nominais e entidades nomeadas}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{Mesclando sintagmas nominais}
-Às vezes é mais vantajoso operar com unidades maiores que tokens individuais, como \textbf{sintagmas nominais} (\textit{noun phrases}). O spaCy dá acesso a eles pelo atributo @noun_chunks@ de um @Doc@:
+\subsection{5. Simplificando a saída: sintagmas nominais e entidades
+nomeadas}\label{simplificando-a-sauxedda-sintagmas-nominais-e-entidades-nomeadas}
 
-\begin{pybox}
-# Primeiro laco: percorre a lista 'docs'; 'doc' se refere aos itens da lista
-for doc in docs:
+\subsubsection{5.1 Mesclando sintagmas
+nominais}\label{mesclando-sintagmas-nominais}
 
-    # Percorre cada sintagma nominal do objeto Doc
-    for noun_chunk in doc.noun_chunks:
+Tarefas como anotação morfossintática e análise de dependências fazem
+previsões sobre \textbf{tokens individuais}. Às vezes, porém, é mais
+vantajoso operar com unidades linguísticas maiores, como
+\textbf{sintagmas nominais} (\emph{noun phrases}) formados por vários
+tokens.
 
-        # Imprime o sintagma nominal
-        print(noun_chunk)
-\end{pybox}
-\begin{outbox}
-The Senate Square
-the most important landmark
-Helsinki
-The Old Town
-Södermalm
-\end{outbox}
+O spaCy dá acesso aos sintagmas nominais pelo atributo
+\texttt{noun\_chunks} de um objeto \texttt{Doc}. Vamos imprimir os
+sintagmas de cada \texttt{Doc} na lista \texttt{docs}:
 
-Para \textbf{mesclar} os sintagmas em um único token, o spaCy oferece a função @merge_noun_chunks@, adicionada ao pipeline com @add_pipe@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Primeiro laco: percorre a lista \textquotesingle{}docs\textquotesingle{}; \textquotesingle{}doc\textquotesingle{} se refere aos itens da lista}
+\ControlFlowTok{for}\NormalTok{ doc }\KeywordTok{in}\NormalTok{ docs:}
 
-\begin{pybox}
-# Adiciona o componente que mescla sintagmas nominais em Tokens unicos
-nlp.add_pipe('merge_noun_chunks')
-\end{pybox}
+    \CommentTok{\# Percorre cada sintagma nominal do objeto Doc}
+    \ControlFlowTok{for}\NormalTok{ noun\_chunk }\KeywordTok{in}\NormalTok{ doc.noun\_chunks:}
+
+        \CommentTok{\# Imprime o sintagma nominal}
+        \BuiltInTok{print}\NormalTok{(noun\_chunk)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{The Senate Square}
+\NormalTok{the most important landmark}
+\NormalTok{Helsinki}
+\NormalTok{The Old Town}
+\NormalTok{Södermalm}
+\end{Highlighting}
+\end{Shaded}
+
+Para \textbf{mesclar} os sintagmas nominais em um único token, o spaCy
+oferece a função \texttt{merge\_noun\_chunks}, que pode ser adicionada
+ao pipeline com o método \texttt{add\_pipe}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Adiciona o componente que mescla sintagmas nominais em Tokens unicos}
+\NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}merge\_noun\_chunks\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{notebox}
-Não é preciso reatribuir o objeto @Language@ à mesma variável --- o @add_pipe@ adiciona o componente automaticamente.
+
+\textbf{Nota:} não é preciso reatribuir o objeto \texttt{Language} à
+mesma variável para atualizá‑lo --- o método \texttt{add\_pipe} adiciona
+o componente automaticamente.
+
 \end{notebox}
 
-Processando as frases novamente com @pipe()@, ao percorrer os tokens do primeiro @Doc@ (@[0]@) vemos os sintagmas \textbf{mesclados} e rotulados como @NOUN@:
+Processando novamente as três frases com \texttt{pipe()}, tudo
+\textbf{parece} igual (uma lista com três \texttt{Doc}s). Mas, ao
+percorrer os tokens do primeiro \texttt{Doc} (\texttt{{[}0{]}}), vemos
+que os sintagmas nominais agora estão \textbf{mesclados} e rotulados
+como \texttt{NOUN}:
 
-\begin{pybox}
-# Aplica o objeto Language 'nlp' a lista de frases em 'sents'
-docs = list(nlp.pipe(sents))
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Aplica o objeto Language \textquotesingle{}nlp\textquotesingle{} a lista de frases em \textquotesingle{}sents\textquotesingle{}}
+\NormalTok{docs }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(nlp.pipe(sents))}
 
-# Percorre os Tokens do primeiro Doc da lista
-for token in docs[0]:
+\CommentTok{\# Percorre os Tokens do primeiro Doc da lista}
+\ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ docs[}\DecValTok{0}\NormalTok{]:}
 
-    # Imprime o Token e sua classe gramatical
-    print(token, token.pos_)
-\end{pybox}
-\begin{outbox}
-On ADP
-October PROPN
-1 NUM
-, PUNCT
-2009 NUM
-, PUNCT
-the Obama administration NOUN
-went VERB
-ahead ADV
-with ADP
-a Bush administration program NOUN
-, PUNCT
-increasing VERB
-nuclear weapons production NOUN
-. PUNCT
-\end{outbox}
+    \CommentTok{\# Imprime o Token e sua classe gramatical}
+    \BuiltInTok{print}\NormalTok{(token, token.pos\_)}
+\end{Highlighting}
+\end{Shaded}
 
-Rotular como @NOUN@ é uma aproximação razoável, já que as palavras-núcleo são substantivos. Mesclar os sintagmas \textbf{simplifica} a árvore sintática:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{On ADP}
+\NormalTok{October PROPN}
+\NormalTok{1 NUM}
+\NormalTok{, PUNCT}
+\NormalTok{2009 NUM}
+\NormalTok{, PUNCT}
+\NormalTok{the Obama administration NOUN}
+\NormalTok{went VERB}
+\NormalTok{ahead ADV}
+\NormalTok{with ADP}
+\NormalTok{a Bush administration program NOUN}
+\NormalTok{, PUNCT}
+\NormalTok{increasing VERB}
+\NormalTok{nuclear weapons production NOUN}
+\NormalTok{. PUNCT}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-displacy.render(docs[0], style='dep')
-\end{pybox}
+Rotular os sintagmas nominais como \texttt{NOUN} é uma aproximação
+razoável, já que suas palavras‑núcleo são substantivos. Como a
+renderização com displaCy mostra, mesclar os sintagmas
+\textbf{simplifica} a árvore sintática:
 
-Os sintagmas continuam disponíveis em @noun_chunks@, guardados como @Span@s com atributos @start@ e @end@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{displacy.render(docs[}\DecValTok{0}\NormalTok{], style}\OperatorTok{=}\StringTok{\textquotesingle{}dep\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Percorre os sintagmas nominais do primeiro Doc [0] na lista 'docs'
-for noun_chunk in docs[0].noun_chunks:
+Embora os sintagmas nominais estejam agora representados por tokens
+únicos, eles continuam disponíveis no atributo \texttt{noun\_chunks}. O
+spaCy os guarda como objetos \texttt{Span}, cujos atributos
+\texttt{start} e \texttt{end} determinam onde o \texttt{Span} começa e
+termina:
 
-    # Imprime o sintagma, seu tipo, e os indices onde comeca e termina
-    print(noun_chunk, type(noun_chunk), noun_chunk.start, noun_chunk.end)
-\end{pybox}
-\begin{outbox}
-October <class 'spacy.tokens.span.Span'> 1 2
-the Obama administration <class 'spacy.tokens.span.Span'> 6 7
-a Bush administration program <class 'spacy.tokens.span.Span'> 10 11
-nuclear weapons production <class 'spacy.tokens.span.Span'> 13 14
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre os sintagmas nominais do primeiro Doc [0] na lista \textquotesingle{}docs\textquotesingle{}}
+\ControlFlowTok{for}\NormalTok{ noun\_chunk }\KeywordTok{in}\NormalTok{ docs[}\DecValTok{0}\NormalTok{].noun\_chunks:}
 
-\subsection{Mesclando entidades nomeadas}
-Entidades nomeadas são mescladas do mesmo modo, com @merge_entities@. Primeiro removemos a função @merge_noun_chunks@ com @remove_pipe()@:
+    \CommentTok{\# Imprime o sintagma, seu tipo, e os indices onde comeca e termina}
+    \BuiltInTok{print}\NormalTok{(noun\_chunk, }\BuiltInTok{type}\NormalTok{(noun\_chunk), noun\_chunk.start, noun\_chunk.end)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Remove a funcao 'merge_noun_chunks' do pipeline em 'nlp'
-nlp.remove_pipe('merge_noun_chunks')
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{October \textless{}class \textquotesingle{}spacy.tokens.span.Span\textquotesingle{}\textgreater{} 1 2}
+\NormalTok{the Obama administration \textless{}class \textquotesingle{}spacy.tokens.span.Span\textquotesingle{}\textgreater{} 6 7}
+\NormalTok{a Bush administration program \textless{}class \textquotesingle{}spacy.tokens.span.Span\textquotesingle{}\textgreater{} 10 11}
+\NormalTok{nuclear weapons production \textless{}class \textquotesingle{}spacy.tokens.span.Span\textquotesingle{}\textgreater{} 13 14}
+\end{Highlighting}
+\end{Shaded}
 
-# Processa as frases originais novamente
-docs = list(nlp.pipe(sents))
-\end{pybox}
+\subsubsection{5.2 Mesclando entidades
+nomeadas}\label{mesclando-entidades-nomeadas}
 
-Em seguida, adicionamos @merge_entities@ e reprocessamos, examinando o terceiro @Doc@:
+Entidades nomeadas podem ser mescladas do mesmo modo, fornecendo
+\texttt{merge\_entities} ao método \texttt{add\_pipe()}. Primeiro,
+removemos a função \texttt{merge\_noun\_chunks} do pipeline com o método
+\texttt{remove\_pipe()}:
 
-\begin{pybox}
-# Adiciona a funcao 'merge_entities' ao pipeline
-nlp.add_pipe('merge_entities')
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Remove a funcao \textquotesingle{}merge\_noun\_chunks\textquotesingle{} do pipeline em \textquotesingle{}nlp\textquotesingle{}}
+\NormalTok{nlp.remove\_pipe(}\StringTok{\textquotesingle{}merge\_noun\_chunks\textquotesingle{}}\NormalTok{)}
 
-# Processa os dados novamente
-docs = list(nlp.pipe(sents))
+\CommentTok{\# Processa as frases originais novamente}
+\NormalTok{docs }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(nlp.pipe(sents))}
+\end{Highlighting}
+\end{Shaded}
 
-# Percorre os Tokens do terceiro Doc da lista
-for token in docs[2]:
+O método retorna uma tupla com o nome do componente removido e o próprio
+componente. Em seguida, adicionamos o componente
+\texttt{merge\_entities}:
 
-    # Imprime o Token e sua classe gramatical
-    print(token, token.pos_)
-\end{pybox}
-\begin{outbox}
-The DET
-administration NOUN
-built VERB
-new ADJ
-plutonium NOUN
-pits NOUN
-at ADP
-the DET
-Los Alamos PROPN
-lab NOUN
-in ADP
-New Mexico PROPN
-and CCONJ
-expanded VERB
-enriched ADJ
-uranium NOUN
-processing NOUN
-at ADP
-the DET
-Y-12 NUM
-facility NOUN
-in ADP
-Oak Ridge PROPN
-, PUNCT
-Tennessee PROPN
-. PUNCT
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Adiciona a funcao \textquotesingle{}merge\_entities\textquotesingle{} ao pipeline}
+\NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}merge\_entities\textquotesingle{}}\NormalTok{)}
 
-Entidades nomeadas com vários tokens --- como os topônimos \textit{``Los Alamos''} e \textit{``New Mexico''} --- foram \textbf{mescladas} em tokens únicos.
+\CommentTok{\# Processa os dados novamente}
+\NormalTok{docs }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(nlp.pipe(sents))}
 
-% ======================================================= quiz ==============
-\section*{Quiz}
-\addcontentsline{toc}{section}{Quiz}
-Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+\CommentTok{\# Percorre os Tokens do terceiro Doc da lista}
+\ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ docs[}\DecValTok{2}\NormalTok{]:}
 
-{\bfseries 1. Por que remover do pipeline componentes que você não usa?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Cada componente tem um custo computacional \textcolor{tipc}{\textbf{(correta)}}
-  \item Deixa o código mais bonito
-  \item É obrigatório
+    \CommentTok{\# Imprime o Token e sua classe gramatical}
+    \BuiltInTok{print}\NormalTok{(token, token.pos\_)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{The DET}
+\NormalTok{administration NOUN}
+\NormalTok{built VERB}
+\NormalTok{new ADJ}
+\NormalTok{plutonium NOUN}
+\NormalTok{pits NOUN}
+\NormalTok{at ADP}
+\NormalTok{the DET}
+\NormalTok{Los Alamos PROPN}
+\NormalTok{lab NOUN}
+\NormalTok{in ADP}
+\NormalTok{New Mexico PROPN}
+\NormalTok{and CCONJ}
+\NormalTok{expanded VERB}
+\NormalTok{enriched ADJ}
+\NormalTok{uranium NOUN}
+\NormalTok{processing NOUN}
+\NormalTok{at ADP}
+\NormalTok{the DET}
+\NormalTok{Y{-}12 NUM}
+\NormalTok{facility NOUN}
+\NormalTok{in ADP}
+\NormalTok{Oak Ridge PROPN}
+\NormalTok{, PUNCT}
+\NormalTok{Tennessee PROPN}
+\NormalTok{. PUNCT}
+\end{Highlighting}
+\end{Shaded}
+
+Entidades nomeadas com vários tokens --- como os topônimos \emph{``Los
+Alamos''} e \emph{``New Mexico''} --- foram \textbf{mescladas} em tokens
+únicos.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Quiz}\label{quiz}
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+\textbf{1. Por que remover do pipeline componentes que você não usa?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Cada componente tem um custo computacional ✅
+\item
+  Deixa o código mais bonito
+\item
+  É obrigatório
 \end{enumerate}
 
-{\bfseries 2. Qual argumento de load() exclui componentes do pipeline?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @exclude@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @remove@
-  \item @skip@
+\textbf{2. Qual argumento de \texttt{load()} exclui componentes do
+pipeline?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{exclude} ✅
+\item
+  \texttt{remove}
+\item
+  \texttt{skip}
 \end{enumerate}
 
-{\bfseries 3. Por que o Tokenizer não aparece em nlp.pipeline?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Ele sempre roda e fica em @nlp.tokenizer@ \textcolor{tipc}{\textbf{(correta)}}
-  \item Foi removido do spaCy
-  \item É opcional e estava desligado
+\textbf{3. Por que o \texttt{Tokenizer} não aparece em
+\texttt{nlp.pipeline}?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Ele sempre roda e fica em \texttt{nlp.tokenizer} ✅
+\item
+  Foi removido do spaCy
+\item
+  É opcional e estava desligado
 \end{enumerate}
 
-{\bfseries 4. Onde ficam os atributos personalizados de um Doc?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Sob um atributo que consiste no sublinhado (@Doc._@) \textcolor{tipc}{\textbf{(correta)}}
-  \item Numa coluna extra do texto
-  \item Dentro de @nlp.meta@
+\textbf{4. Onde ficam os atributos personalizados de um \texttt{Doc}?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sob um atributo que consiste no sublinhado (\texttt{Doc.\_}) ✅
+\item
+  Numa coluna extra do texto
+\item
+  Dentro de \texttt{nlp.meta}
 \end{enumerate}
 
-{\bfseries 5. Qual método processa uma lista de textos em lote (mais rápido)?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @pipe()@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @apply()@
-  \item @map()@
+\textbf{5. Qual método processa uma lista de textos em lote (mais
+rápido)?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{pipe()} ✅
+\item
+  \texttt{apply()}
+\item
+  \texttt{map()}
 \end{enumerate}
 
-{\bfseries 6. Para que serve o DocBin?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Guardar e gravar Docs processados em disco \textcolor{tipc}{\textbf{(correta)}}
-  \item Baixar modelos de linguagem
-  \item Treinar o modelo
+\textbf{6. Para que serve o \texttt{DocBin}?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Guardar e gravar \texttt{Doc}s processados em disco ✅
+\item
+  Baixar modelos de linguagem
+\item
+  Treinar o modelo
 \end{enumerate}
 
-% ======================================================= resumo ============
-\section*{Resumo da unidade}
-\addcontentsline{toc}{section}{Resumo da unidade}
-\begin{objbox}[Nesta unidade, você aprendeu a]
-\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
-  \item examinar o pipeline com @nlp.pipeline@ e entender @tok2vec@/@attribute_ruler@;
-  \item excluir componentes (@exclude=[...]@) e auditar o pipeline com @analyze_pipes()@ e @assert@;
-  \item processar em lote com @nlp.pipe()@, entendendo geradores e conversão para lista;
-  \item adicionar atributos personalizados (@set_extension()@, @Doc._.@) e filtrar com compreensão de lista;
-  \item gravar e carregar com @DocBin@ (@to_disk()@, @from_disk()@, @get_docs()@);
-  \item mesclar sintagmas nominais e entidades com @add_pipe()@/@remove_pipe()@.
-\end{enumerate}
-\end{objbox}
+\subsection{Resumo da unidade}\label{resumo-da-unidade}
 
-\begin{notebox}[Exercícios sugeridos]
-\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
-  \item Carregue o modelo excluindo apenas o @lemmatizer@ e confirme, com @nlp.pipeline@, que ele não está mais presente.
-  \item Adicione um atributo personalizado @source@ ao @Doc@ e preencha-o com o nome do arquivo de origem ao processar textos da Unidade 1.
-  \item Processe as notícias da Unidade 1 com @nlp.pipe()@, grave em um @DocBin@ e recarregue do disco, conferindo o número de @Doc@s.
-  \item Compare a árvore de dependências de uma frase \textbf{com} e \textbf{sem} @merge_noun_chunks@ e descreva a diferença.
-\end{enumerate}
-\end{notebox}
+Nesta unidade, você aprendeu a:
 
-\vspace{6pt}
-\noindent\rule{\linewidth}{0.4pt}\\[4pt]
-{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Honnibal, M.; Montani, I. et al. \textit{spaCy: Industrial-strength Natural Language Processing in Python} --- \href{https://spacy.io/}{spacy.io}.\par
-Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{examinar} o pipeline com \texttt{nlp.pipeline} e entender
+  componentes como \texttt{tok2vec} e \texttt{attribute\_ruler};
+\item
+  \textbf{excluir componentes} (\texttt{exclude={[}...{]}}) para ganhar
+  desempenho e \textbf{auditar} o pipeline com \texttt{analyze\_pipes()}
+  e \texttt{assert};
+\item
+  \textbf{processar textos em lote} com \texttt{nlp.pipe()}, entendendo
+  geradores e a conversão para lista;
+\item
+  \textbf{adicionar atributos personalizados}
+  (\texttt{set\_extension()}, \texttt{Doc.\_.}) e \textbf{filtrar} dados
+  com compreensão de lista;
+\item
+  \textbf{gravar e carregar} textos processados com \texttt{DocBin}
+  (\texttt{to\_disk()}, \texttt{from\_disk()}, \texttt{get\_docs()});
+\item
+  \textbf{mesclar} sintagmas nominais (\texttt{merge\_noun\_chunks}) e
+  entidades nomeadas (\texttt{merge\_entities}) com
+  \texttt{add\_pipe()}/\texttt{remove\_pipe()}.
+\end{enumerate}
+
+\subsubsection{Exercícios sugeridos}\label{exercuxedcios-sugeridos}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Carregue o modelo excluindo apenas o \texttt{lemmatizer} e confirme,
+  com \texttt{nlp.pipeline}, que ele não está mais presente.
+\item
+  Adicione um atributo personalizado \texttt{source} ao \texttt{Doc} e
+  preencha‑o com o nome do arquivo de origem ao processar textos da
+  Unidade 1.
+\item
+  Processe as notícias da Unidade 1 com \texttt{nlp.pipe()}, grave tudo
+  em um \texttt{DocBin} e recarregue do disco, conferindo o número de
+  \texttt{Doc}s.
+\item
+  Compare a árvore de dependências (\texttt{displacy}) de uma frase
+  \textbf{com} e \textbf{sem} \texttt{merge\_noun\_chunks} e descreva a
+  diferença.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Referências}\label{referuxeancias}
+
+\begin{itemize}
+\tightlist
+\item
+  Rögnvaldsson, E. et al.~\emph{Applied Language Technology} (MOOC).
+  Universidade de Helsinque.
+  \url{https://applied-language-technology.mooc.fi/}
+\item
+  Honnibal, M.; Montani, I. et al.~\emph{spaCy: Industrial-strength
+  Natural Language Processing in Python}. \url{https://spacy.io/}
+\end{itemize}
 
 \end{document}

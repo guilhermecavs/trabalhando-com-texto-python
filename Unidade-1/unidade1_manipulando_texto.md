@@ -1,9 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 1 — Manipulando texto com Python
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-> Material adaptado e traduzido a partir do curso *Applied Language Technology* (Universidade de Helsinque), disponível em <https://applied-language-technology.mooc.fi/>.
-
+---
+title: "Manipulando texto com Python"
+subtitle: "Trabalhando com Texto em Python I · Unidade 1"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos de aprendizagem
@@ -59,7 +59,9 @@ Ao reunir um conjunto de textos para formar um **corpus**, é bem provável que 
 
 O texto simples é, de longe, o formato **mais interoperável** para texto, por ser fácil de ler para os computadores. É por isso que as linguagens de programação trabalham com texto simples — e, se você pretende usar programação para manipular texto, precisa saber o que é texto simples.
 
-> **Em resumo:** ao trabalhar com texto simples, muitas vezes será preciso lidar com os vestígios deixados pela conversão a partir de texto formatado ou estruturado.
+::: nota
+**Em resumo:** ao trabalhar com texto simples, muitas vezes será preciso lidar com os vestígios deixados pela conversão a partir de texto formatado ou estruturado.
+:::
 
 ---
 
@@ -431,7 +433,9 @@ Sucesso! As sequências de pontos finais **e** de vírgulas podem ser removidas 
 
 Sequências mais irregulares vindas de erros de OCR — como `'-'*`, `->."`, `/*—.` — são bem mais difíceis de capturar e exigiriam expressões mais complexas. Essa complexidade é justamente o que torna as expressões regulares tão poderosas, mas aprender a usá‑las leva **tempo e paciência**.
 
-> 💡 **Dica:** use um serviço como [regex101.com](https://regex101.com) para aprender e testar expressões regulares interativamente.
+::: dica
+**Dica:** use um serviço como [regex101.com](https://regex101.com) para aprender e testar expressões regulares interativamente.
+:::
 
 Na prática, criar expressões que cubram o máximo de casos é particularmente difícil. Capturar a maioria dos erros — talvez distribuindo as transformações em uma **sequência de etapas** (um *pipeline*) — já ajuda muito a preparar o texto para análise. Lembre‑se, porém: para identificar padrões de manipulação de forma confiável, você deve sempre observar **mais de um** texto do seu corpus.
 

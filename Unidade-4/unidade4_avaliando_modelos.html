@@ -1,373 +1,664 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unidade 4 — Avaliando modelos de linguagem</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
-    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
-    --code-bg:#1e2430; --code-ink:#e6e9ef;
-    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
-    --h3-ink:#2b3242; --table-head:#efe9ff; --table-stripe:#f8f9fc; --diag:#e7f9ee;
-    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
-    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
-    --border:#e6e8ef; --radius:16px;
-    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
-  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
-    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
-    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
-  header.hero .inner{max-width:900px;margin:0 auto}
-  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:700;opacity:.9;margin:0 0 12px}
-  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
-  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
-  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
-    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
-  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
-  .navlink:hover{opacity:1}
-  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
-    border-left:5px solid var(--accent);line-height:1.25}
-  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
-  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
-  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
-  p{margin:14px 0}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
-  a:hover{border-color:var(--accent)}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
-  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
-    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
-  strong{color:var(--ink-strong);font-weight:700}
-  ul,ol{margin:14px 0;padding-left:24px}
-  li{margin:7px 0}
-  ol.tweets li{margin:5px 0;font-size:.95rem}
-  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
-  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-  /* code */
-  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
-    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
-    font-size:14.5px;line-height:1.6;position:relative;
-    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
-  pre.code{border-top:3px solid var(--accent)}
-  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
-    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
-    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
-  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
-    box-shadow:none;border-top:3px solid var(--out-tag)}
-  pre.out .tag{background:var(--out-tag)}
-  pre code{font-family:inherit;white-space:pre}
-  .c{color:var(--c-comment);font-style:italic}
-  .s{color:var(--c-string)}
-  .k{color:var(--c-kw);font-weight:600}
-  .n{color:var(--c-num)}
-  /* formula */
-  .formula{display:flex;justify-content:center;margin:24px 0}
-  .formula .kf{display:inline-flex;align-items:center;gap:14px;background:var(--surface);
-    border:1px solid var(--border);border-radius:14px;padding:16px 26px;font-size:1.15rem;
-    box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
-  .formula .frac{display:inline-flex;flex-direction:column;text-align:center}
-  .formula .frac .num{border-bottom:2px solid currentColor;padding:0 8px 4px}
-  .formula .frac .den{padding:4px 8px 0}
-  .formula em{color:var(--accent);font-style:italic}
-  .kap{color:var(--accent);font-weight:700}
-  /* tables */
-  .tbl-wrap{overflow-x:auto;margin:20px 0}
-  table{border-collapse:collapse;width:100%;font-size:.92rem;
-    border:1px solid var(--border);border-radius:12px;overflow:hidden}
-  th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
-  thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700;letter-spacing:.01em}
-  tbody tr:nth-child(even){background:var(--table-stripe)}
-  table.cm td,table.cm th{text-align:center;font-variant-numeric:tabular-nums}
-  table.cm tbody th{text-align:left;background:var(--table-head)}
-  table.cm td.diag{background:var(--diag);font-weight:700}
-  /* callouts */
-  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
-    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
-  .call p{margin:6px 0}
-  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
-  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
-  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
-  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
-  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
-  footer{color:var(--muted);font-size:14px;margin-top:40px}
-  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
-  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .toc ol{margin:0;padding-left:20px}
-  .toc a{border:none}
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
-      --table-head:#241f43;--table-stripe:#171a23;--diag:#153826}
-  }
-  :root[data-theme="dark"]{
-    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
-    --table-head:#241f43;--table-stripe:#171a23;--diag:#153826;
-  }
-  :root[data-theme="light"]{
-    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
-    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
-    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
-    --table-head:#efe9ff;--table-stripe:#f8f9fc;--diag:#e7f9ee;
-  }
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Avaliando modelos de linguagem</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+background-color: #232629;
+color: #7a7c7d;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d; padding-left: 4px; }
+div.sourceCode
+{ color: #cfcfc2; background-color: #232629; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #cfcfc2; } 
+code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } 
+code span.an { color: #3f8058; } 
+code span.at { color: #2980b9; } 
+code span.bn { color: #f67400; } 
+code span.bu { color: #7f8c8d; } 
+code span.cf { color: #fdbc4b; font-weight: bold; } 
+code span.ch { color: #3daee9; } 
+code span.cn { color: #27aeae; font-weight: bold; } 
+code span.co { color: #7a7c7d; } 
+code span.cv { color: #7f8c8d; } 
+code span.do { color: #a43340; } 
+code span.dt { color: #2980b9; } 
+code span.dv { color: #f67400; } 
+code span.er { color: #da4453; text-decoration: underline; } 
+code span.ex { color: #0099ff; font-weight: bold; } 
+code span.fl { color: #f67400; } 
+code span.fu { color: #8e44ad; } 
+code span.im { color: #27ae60; } 
+code span.in { color: #c45b00; } 
+code span.kw { color: #cfcfc2; font-weight: bold; } 
+code span.op { color: #cfcfc2; } 
+code span.ot { color: #27ae60; } 
+code span.pp { color: #27ae60; } 
+code span.re { color: #2980b9; background-color: #153042; } 
+code span.sc { color: #3daee9; } 
+code span.ss { color: #da4453; } 
+code span.st { color: #f44f4f; } 
+code span.va { color: #27aeae; } 
+code span.vs { color: #da4453; } 
+code span.wa { color: #da4453; } 
+</style>
+  <style type="text/css">
+:root{
+--bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+--accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+--code-bg:#1e2430; --code-ink:#e6e9ef;
+--border:#e6e8ef; --radius:16px;
+--note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+--table-head:#efe9ff; --table-stripe:#f8f9fc;
+--mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+:root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;
+--table-head:#241f43;--table-stripe:#171a23}
+}
+:root[data-theme="dark"]{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--table-head:#241f43;--table-stripe:#171a23}
+:root[data-theme="light"]{--bg:#f6f7fb;--surface:#fff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+--accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--table-head:#efe9ff;--table-stripe:#f8f9fc}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+
+body > *{max-width:860px;margin-left:auto;margin-right:auto;padding-left:22px;padding-right:22px}
+header#title-block-header{max-width:none;padding:52px 22px 40px;margin-bottom:32px;
+background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);color:#fff;
+box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+header#title-block-header > *{max-width:860px;margin:0 auto;padding:0}
+header#title-block-header .title{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+header#title-block-header .subtitle{font-size:1.1rem;opacity:.95;margin:8px 0 0;font-weight:600}
+header#title-block-header .author,header#title-block-header .date{opacity:.9;font-size:.9rem;margin:6px 0 0}
+h1,h2,h3{line-height:1.25}
+h1{font-size:1.7rem;font-weight:800;color:var(--accent);margin:44px auto 14px;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:40px auto 12px;
+padding-left:14px;border-left:5px solid var(--accent)}
+h3{font-size:1.15rem;font-weight:700;color:var(--ink-strong);margin:28px auto 8px}
+p{margin:13px auto}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+a:hover{border-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+strong{color:var(--ink-strong);font-weight:700}
+ul,ol{margin:12px auto}
+li{margin:6px 0}
+
+code{font-family:var(--mono);font-size:.88em}
+p code,li code,td code{background:var(--accent-soft);color:var(--inl-ink);
+padding:2px 7px;border-radius:7px;font-weight:600;font-size:.84em}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:16px 18px;
+overflow-x:auto;margin:18px auto;border-top:3px solid var(--accent);
+box-shadow:0 16px 34px -22px rgba(0,0,0,.7);line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-weight:400;font-size:14px}
+
+div.dica,div.nota,div.atencao,div.objetivos{
+border:1px solid var(--border);border-left:5px solid var(--accent);
+background:var(--surface);border-radius:14px;padding:12px 18px;margin:20px auto}
+div.dica{border-left-color:var(--tip)}
+div.nota{border-left-color:var(--note)}
+div.atencao{border-left-color:var(--warn)}
+div.objetivos{border-left-color:var(--accent);background:var(--accent-soft)}
+div.dica::before{content:"Dica";color:var(--tip)}
+div.nota::before{content:"Nota";color:var(--note)}
+div.atencao::before{content:"Atenção";color:var(--warn)}
+div.objetivos::before{content:"Objetivos";color:var(--accent)}
+div.dica::before,div.nota::before,div.atencao::before,div.objetivos::before{
+display:block;font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+div.dica p:last-child,div.nota p:last-child,div.atencao p:last-child,div.objetivos :last-child{margin-bottom:0}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:18px auto;
+border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+blockquote{margin:16px auto;padding:4px 0 4px 16px;border-left:3px solid var(--border);
+color:var(--muted);font-style:italic}
+hr{border:none;border-top:1px solid var(--border);margin:40px auto}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="inner">
-    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
-    <h1>Avaliando modelos de linguagem</h1>
-    <p class="sub">Trabalhando com Texto em Python I — Unidade 4. Padrão‑ouro, concordância entre anotadores, kappa de Cohen e métricas de desempenho (acurácia, precisão, revocação, F1).</p>
-    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span><br>
-    <a class="navlink" href="../Unidade-3/unidade3_customizando_pipeline_spacy.html">&larr; Unidade 3 · Customizando o pipeline do spaCy</a>
-  </div>
+<header id="title-block-header">
+<h1 class="title">Avaliando modelos de linguagem</h1>
+<p class="subtitle">Trabalhando com Texto em Python I · Unidade 4</p>
+<p class="author">CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia</p>
+<p class="date">2026</p>
 </header>
-
-<div class="wrap">
-
-  <nav class="toc">
-    <h4>Nesta unidade</h4>
-    <ol>
-      <li><a href="#s1">O que é um padrão‑ouro?</a></li>
-      <li><a href="#s2">Medindo a confiabilidade manualmente</a></li>
-      <li><a href="#s3">O kappa de Cohen como medida de concordância</a></li>
-      <li><a href="#s4">Avaliando o desempenho de modelos de linguagem</a></li>
-    </ol>
-  </nav>
-
-  <div class="obj">
-    <h4>Objetivos de aprendizagem</h4>
-    <ul>
-      <li>Entender o que é um <strong>padrão‑ouro</strong> (<em>gold standard</em>).</li>
-      <li>Saber avaliar a <strong>concordância</strong> entre anotadores humanos.</li>
-      <li>Compreender <strong>métricas simples</strong> para avaliar o desempenho do PLN.</li>
-    </ul>
-  </div>
-
-  <h2 id="s1"><span class="num">1.</span> O que é um padrão‑ouro (<em>gold standard</em>)?</h2>
-  <p>Um <strong>padrão‑ouro</strong> (<em>gold standard</em>) — também chamado de <em>ground truth</em> ("verdade fundamental") — refere‑se a <strong>dados verificados por humanos</strong> usados como referência (<em>benchmark</em>) para avaliar o desempenho de algoritmos. Em PLN, os padrões‑ouro medem quão bem os <strong>humanos</strong> desempenham uma tarefa.</p>
-  <p>O objetivo do PLN é permitir que computadores <strong>alcancem ou superem</strong> o desempenho humano em uma tarefa pré‑definida. Medir isso exige uma referência — e é o padrão‑ouro que a fornece: um <strong>ponto de referência</strong>.</p>
-  <p>É importante entender que <strong>padrões‑ouro são abstrações do uso da língua</strong>. As classes gramaticais, por exemplo, não são dadas pela natureza: representam uma abstração que impõe estrutura à língua. A língua é naturalmente <strong>ambígua e subjetiva</strong>, e as abstrações podem ser incompletas — não temos certeza de que todos classificariam as palavras da mesma forma. Por isso precisamos <strong>medir a confiabilidade</strong> de um padrão‑ouro: até que ponto os humanos <strong>concordam</strong> na tarefa.</p>
-
-  <h2 id="s2"><span class="num">2.</span> Medindo a confiabilidade manualmente</h2>
-  <p>A <strong>confiabilidade</strong> — geralmente entendida como a <strong>concordância entre múltiplos anotadores</strong> — pode ser medida manualmente.</p>
-
-  <h3>Passo 1 — Anotar os dados</h3>
-  <p>A <strong>análise de sentimento</strong> consiste em determinar o sentimento de um texto. Treinar um modelo assim exige dados de treino: exemplos de textos associados a sentimentos. Classifique os <em>tweets</em> abaixo em <strong>positivo</strong>, <strong>neutro</strong> ou <strong>negativo</strong>. Anote sua decisão (uma por linha), sem discutir com o colega ao lado:</p>
-  <ol class="tweets">
-    <li>Updated: HSL GTFS (Helsinki, Finland) https://t.co/fWEpzmNQLz</li>
-    <li>current weather in Helsinki: broken clouds, -8°C 100% humidity, wind 4kmh, pressure 1061mb</li>
-    <li>CNN: "WallStreetBets Redditors go ballistic over GameStop's sinking share price"</li>
-    <li>Baana bicycle counter. Today: 3 Same time last week: 1058 Trend: ↓99% This year: 819 518 Last year: 802 079 #Helsinki #cycling</li>
-    <li>Elon Musk is now tweeting about #bitcoin</li>
-    <li>A perfect Sunday walk in the woods just a few steps from home.</li>
-    <li>Went to Domino's today👍 It was so amazing and I think I got damn good dessert as well…</li>
-    <li>Choo Choo 🚂 There's our train! 🎉 #holidayahead</li>
-    <li>Happy women's day ❤️💋 kisses to all you beautiful ladies. 😚 #awesometobeawoman</li>
-    <li>Good morning #Helsinki! Sun will rise in 30 minutes (local time 07:28)</li>
-  </ol>
-  <p>Anote suas classificações (de 1 a 10). O colega faz o mesmo, de forma independente — assim teremos <strong>dois anotadores</strong> para comparar.</p>
-
-  <h3>Passo 2 — Calcular a concordância percentual</h3>
-  <p>Queremos que os dados de treino sejam <strong>confiáveis</strong>, ou seja, que haja concordância sobre o que descrevemos. Uma forma de medir é a <strong>concordância percentual</strong>: quantas vezes, das 10, os dois anotadores concordaram, dividido pelo número de itens (10):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Substitua o numero abaixo pelo numero de itens em que voces concordaram
-agreement = 0
-
-# Divide a contagem pelo numero de tweets
-agreement = agreement / 10
-
-# Imprime a variavel
-agreement</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.0</code></pre>
-
-  <h3>Passo 3 — Calcular as probabilidades de cada categoria</h3>
-  <p>A concordância percentual é uma medida <strong>muito ruim</strong>: qualquer um pode ter <strong>acertado por sorte</strong> — ou classificado tudo aleatoriamente. A concordância percentual <strong>não detecta</strong> isso! Felizmente, dá para estimar a <strong>concordância por acaso</strong>. Primeiro, conte quantas vezes <strong>você</strong> usou cada categoria e converta em <strong>probabilidades</strong>, dividindo pelo total:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Conte quantos itens *voce* colocou em cada categoria
-positive = 0
-neutral = 0
-negative = 0
-
-# Converte as contagens em probabilidades
-positive = positive / 10
-neutral = neutral / 10
-negative = negative / 10
-
-# Chama cada variavel para examinar a saida
-positive, neutral, negative</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>(0.0, 0.0, 0.0)</code></pre>
-  <p>Essas probabilidades representam a chance de <strong>você</strong> escolher aquela categoria. Peça ao colega as probabilidades dele e registre‑as:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">nb_positive = 0
-nb_neutral = 0
-nb_negative = 0</code></pre>
-  <p>Com as probabilidades dos <strong>dois</strong> anotadores, calculamos a probabilidade de ambos escolherem a mesma categoria <strong>por acaso</strong>: para cada categoria, multiplicamos a sua probabilidade pela do colega:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">both_positive = positive * nb_positive
-both_neutral = neutral * nb_neutral
-both_negative = negative * nb_negative</code></pre>
-  <div class="call note"><span class="lbl">Nota</span><p>Se um anotador não colocou nenhum <em>tweet</em> em uma categoria (ex.: <code class="inl">negative</code>) e o outro colocou, isso <strong>anula</strong> a chance de concordância por acaso naquela categoria — multiplicar por zero resulta em zero.</p></div>
-
-  <h3>Passo 4 — Estimar a concordância esperada (por acaso)</h3>
-  <p>Agora calculamos quão provável é concordar <strong>por acaso</strong>: a <strong>concordância esperada</strong> (<em>expected agreement</em>), somando as probabilidades combinadas de cada categoria:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">expected_agreement = both_positive + both_neutral + both_negative
-
-expected_agreement</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.0</code></pre>
-  <p>Com a <strong>concordância observada</strong> (<code class="inl">agreement</code>) e a <strong>esperada por acaso</strong> (<code class="inl">expected_agreement</code>), usamos uma medida mais confiável: o <strong>kappa de Cohen</strong> (<span class="kap">κ</span>), definido pela fórmula:</p>
-  <div class="formula">
-    <span class="kf"><span class="kap">κ</span> =
-      <span class="frac">
-        <span class="num"><em>P</em><sub>observado</sub> − <em>P</em><sub>esperado</sub></span>
-        <span class="den">1 − <em>P</em><sub>esperado</sub></span>
-      </span>
-    </span>
-  </div>
-  <p>Como a informação já está em <code class="inl">agreement</code> e <code class="inl">expected_agreement</code>, calculamos κ facilmente — note os <strong>parênteses</strong> para executar as subtrações antes da divisão:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">kappa = (agreement - expected_agreement) / (1 - expected_agreement)
-
-kappa</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.0</code></pre>
-
-  <h2 id="s3"><span class="num">3.</span> O kappa de Cohen como medida de concordância</h2>
-  <p>O valor teórico do κ vai de <strong>−1</strong> (discordância perfeita) a <strong>+1</strong> (concordância perfeita), com <strong>0</strong> indicando concordância totalmente aleatória. O κ costuma ser interpretado como a <strong>força</strong> da concordância. Landis e Koch (1977) propuseram os <em>benchmarks</em> abaixo — que devem ser levados <strong>com cautela</strong>, pois as divisões são arbitrárias:</p>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Kappa de Cohen (κ)</th><th>Força da concordância</th></tr></thead>
-      <tbody>
-        <tr><td>&lt; 0,00</td><td>Pobre</td></tr>
-        <tr><td>0,00 – 0,20</td><td>Ligeira</td></tr>
-        <tr><td>0,21 – 0,40</td><td>Razoável</td></tr>
-        <tr><td>0,41 – 0,60</td><td>Moderada</td></tr>
-        <tr><td>0,61 – 0,80</td><td>Substancial</td></tr>
-        <tr><td>0,81 – 1,00</td><td>Quase perfeita</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p>O κ serve para <strong>dois</strong> anotadores, com categorias fixadas de antemão. Para mais de dois, usa‑se o <strong>κ de Fleiss</strong>. Na prática, ele já está implementado em bibliotecas — a <strong>scikit‑learn</strong> (<code class="inl">sklearn</code>) tem a função <code class="inl">cohen_kappa_score()</code>, que recebe <strong>duas listas</strong>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a funcao cohen_kappa_score do modulo 'metrics' da scikit-learn
-from sklearn.metrics import cohen_kappa_score
-
-# Define duas listas, 'a1' e 'a2', com anotacoes de classes gramaticais
-a1 = ['ADJ', 'AUX', 'NOUN', 'VERB', 'VERB']
-a2 = ['ADJ', 'VERB', 'NOUN', 'NOUN', 'VERB']
-
-# Usa cohen_kappa_score() para calcular a concordancia entre as listas
-cohen_kappa_score(a1, a2)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.44444444444444453</code></pre>
-  <p>Segundo o <em>benchmark</em> de Landis e Koch, esse valor indicaria concordância <strong>moderada</strong>.</p>
-  <div class="call tip"><span class="lbl">Dica</span><p>Raramente é preciso anotar o conjunto inteiro — uma <strong>amostra aleatória</strong> costuma bastar. Se o κ sugere concordância, assumimos que as anotações são confiáveis (não aleatórias). Ainda assim, toda medida de concordância depende de suas próprias suposições — nenhuma representa a verdade absoluta.</p></div>
-
-  <h2 id="s4"><span class="num">4.</span> Avaliando o desempenho de modelos de linguagem</h2>
-  <p>Com um padrão‑ouro confiável, podemos medir o desempenho de modelos. Suponha um padrão‑ouro com 10 tokens anotados por classe gramatical (<code class="inl">gold_standard</code>) e as previsões de um modelo (<code class="inl">predictions</code>):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define a lista 'gold_standard' (padrao-ouro anotado por humanos)
-gold_standard = ['ADJ', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'NOUN', 'ADJ', 'DET', 'PRON']
-
-# Define a lista 'predictions' (previsoes do modelo de linguagem)
-predictions = ['NOUN', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'VERB', 'ADJ', 'DET', 'PROPN']</code></pre>
-
-  <h3>4.1 Acurácia</h3>
-  <p>A função <code class="inl">accuracy_score()</code> calcula a <strong>acurácia</strong>, que é exatamente a concordância observada calculada manualmente:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa o modulo 'metrics' da biblioteca scikit-learn (sklearn)
-from sklearn import metrics
-
-# Usa a funcao accuracy_score() do modulo 'metrics'
-metrics.accuracy_score(gold_standard, predictions)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.7</code></pre>
-  <p>A acurácia sofre do mesmo problema — pode ser resultado de <strong>palpites de sorte</strong>. Como é um exemplo pequeno, dá para verificar que <strong>7 de 10</strong> classes coincidem: acurácia de 0,7 (70%).</p>
-
-  <h3>4.2 Matriz de confusão</h3>
-  <p>Para avaliar melhor, organizamos os resultados em uma <strong>matriz de confusão</strong>. Precisamos das classes únicas de ambas as listas, coletadas com <code class="inl">set()</code> — um <strong>conjunto</strong> (<em>set</em>) tem itens únicos, útil para remover duplicatas:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas
-pos_tags = set(gold_standard + predictions)
-
-# Ordena o conjunto alfabeticamente e converte o resultado em lista
-pos_tags = list(sorted(pos_tags))
-
-# Imprime a lista resultante
-pos_tags</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>['ADJ', 'AUX', 'DET', 'NOUN', 'PRON', 'PROPN', 'VERB']</code></pre>
-  <p>Montamos uma tabela em que as <strong>linhas</strong> são o padrão‑ouro e as <strong>colunas</strong> as previsões, somando <code class="inl">+1</code> na célula de cada par. O primeiro item de <code class="inl">gold_standard</code> é <code class="inl">ADJ</code> e o de <code class="inl">predictions</code> é <code class="inl">NOUN</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Imprime o primeiro item de cada lista
-gold_standard[0], predictions[0]</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>('ADJ', 'NOUN')</code></pre>
-  <p>Somamos 1 na linha <code class="inl">ADJ</code>, coluna <code class="inl">NOUN</code>. A <strong>matriz de confusão</strong> completa (diagonal = acertos, em verde):</p>
-  <div class="tbl-wrap">
-    <table class="cm">
-      <thead><tr><th></th><th>ADJ</th><th>AUX</th><th>DET</th><th>NOUN</th><th>PRON</th><th>PROPN</th><th>VERB</th></tr></thead>
-      <tbody>
-        <tr><th>ADJ</th><td class="diag">2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><th>AUX</th><td>0</td><td class="diag">2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><th>DET</th><td>0</td><td>0</td><td class="diag">1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><th>NOUN</th><td>0</td><td>0</td><td>0</td><td class="diag">1</td><td>0</td><td>0</td><td>1</td></tr>
-        <tr><th>PRON</th><td>0</td><td>0</td><td>0</td><td>0</td><td class="diag">0</td><td>1</td><td>0</td></tr>
-        <tr><th>PROPN</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="diag">0</td><td>0</td></tr>
-        <tr><th>VERB</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="diag">1</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p>As previsões corretas formam uma <strong>diagonal</strong> aproximada. Dela derivamos duas métricas por classe:</p>
-  <ul>
-    <li><strong>Precisão</strong> (<em>precision</em>): proporção de previsões corretas <strong>por classe</strong>. A coluna <code class="inl">VERB</code> soma <code class="inl">2</code>, mas só <code class="inl">1</code> está certa (na linha <code class="inl">VERB</code>): precisão de <code class="inl">VERB</code> = 1/2 = <strong>0,5</strong>. Idem para <code class="inl">NOUN</code>.</li>
-    <li><strong>Revocação</strong> (<em>recall</em>): proporção de acertos dentre <strong>todos os exemplos reais</strong> da classe. A linha <code class="inl">ADJ</code> soma <code class="inl">3</code>, mas só <code class="inl">2</code> estão na coluna <code class="inl">ADJ</code>: revocação de <code class="inl">ADJ</code> = 2/3 ≈ <strong>0,66</strong>. Para <code class="inl">NOUN</code>, 1/2 = 0,5.</li>
-  </ul>
-  <p>A scikit‑learn gera a matriz automaticamente com <code class="inl">confusion_matrix()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Calcula a matriz de confusao para as duas listas e imprime o resultado
-print(metrics.confusion_matrix(gold_standard, predictions))</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[[2 0 0 1 0 0 0]
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#o-que-é-um-padrãoouro-gold-standard" id="toc-o-que-é-um-padrãoouro-gold-standard">1. O que é um padrão‑ouro
+(<em>gold standard</em>)?</a></li>
+<li><a href="#medindo-a-confiabilidade-manualmente" id="toc-medindo-a-confiabilidade-manualmente">2. Medindo a
+confiabilidade manualmente</a></li>
+<li><a href="#o-kappa-de-cohen-como-medida-de-concordância" id="toc-o-kappa-de-cohen-como-medida-de-concordância">3. O kappa de
+Cohen como medida de concordância</a></li>
+<li><a href="#avaliando-o-desempenho-de-modelos-de-linguagem" id="toc-avaliando-o-desempenho-de-modelos-de-linguagem">4. Avaliando o
+desempenho de modelos de linguagem</a></li>
+<li><a href="#quiz" id="toc-quiz">Quiz</a></li>
+<li><a href="#resumo-da-unidade" id="toc-resumo-da-unidade">Resumo da
+unidade</a></li>
+</ul>
+</nav>
+<h3 id="objetivos-de-aprendizagem">Objetivos de aprendizagem</h3>
+<p>Ao final desta unidade, você deverá:</p>
+<ul>
+<li>entender o que é um <strong>padrão‑ouro</strong> (<em>gold
+standard</em>);</li>
+<li>saber <strong>avaliar a concordância</strong> entre anotadores
+humanos;</li>
+<li>compreender <strong>métricas simples</strong> para avaliar o
+desempenho do processamento de linguagem natural.</li>
+</ul>
+<hr />
+<h2 id="o-que-é-um-padrãoouro-gold-standard">1. O que é um padrão‑ouro
+(<em>gold standard</em>)?</h2>
+<p>Um <strong>padrão‑ouro</strong> (<em>gold standard</em>) — também
+chamado de <em>ground truth</em> (“verdade fundamental”) — refere‑se a
+<strong>dados verificados por humanos</strong> que podem ser usados como
+referência (<em>benchmark</em>) para avaliar o desempenho de algoritmos.
+Em processamento de linguagem natural, os padrões‑ouro medem quão bem os
+<strong>humanos</strong> desempenham uma tarefa.</p>
+<p>O objetivo do PLN é permitir que computadores <strong>alcancem ou
+superem</strong> o desempenho humano em uma tarefa pré‑definida. Medir
+se os algoritmos conseguem isso exige uma referência — e é o padrão‑ouro
+que a fornece. Em termos simples, ele oferece um <strong>ponto de
+referência</strong>.</p>
+<p>É importante entender, porém, que <strong>padrões‑ouro são abstrações
+do uso da língua</strong>. Considere a tarefa de classificar palavras em
+classes gramaticais: as classes não são dadas pela natureza — elas
+representam uma abstração que impõe estrutura à língua. A língua,
+entretanto, é naturalmente <strong>ambígua e subjetiva</strong>, e as
+abstrações usadas podem ser incompletas: não temos certeza de que todos
+os usuários classificariam as palavras da mesma forma.</p>
+<p>Por isso precisamos <strong>medir a confiabilidade</strong> de
+qualquer padrão‑ouro, ou seja, até que ponto os humanos
+<strong>concordam</strong> na tarefa.</p>
+<hr />
+<h2 id="medindo-a-confiabilidade-manualmente">2. Medindo a
+confiabilidade manualmente</h2>
+<p>Esta seção mostra como a <strong>confiabilidade</strong> — geralmente
+entendida como a <strong>concordância entre múltiplos
+anotadores</strong> — pode ser medida manualmente.</p>
+<h3 id="passo-1-anotar-os-dados">Passo 1 — Anotar os dados</h3>
+<p>A <strong>análise de sentimento</strong> é uma tarefa que consiste em
+determinar o sentimento de um texto. Treinar um modelo de análise de
+sentimento exige coletar dados de treino, isto é, exemplos de textos
+associados a diferentes sentimentos.</p>
+<p>Classifique os <em>tweets</em> a seguir em três categorias —
+<strong>positivo</strong>, <strong>neutro</strong> ou
+<strong>negativo</strong> — de acordo com o sentimento. Anote sua
+decisão (uma por linha), mas <strong>não</strong> discuta nem mostre ao
+colega ao lado:</p>
+<ol type="1">
+<li>Updated: HSL GTFS (Helsinki, Finland) https://t.co/fWEpzmNQLz</li>
+<li>current weather in Helsinki: broken clouds, -8°C 100% humidity, wind
+4kmh, pressure 1061mb</li>
+<li>CNN: “WallStreetBets Redditors go ballistic over GameStop’s sinking
+share price”</li>
+<li>Baana bicycle counter. Today: 3 Same time last week: 1058 Trend:
+↓99% This year: 819 518 Last year: 802 079 #Helsinki #cycling</li>
+<li>Elon Musk is now tweeting about #bitcoin</li>
+<li>A perfect Sunday walk in the woods just a few steps from home.</li>
+<li>Went to Domino’s today👍 It was so amazing and I think I got damn
+good dessert as well…</li>
+<li>Choo Choo 🚂 There’s our train! 🎉 #holidayahead</li>
+<li>Happy women’s day ❤💋 kisses to all you beautiful ladies. 😚
+#awesometobeawoman</li>
+<li>Good morning #Helsinki! Sun will rise in 30 minutes (local time
+07:28)</li>
+</ol>
+<p>Anote suas classificações (uma por linha, de 1 a 10). O colega ao
+lado faz o mesmo, de forma independente — assim teremos <strong>dois
+anotadores</strong> para comparar.</p>
+<h3 id="passo-2-calcular-a-concordância-percentual">Passo 2 — Calcular a
+concordância percentual</h3>
+<p>Ao criar conjuntos de dados para treinar modelos, geralmente queremos
+que os dados sejam <strong>confiáveis</strong>, ou seja, que haja
+concordância sobre o que descrevemos (aqui, o sentimento dos
+<em>tweets</em>).</p>
+<p>Uma forma de medir isso é a <strong>concordância percentual</strong>
+simples: quantas vezes, das 10, você e o colega concordaram. Basta
+dividir o número de concordâncias pelo número de itens (10):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Substitua o numero abaixo pelo numero de itens em que voces concordaram</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide a contagem pelo numero de tweets</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> agreement <span class="op">/</span> <span class="dv">10</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a variavel</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>agreement</span></code></pre></div>
+<pre class="text"><code>0.0</code></pre>
+<h3 id="passo-3-calcular-as-probabilidades-de-cada-categoria">Passo 3 —
+Calcular as probabilidades de cada categoria</h3>
+<p>A concordância percentual é, na verdade, uma medida <strong>muito
+ruim</strong>: qualquer um dos dois pode ter <strong>acertado por
+sorte</strong> — ou ter achado a tarefa tediosa e classificado tudo
+aleatoriamente. Se isso aconteceu, a concordância percentual <strong>não
+tem como detectar</strong>, pois ela não distingue acerto real de
+acaso!</p>
+<p>Felizmente, dá para estimar a possibilidade de <strong>concordância
+por acaso</strong>. O primeiro passo é contar quantas vezes
+<strong>você</strong> usou cada categoria e converter essas contagens em
+<strong>probabilidades</strong>, dividindo pelo total de
+<em>tweets</em>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conte quantos itens *voce* colocou em cada categoria</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>positive <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>neutral <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>negative <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte as contagens em probabilidades</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>positive <span class="op">=</span> positive <span class="op">/</span> <span class="dv">10</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>neutral <span class="op">=</span> neutral <span class="op">/</span> <span class="dv">10</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>negative <span class="op">=</span> negative <span class="op">/</span> <span class="dv">10</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama cada variavel para examinar a saida</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>positive, neutral, negative</span></code></pre></div>
+<pre class="text"><code>(0.0, 0.0, 0.0)</code></pre>
+<p>Essas probabilidades representam a chance de <strong>você</strong>
+escolher aquela categoria. Agora pergunte ao colega as probabilidades
+dele e registre‑as:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nb_positive <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>nb_neutral <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>nb_negative <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>Conhecendo as probabilidades de cada classe para os
+<strong>dois</strong> anotadores, podemos calcular a probabilidade de
+ambos escolherem a mesma categoria <strong>por acaso</strong>. Para cada
+categoria, basta multiplicar a sua probabilidade pela do colega:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>both_positive <span class="op">=</span> positive <span class="op">*</span> nb_positive</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>both_neutral <span class="op">=</span> neutral <span class="op">*</span> nb_neutral</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>both_negative <span class="op">=</span> negative <span class="op">*</span> nb_negative</span></code></pre></div>
+<div class="nota">
+<p><strong>Nota:</strong> se um anotador não colocou nenhum
+<em>tweet</em> em uma categoria (por exemplo, <code>negative</code>) e o
+outro colocou, isso <strong>anula</strong> a chance de concordância por
+acaso naquela categoria — multiplicar por zero resulta em zero.</p>
+</div>
+<h3 id="passo-4-estimar-a-concordância-esperada-por-acaso">Passo 4 —
+Estimar a concordância esperada (por acaso)</h3>
+<p>Agora podemos calcular quão provável é concordar <strong>por
+acaso</strong>. Isso é a <strong>concordância esperada</strong>
+(<em>expected agreement</em>), obtida somando as probabilidades
+combinadas de cada categoria:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>expected_agreement <span class="op">=</span> both_positive <span class="op">+</span> both_neutral <span class="op">+</span> both_negative</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>expected_agreement</span></code></pre></div>
+<pre class="text"><code>0.0</code></pre>
+<p>Conhecendo tanto a <strong>concordância observada</strong>
+(<code>agreement</code>) quanto a <strong>esperada por acaso</strong>
+(<code>expected_agreement</code>), podemos usar uma medida mais
+confiável: o <strong>kappa de Cohen</strong> (κ), que estima a
+concordância a partir de ambas. A fórmula é:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mrow><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>d</mi><mi>o</mi></mrow></msub><mo>−</mo><msub><mi>P</mi><mrow><mi>e</mi><mi>s</mi><mi>p</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>d</mi><mi>o</mi></mrow></msub></mrow><mrow><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>e</mi><mi>s</mi><mi>p</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>d</mi><mi>o</mi></mrow></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\kappa = \frac{P_{observado} - P_{esperado}}{1 - P_{esperado}}</annotation></semantics></math></p>
+<p>Como essa informação já está nas variáveis <code>agreement</code> e
+<code>expected_agreement</code>, calculamos κ facilmente. Note que
+envolvemos as subtrações em <strong>parênteses</strong> para executá‑las
+antes da divisão:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>kappa <span class="op">=</span> (agreement <span class="op">-</span> expected_agreement) <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> expected_agreement)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>kappa</span></code></pre></div>
+<pre class="text"><code>0.0</code></pre>
+<hr />
+<h2 id="o-kappa-de-cohen-como-medida-de-concordância">3. O kappa de
+Cohen como medida de concordância</h2>
+<p>O valor teórico do κ de Cohen vai de <strong>−1</strong>
+(discordância perfeita) a <strong>+1</strong> (concordância perfeita),
+com <strong>0</strong> indicando concordância totalmente aleatória. O κ
+costuma ser interpretado como uma medida da <strong>força</strong> da
+concordância.</p>
+<p>Landis e Koch (1977) propuseram os <em>benchmarks</em> abaixo — que
+devem ser levados <strong>com cautela</strong>, pois as divisões são
+arbitrárias:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Kappa de Cohen (κ)</th>
+<th style="text-align: left;">Força da concordância</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">&lt; 0,00</td>
+<td style="text-align: left;">Pobre</td>
+</tr>
+<tr>
+<td style="text-align: left;">0,00 – 0,20</td>
+<td style="text-align: left;">Ligeira</td>
+</tr>
+<tr>
+<td style="text-align: left;">0,21 – 0,40</td>
+<td style="text-align: left;">Razoável</td>
+</tr>
+<tr>
+<td style="text-align: left;">0,41 – 0,60</td>
+<td style="text-align: left;">Moderada</td>
+</tr>
+<tr>
+<td style="text-align: left;">0,61 – 0,80</td>
+<td style="text-align: left;">Substancial</td>
+</tr>
+<tr>
+<td style="text-align: left;">0,81 – 1,00</td>
+<td style="text-align: left;">Quase perfeita</td>
+</tr>
+</tbody>
+</table>
+<p>O κ de Cohen serve para medir a concordância entre
+<strong>dois</strong> anotadores, e as categorias disponíveis devem ser
+fixadas de antemão. Para mais de dois anotadores, usa‑se uma medida como
+o <strong>κ de Fleiss</strong>.</p>
+<p>Na prática, o κ de Cohen (e muitas outras medidas) já está
+implementado em bibliotecas Python — raramente é preciso calcular à mão.
+A biblioteca <strong>scikit‑learn</strong> (<code>sklearn</code>), por
+exemplo, inclui a função <code>cohen_kappa_score()</code>, que recebe
+<strong>duas listas</strong> e calcula o κ entre elas:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a funcao cohen_kappa_score do modulo &#39;metrics&#39; da scikit-learn</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> cohen_kappa_score</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define duas listas, &#39;a1&#39; e &#39;a2&#39;, com anotacoes de classes gramaticais</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>a1 <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;VERB&#39;</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>a2 <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;VERB&#39;</span>]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa cohen_kappa_score() para calcular a concordancia entre as listas</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>cohen_kappa_score(a1, a2)</span></code></pre></div>
+<pre class="text"><code>0.44444444444444453</code></pre>
+<p>Segundo o <em>benchmark</em> de Landis e Koch, esse valor indicaria
+concordância <strong>moderada</strong>.</p>
+<div class="dica">
+<p><strong>Dica:</strong> raramente é preciso anotar o conjunto inteiro
+para medir a concordância — uma <strong>amostra aleatória</strong>
+costuma bastar. Se o κ sugere que os anotadores concordam, assumimos que
+as anotações são confiáveis (não aleatórias). Ainda assim, toda medida
+de concordância entre anotadores depende de suas próprias suposições
+sobre o que é “concordar” — nenhuma representa a verdade absoluta.</p>
+</div>
+<hr />
+<h2 id="avaliando-o-desempenho-de-modelos-de-linguagem">4. Avaliando o
+desempenho de modelos de linguagem</h2>
+<p>Com um padrão‑ouro suficientemente confiável, podemos usá‑lo para
+medir o desempenho de modelos de linguagem. Suponha um padrão‑ouro com
+10 tokens anotados por classe gramatical, na lista
+<code>gold_standard</code>, e as previsões de um modelo na lista
+<code>predictions</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a lista &#39;gold_standard&#39; (padrao-ouro anotado por humanos)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>gold_standard <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;DET&#39;</span>, <span class="st">&#39;PRON&#39;</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a lista &#39;predictions&#39; (previsoes do modelo de linguagem)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> [<span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;DET&#39;</span>, <span class="st">&#39;PROPN&#39;</span>]</span></code></pre></div>
+<h3 id="acurácia">4.1 Acurácia</h3>
+<p>Vamos importar o módulo <code>metrics</code> inteiro da scikit‑learn.
+A função <code>accuracy_score()</code> calcula a
+<strong>acurácia</strong>, que é exatamente a mesma coisa que a
+concordância observada calculada manualmente:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o modulo &#39;metrics&#39; da biblioteca scikit-learn (sklearn)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> metrics</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa a funcao accuracy_score() do modulo &#39;metrics&#39;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>metrics.accuracy_score(gold_standard, predictions)</span></code></pre></div>
+<pre class="text"><code>0.7</code></pre>
+<p>A acurácia sofre do mesmo problema da concordância observada — pode
+ser resultado de <strong>palpites de sorte</strong>. Como é um exemplo
+pequeno, dá para verificar que <strong>7 de 10</strong> classes
+gramaticais coincidem, resultando em acurácia de 0,7 (70%).</p>
+<h3 id="matriz-de-confusão">4.2 Matriz de confusão</h3>
+<p>Para avaliar melhor o modelo, organizamos os resultados em uma
+<strong>matriz de confusão</strong>. Precisamos de todas as classes
+gramaticais que aparecem em <code>gold_standard</code> e
+<code>predictions</code>. Coletamos as categorias únicas com a função
+<code>set()</code> — um <strong>conjunto</strong> (<em>set</em>) é uma
+estrutura do Python com itens únicos, útil aqui para remover
+duplicatas:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pos_tags <span class="op">=</span> <span class="bu">set</span>(gold_standard <span class="op">+</span> predictions)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordena o conjunto alfabeticamente e converte o resultado em lista</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>pos_tags <span class="op">=</span> <span class="bu">list</span>(<span class="bu">sorted</span>(pos_tags))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a lista resultante</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>pos_tags</span></code></pre></div>
+<pre class="text"><code>[&#39;ADJ&#39;, &#39;AUX&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;PRON&#39;, &#39;PROPN&#39;, &#39;VERB&#39;]</code></pre>
+<p>Usamos essas categorias para montar uma tabela em que as
+<strong>linhas</strong> representam o padrão‑ouro e as
+<strong>colunas</strong> as previsões do modelo. Percorremos cada par de
+itens (padrão‑ouro, previsão) e somamos <code>+1</code> na célula
+correspondente. Por exemplo, o primeiro item de
+<code>gold_standard</code> é <code>ADJ</code> e o primeiro de
+<code>predictions</code> é <code>NOUN</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime o primeiro item de cada lista</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>gold_standard[<span class="dv">0</span>], predictions[<span class="dv">0</span>]</span></code></pre></div>
+<pre class="text"><code>(&#39;ADJ&#39;, &#39;NOUN&#39;)</code></pre>
+<p>Encontramos a linha <code>ADJ</code> e a coluna <code>NOUN</code> e
+somamos 1 àquela célula. A tabela completa (a <strong>matriz de
+confusão</strong>) fica assim:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">ADJ</th>
+<th style="text-align: center;">AUX</th>
+<th style="text-align: center;">DET</th>
+<th style="text-align: center;">NOUN</th>
+<th style="text-align: center;">PRON</th>
+<th style="text-align: center;">PROPN</th>
+<th style="text-align: center;">VERB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>ADJ</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>AUX</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>DET</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NOUN</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PRON</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PROPN</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>VERB</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>As previsões corretas formam uma <strong>linha aproximadamente
+diagonal</strong> na tabela. A partir dela, derivamos duas métricas por
+classe: <strong>precisão</strong> (<em>precision</em>) e
+<strong>revocação</strong> (<em>recall</em>).</p>
+<ul>
+<li><strong>Precisão</strong> é a proporção de previsões corretas
+<strong>por classe</strong> — quantas das previsões daquela classe
+estavam certas. Por exemplo, a coluna <code>VERB</code> soma
+<code>2</code>, mas só <code>1</code> previsão está correta (na linha
+<code>VERB</code>); logo, a precisão de <code>VERB</code> é 1/2 =
+<strong>0,5</strong>. O mesmo vale para <code>NOUN</code>.</li>
+<li><strong>Revocação</strong> é a proporção de previsões corretas
+dentre <strong>todos os exemplos reais</strong> daquela classe — quantas
+instâncias reais o modelo conseguiu “encontrar”. Por exemplo, a linha
+<code>ADJ</code> soma <code>3</code> (há três adjetivos no padrão‑ouro),
+mas só <code>2</code> estão na coluna <code>ADJ</code>; logo, a
+revocação de <code>ADJ</code> é 2/3 ≈ <strong>0,66</strong>. Para
+<code>NOUN</code>, a revocação é 1/2 = 0,5.</li>
+</ul>
+<p>A scikit‑learn gera matrizes de confusão automaticamente com
+<code>confusion_matrix()</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a matriz de confusao para as duas listas e imprime o resultado</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics.confusion_matrix(gold_standard, predictions))</span></code></pre></div>
+<pre class="text"><code>[[2 0 0 1 0 0 0]
  [0 2 0 0 0 0 0]
  [0 0 1 0 0 0 0]
  [0 0 0 1 0 0 1]
  [0 0 0 0 0 1 0]
  [0 0 0 0 0 0 0]
  [0 0 0 0 0 0 1]]</code></pre>
-
-  <h3>4.3 Precisão e revocação com a scikit‑learn</h3>
-  <p>A <strong>precisão</strong> é implementada em <code class="inl">precision_score()</code>. Como há <strong>mais de duas</strong> classes, definimos como combinar os resultados pelo argumento <code class="inl">average</code>. Com <code class="inl">average=None</code>, calcula a precisão <strong>de cada classe</strong>. O <code class="inl">zero_division=0</code> evita erro quando uma classe de <code class="inl">predictions</code> não existe em <code class="inl">gold_standard</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Calcula a precisao entre as duas listas, para cada classe (classe gramatical)
-precision = metrics.precision_score(gold_standard, predictions, average=None, zero_division=0)
-
-# Chama a variavel para examinar o resultado
-precision</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>array([1. , 1. , 1. , 0.5, 0. , 0. , 0.5])</code></pre>
-  <p>A saída é um <strong>array NumPy</strong>. Para combinar os rótulos de <code class="inl">pos_tags</code> com as pontuações, usamos <code class="inl">zip()</code> e convertemos com <code class="inl">dict()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Combina o conjunto 'pos_tags' com o array 'precision' usando zip();
-# converte o resultado em um dicionario
-dict(zip(pos_tags, precision))</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>{'ADJ': 1.0, 'AUX': 1.0, 'DET': 1.0, 'NOUN': 0.5, 'PRON': 0.0, 'PROPN': 0.0, 'VERB': 0.5}</code></pre>
-  <p>Para uma <strong>única</strong> precisão de todas as classes, usamos <code class="inl">average='macro'</code>, que trata cada classe como igualmente importante:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Calcula a precisao entre as duas listas e tira a media (macro)
-macro_precision = metrics.precision_score(gold_standard, predictions, average='macro', zero_division=0)
-
-# Chama a variavel para examinar o resultado
-macro_precision</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.5714285714285714</code></pre>
-  <p>A precisão <strong>macro</strong> é a soma das precisões dividida pelo número de classes — dá para verificar manualmente:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Calcula a media macro manualmente: soma as precisoes e divide
-# pelo numero de classes em 'precision'
-sum(precision) / len(precision)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>0.5714285714285714</code></pre>
-  <p>A <strong>revocação</strong> é calculada do mesmo modo, com <code class="inl">recall_score()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Calcula a revocacao entre as duas listas, para cada classe
-recall = metrics.recall_score(gold_standard, predictions, average=None, zero_division=0)
-
-# Combina 'pos_tags' com o array 'recall' e converte em dicionario
-dict(zip(pos_tags, recall))</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>{'ADJ': 0.6666666666666666, 'AUX': 1.0, 'DET': 1.0, 'NOUN': 0.5, 'PRON': 0.0, 'PROPN': 0.0, 'VERB': 1.0}</code></pre>
-
-  <h3>4.4 Relatório de classificação</h3>
-  <p>A função <code class="inl">classification_report()</code> dá precisão e revocação de cada classe, com o <strong>F1‑score</strong> — média equilibrada entre precisão e revocação (ambas contribuem igualmente), de 0 a 1:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Imprime um relatorio de classificacao
-print(metrics.classification_report(gold_standard, predictions, zero_division=0))</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>              precision    recall  f1-score   support
+<h3 id="precisão-e-revocação-com-a-scikitlearn">4.3 Precisão e revocação
+com a scikit‑learn</h3>
+<p>A <strong>precisão</strong> é implementada na função
+<code>precision_score()</code>. Como temos <strong>mais de duas</strong>
+classes, precisamos definir como os resultados de cada classe são
+combinados, pelo argumento <code>average</code>. Com
+<code>average=None</code>, a função calcula a precisão <strong>de cada
+classe</strong>. Também definimos <code>zero_division=0</code> para
+evitar erro quando uma classe de <code>predictions</code> não existe em
+<code>gold_standard</code> (nesses casos, a precisão é 0):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisao entre as duas listas, para cada classe (classe gramatical)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>precision <span class="op">=</span> metrics.precision_score(gold_standard, predictions, average<span class="op">=</span><span class="va">None</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o resultado</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>precision</span></code></pre></div>
+<pre class="text"><code>array([1. , 1. , 1. , 0.5, 0. , 0. , 0.5])</code></pre>
+<p>A saída é um <strong>array NumPy</strong>. Para combinar os rótulos
+de <code>pos_tags</code> com as pontuações de <code>precision</code>,
+usamos a função <code>zip()</code>, que une listas/arrays do mesmo
+tamanho; para visualizar, convertemos com <code>dict()</code>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina o conjunto &#39;pos_tags&#39; com o array &#39;precision&#39; usando zip();</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># converte o resultado em um dicionario</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(<span class="bu">zip</span>(pos_tags, precision))</span></code></pre></div>
+<pre class="text"><code>{&#39;ADJ&#39;: 1.0, &#39;AUX&#39;: 1.0, &#39;DET&#39;: 1.0, &#39;NOUN&#39;: 0.5, &#39;PRON&#39;: 0.0, &#39;PROPN&#39;: 0.0, &#39;VERB&#39;: 0.5}</code></pre>
+<p>Para uma <strong>única</strong> pontuação de precisão para todas as
+classes, usamos <code>average=&#39;macro&#39;</code>, que trata cada classe como
+igualmente importante, independentemente de quantas instâncias ela
+tem:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisao entre as duas listas e tira a media (macro)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>macro_precision <span class="op">=</span> metrics.precision_score(gold_standard, predictions, average<span class="op">=</span><span class="st">&#39;macro&#39;</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o resultado</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>macro_precision</span></code></pre></div>
+<pre class="text"><code>0.5714285714285714</code></pre>
+<p>A precisão <strong>macro</strong> é a soma das precisões dividida
+pelo número de classes — dá para verificar manualmente:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a media macro manualmente: soma as precisoes e divide</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pelo numero de classes em &#39;precision&#39;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">sum</span>(precision) <span class="op">/</span> <span class="bu">len</span>(precision)</span></code></pre></div>
+<pre class="text"><code>0.5714285714285714</code></pre>
+<p>A <strong>revocação</strong> é calculada do mesmo modo, com
+<code>recall_score()</code>:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a revocacao entre as duas listas, para cada classe</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>recall <span class="op">=</span> metrics.recall_score(gold_standard, predictions, average<span class="op">=</span><span class="va">None</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina &#39;pos_tags&#39; com o array &#39;recall&#39; e converte em dicionario</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(<span class="bu">zip</span>(pos_tags, recall))</span></code></pre></div>
+<pre class="text"><code>{&#39;ADJ&#39;: 0.6666666666666666, &#39;AUX&#39;: 1.0, &#39;DET&#39;: 1.0, &#39;NOUN&#39;: 0.5, &#39;PRON&#39;: 0.0, &#39;PROPN&#39;: 0.0, &#39;VERB&#39;: 1.0}</code></pre>
+<h3 id="relatório-de-classificação">4.4 Relatório de classificação</h3>
+<p>A scikit‑learn oferece a função <code>classification_report()</code>,
+que dá precisão e revocação de cada classe, junto com o
+<strong>F1‑score</strong> — uma média equilibrada entre precisão e
+revocação (ambas contribuem igualmente), variando de 0 a 1:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime um relatorio de classificacao</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics.classification_report(gold_standard, predictions, zero_division<span class="op">=</span><span class="dv">0</span>))</span></code></pre></div>
+<pre class="text"><code>              precision    recall  f1-score   support
 
          ADJ       1.00      0.67      0.80         3
          AUX       1.00      1.00      1.00         2
@@ -380,108 +671,97 @@ print(metrics.classification_report(gold_standard, predictions, zero_division=0)
     accuracy                           0.70        10
    macro avg       0.57      0.60      0.57        10
 weighted avg       0.75      0.70      0.71        10</code></pre>
-  <p>As pontuações da linha <code class="inl">macro avg</code> correspondem às que calculamos acima. A linha <code class="inl">weighted avg</code> (média <strong>ponderada</strong>) leva em conta o número de instâncias de cada classe; a coluna <code class="inl">support</code> conta quantas instâncias foram observadas em cada classe.</p>
-
-  <h2>Quiz</h2>
-  <p>Marque a alternativa correta (a resposta certa está destacada com ✅).</p>
-  <p><strong>1. Um padrão‑ouro (<em>gold standard</em>) é:</strong></p>
-  <ol>
-    <li>Dados verificados por humanos, usados como referência ✅</li>
-    <li>A saída bruta do modelo</li>
-    <li>Um dicionário do Python</li>
-  </ol>
-  <p><strong>2. Por que a concordância percentual é uma medida fraca?</strong></p>
-  <ol>
-    <li>Não distingue acerto real de acerto por acaso ✅</li>
-    <li>É difícil de calcular</li>
-    <li>Só funciona com duas classes</li>
-  </ol>
-  <p><strong>3. O kappa de Cohen mede a concordância entre quantos anotadores?</strong></p>
-  <ol>
-    <li>Dois ✅</li>
-    <li>Três</li>
-    <li>Qualquer número</li>
-  </ol>
-  <p><strong>4. A precisão de uma classe responde: das vezes em que o modelo <em>previu</em> essa classe,</strong></p>
-  <ol>
-    <li>quantas estavam certas ✅</li>
-    <li>quantas existiam no total</li>
-    <li>quantas ele deixou de encontrar</li>
-  </ol>
-  <p><strong>5. A revocação de uma classe responde: dos exemplos que <em>realmente</em> são dessa classe,</strong></p>
-  <ol>
-    <li>quantos o modelo encontrou ✅</li>
-    <li>quantos ele previu a mais</li>
-    <li>quantos estavam errados</li>
-  </ol>
-  <p><strong>6. O F1‑score é:</strong></p>
-  <ol>
-    <li>A média equilibrada entre precisão e revocação ✅</li>
-    <li>A soma da precisão com a revocação</li>
-    <li>O maior valor entre os dois</li>
-  </ol>
-
-  <hr>
-  <div class="obj">
-    <h4>Resumo da unidade</h4>
-    <ol>
-      <li>Entender o que é um <strong>padrão‑ouro</strong> e por que ele é uma <strong>abstração</strong> do uso da língua.</li>
-      <li>Medir a <strong>confiabilidade</strong> entre anotadores: concordância percentual, probabilidades por categoria e concordância esperada por acaso.</li>
-      <li>Calcular e interpretar o <strong>kappa de Cohen</strong> (manualmente e com <code class="inl">cohen_kappa_score()</code>), com os <em>benchmarks</em> de Landis &amp; Koch.</li>
-      <li>Avaliar modelos com <strong>acurácia</strong>, <strong>matriz de confusão</strong>, <strong>precisão</strong>, <strong>revocação</strong> e <strong>F1‑score</strong> (<code class="inl">accuracy_score</code>, <code class="inl">confusion_matrix</code>, <code class="inl">precision_score</code>, <code class="inl">recall_score</code>, <code class="inl">classification_report</code>).</li>
-    </ol>
-  </div>
-
-  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
-    <ol>
-      <li>Anote você mesmo os 10 <em>tweets</em> e peça a um colega que faça o mesmo; calcule a concordância percentual e o κ de Cohen com <code class="inl">cohen_kappa_score()</code>.</li>
-      <li>Monte suas próprias listas <code class="inl">gold_standard</code> e <code class="inl">predictions</code> (com pelo menos 8 itens) e gere a matriz com <code class="inl">confusion_matrix()</code>.</li>
-      <li>A partir do relatório, explique por que a classe <code class="inl">PROPN</code> tem <code class="inl">support</code> igual a 0 e o que isso significa.</li>
-      <li>Calcule o F1‑score de <code class="inl">VERB</code> <strong>manualmente</strong> (F1 = 2 · (P · R) / (P + R)) e compare com o relatório.</li>
-    </ol>
-  </div>
-
-  <footer>
-    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. Landis, J. R.; Koch, G. G. (1977). <em>The measurement of observer agreement for categorical data.</em> Biometrics. Pedregosa, F. et al. (2011). <em>Scikit-learn: Machine Learning in Python.</em> JMLR — <a href="https://scikit-learn.org/">scikit-learn.org</a>.</p>
-    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
-  </footer>
-</div>
-
-<script>
-(function(){
-  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
-    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except','assert']);
-  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function hlLine(line){
-    var out='', i=0, n=line.length;
-    while(i<n){
-      var c=line[i];
-      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
-      if(c==="'"||c==='"'){
-        var q=c, j=i+1;
-        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
-        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
-        i=j+1; continue;
-      }
-      if(/[A-Za-z_]/.test(c)){
-        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
-        var w=line.slice(i,j2);
-        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
-        i=j2; continue;
-      }
-      if(/[0-9]/.test(c)){
-        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
-        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
-      }
-      out+=esc(c); i++;
-    }
-    return out;
-  }
-  document.querySelectorAll('code.lang-python').forEach(function(el){
-    var src=el.textContent;
-    el.innerHTML=src.split('\n').map(hlLine).join('\n');
-  });
-})();
-</script>
+<p>As pontuações da linha <code>macro avg</code> correspondem às que
+calculamos acima. A linha <code>weighted avg</code> (média
+<strong>ponderada</strong>) leva em conta o número de instâncias de cada
+classe; a coluna <code>support</code> conta quantas instâncias foram
+observadas em cada classe.</p>
+<hr />
+<h2 id="quiz">Quiz</h2>
+<p>Marque a alternativa correta (a resposta certa está destacada com
+✅).</p>
+<p><strong>1. Um padrão‑ouro (<em>gold standard</em>) é:</strong></p>
+<ol type="1">
+<li>Dados verificados por humanos, usados como referência ✅</li>
+<li>A saída bruta do modelo</li>
+<li>Um dicionário do Python</li>
+</ol>
+<p><strong>2. Por que a concordância percentual é uma medida
+fraca?</strong></p>
+<ol type="1">
+<li>Não distingue acerto real de acerto por acaso ✅</li>
+<li>É difícil de calcular</li>
+<li>Só funciona com duas classes</li>
+</ol>
+<p><strong>3. O kappa de Cohen mede a concordância entre quantos
+anotadores?</strong></p>
+<ol type="1">
+<li>Dois ✅</li>
+<li>Três</li>
+<li>Qualquer número</li>
+</ol>
+<p><strong>4. A precisão de uma classe responde: das vezes em que o
+modelo <em>previu</em> essa classe,</strong></p>
+<ol type="1">
+<li>quantas estavam certas ✅</li>
+<li>quantas existiam no total</li>
+<li>quantas ele deixou de encontrar</li>
+</ol>
+<p><strong>5. A revocação de uma classe responde: dos exemplos que
+<em>realmente</em> são dessa classe,</strong></p>
+<ol type="1">
+<li>quantos o modelo encontrou ✅</li>
+<li>quantos ele previu a mais</li>
+<li>quantos estavam errados</li>
+</ol>
+<p><strong>6. O F1‑score é:</strong></p>
+<ol type="1">
+<li>A média equilibrada entre precisão e revocação ✅</li>
+<li>A soma da precisão com a revocação</li>
+<li>O maior valor entre os dois</li>
+</ol>
+<h2 id="resumo-da-unidade">Resumo da unidade</h2>
+<p>Nesta unidade, você aprendeu a:</p>
+<ol type="1">
+<li>entender o que é um <strong>padrão‑ouro</strong> e por que ele é uma
+<strong>abstração</strong> do uso da língua;</li>
+<li>medir a <strong>confiabilidade</strong> entre anotadores:
+concordância percentual, probabilidades por categoria e concordância
+esperada por acaso;</li>
+<li>calcular e interpretar o <strong>kappa de Cohen</strong>
+(manualmente e com <code>cohen_kappa_score()</code>), usando os
+<em>benchmarks</em> de Landis &amp; Koch;</li>
+<li>avaliar o desempenho de modelos com <strong>acurácia</strong>,
+<strong>matriz de confusão</strong>, <strong>precisão</strong>,
+<strong>revocação</strong> e <strong>F1‑score</strong>, usando a
+<code>scikit‑learn</code> (<code>accuracy_score</code>,
+<code>confusion_matrix</code>, <code>precision_score</code>,
+<code>recall_score</code>, <code>classification_report</code>).</li>
+</ol>
+<h3 id="exercícios-sugeridos">Exercícios sugeridos</h3>
+<ol type="1">
+<li>Anote você mesmo os 10 <em>tweets</em> e peça a um colega que faça o
+mesmo; calcule a concordância percentual e o κ de Cohen com
+<code>cohen_kappa_score()</code>.</li>
+<li>Monte suas próprias listas <code>gold_standard</code> e
+<code>predictions</code> (com pelo menos 8 itens) e gere a matriz de
+confusão com <code>confusion_matrix()</code>.</li>
+<li>A partir do relatório de classificação, explique por que a classe
+<code>PROPN</code> tem <code>support</code> igual a 0 e o que isso
+significa.</li>
+<li>Calcule o F1‑score de <code>VERB</code> <strong>manualmente</strong>
+a partir da precisão e da revocação (fórmula: F1 = 2 · (P · R) / (P +
+R)) e compare com o relatório.</li>
+</ol>
+<hr />
+<h3 id="referências">Referências</h3>
+<ul>
+<li>Rögnvaldsson, E. et al. <em>Applied Language Technology</em> (MOOC).
+Universidade de Helsinque. <a href="https://applied-language-technology.mooc.fi/" class="uri">https://applied-language-technology.mooc.fi/</a></li>
+<li>Landis, J. R.; Koch, G. G. (1977). The measurement of observer
+agreement for categorical data. <em>Biometrics</em>.</li>
+<li>Pedregosa, F. et al. (2011). Scikit‑learn: Machine Learning in
+Python. <em>JMLR</em>. <a href="https://scikit-learn.org/" class="uri">https://scikit-learn.org/</a></li>
+</ul>
 </body>
 </html>

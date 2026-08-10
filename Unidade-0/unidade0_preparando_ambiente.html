@@ -1,186 +1,329 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unidade 0 — Preparando o ambiente</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
-    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
-    --code-bg:#1e2430; --code-ink:#e6e9ef;
-    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
-    --h3-ink:#2b3242;
-    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
-    --border:#e6e8ef; --radius:16px;
-    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
-  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
-    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
-    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
-  header.hero .inner{max-width:900px;margin:0 auto}
-  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:700;opacity:.9;margin:0 0 12px}
-  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
-  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
-  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
-    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
-  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
-  .navlink:hover{opacity:1}
-  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
-    border-left:5px solid var(--accent);line-height:1.25}
-  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
-  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
-  p{margin:14px 0}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
-  a:hover{border-color:var(--accent)}
-  a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
-  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
-    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
-  strong{color:var(--ink-strong);font-weight:700}
-  ul,ol{margin:14px 0;padding-left:24px}
-  li{margin:7px 0}
-  ul.check{list-style:none;padding-left:4px}
-  ul.check li::before{content:"☐ ";color:var(--accent);font-weight:800}
-  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
-  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
-    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
-    font-size:14.5px;line-height:1.6;position:relative;
-    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
-  pre.code{border-top:3px solid var(--accent2)}
-  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
-    background:var(--accent2);color:#08222b;font-family:var(--sans);font-size:10.5px;
-    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
-  pre code{font-family:inherit;white-space:pre}
-  pre .cmt{color:#7fd18b;font-style:italic}
-  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
-    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
-  .call p{margin:6px 0}
-  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
-  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
-  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
-  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
-  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
-  footer{color:var(--muted);font-size:14px;margin-top:40px}
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee}
-  }
-  :root[data-theme="dark"]{
-    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-  }
-  :root[data-theme="light"]{
-    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
-    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
-  }
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Preparando o ambiente</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+background-color: #232629;
+color: #7a7c7d;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d; padding-left: 4px; }
+div.sourceCode
+{ color: #cfcfc2; background-color: #232629; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #cfcfc2; } 
+code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } 
+code span.an { color: #3f8058; } 
+code span.at { color: #2980b9; } 
+code span.bn { color: #f67400; } 
+code span.bu { color: #7f8c8d; } 
+code span.cf { color: #fdbc4b; font-weight: bold; } 
+code span.ch { color: #3daee9; } 
+code span.cn { color: #27aeae; font-weight: bold; } 
+code span.co { color: #7a7c7d; } 
+code span.cv { color: #7f8c8d; } 
+code span.do { color: #a43340; } 
+code span.dt { color: #2980b9; } 
+code span.dv { color: #f67400; } 
+code span.er { color: #da4453; text-decoration: underline; } 
+code span.ex { color: #0099ff; font-weight: bold; } 
+code span.fl { color: #f67400; } 
+code span.fu { color: #8e44ad; } 
+code span.im { color: #27ae60; } 
+code span.in { color: #c45b00; } 
+code span.kw { color: #cfcfc2; font-weight: bold; } 
+code span.op { color: #cfcfc2; } 
+code span.ot { color: #27ae60; } 
+code span.pp { color: #27ae60; } 
+code span.re { color: #2980b9; background-color: #153042; } 
+code span.sc { color: #3daee9; } 
+code span.ss { color: #da4453; } 
+code span.st { color: #f44f4f; } 
+code span.va { color: #27aeae; } 
+code span.vs { color: #da4453; } 
+code span.wa { color: #da4453; } 
+</style>
+  <style type="text/css">
+:root{
+--bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+--accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+--code-bg:#1e2430; --code-ink:#e6e9ef;
+--border:#e6e8ef; --radius:16px;
+--note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+--table-head:#efe9ff; --table-stripe:#f8f9fc;
+--mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+:root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;
+--table-head:#241f43;--table-stripe:#171a23}
+}
+:root[data-theme="dark"]{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--table-head:#241f43;--table-stripe:#171a23}
+:root[data-theme="light"]{--bg:#f6f7fb;--surface:#fff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+--accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--table-head:#efe9ff;--table-stripe:#f8f9fc}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+
+body > *{max-width:860px;margin-left:auto;margin-right:auto;padding-left:22px;padding-right:22px}
+header#title-block-header{max-width:none;padding:52px 22px 40px;margin-bottom:32px;
+background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);color:#fff;
+box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+header#title-block-header > *{max-width:860px;margin:0 auto;padding:0}
+header#title-block-header .title{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+header#title-block-header .subtitle{font-size:1.1rem;opacity:.95;margin:8px 0 0;font-weight:600}
+header#title-block-header .author,header#title-block-header .date{opacity:.9;font-size:.9rem;margin:6px 0 0}
+h1,h2,h3{line-height:1.25}
+h1{font-size:1.7rem;font-weight:800;color:var(--accent);margin:44px auto 14px;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:40px auto 12px;
+padding-left:14px;border-left:5px solid var(--accent)}
+h3{font-size:1.15rem;font-weight:700;color:var(--ink-strong);margin:28px auto 8px}
+p{margin:13px auto}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+a:hover{border-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+strong{color:var(--ink-strong);font-weight:700}
+ul,ol{margin:12px auto}
+li{margin:6px 0}
+
+code{font-family:var(--mono);font-size:.88em}
+p code,li code,td code{background:var(--accent-soft);color:var(--inl-ink);
+padding:2px 7px;border-radius:7px;font-weight:600;font-size:.84em}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:16px 18px;
+overflow-x:auto;margin:18px auto;border-top:3px solid var(--accent);
+box-shadow:0 16px 34px -22px rgba(0,0,0,.7);line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-weight:400;font-size:14px}
+
+div.dica,div.nota,div.atencao,div.objetivos{
+border:1px solid var(--border);border-left:5px solid var(--accent);
+background:var(--surface);border-radius:14px;padding:12px 18px;margin:20px auto}
+div.dica{border-left-color:var(--tip)}
+div.nota{border-left-color:var(--note)}
+div.atencao{border-left-color:var(--warn)}
+div.objetivos{border-left-color:var(--accent);background:var(--accent-soft)}
+div.dica::before{content:"Dica";color:var(--tip)}
+div.nota::before{content:"Nota";color:var(--note)}
+div.atencao::before{content:"Atenção";color:var(--warn)}
+div.objetivos::before{content:"Objetivos";color:var(--accent)}
+div.dica::before,div.nota::before,div.atencao::before,div.objetivos::before{
+display:block;font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+div.dica p:last-child,div.nota p:last-child,div.atencao p:last-child,div.objetivos :last-child{margin-bottom:0}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:18px auto;
+border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+blockquote{margin:16px auto;padding:4px 0 4px 16px;border-left:3px solid var(--border);
+color:var(--muted);font-style:italic}
+hr{border:none;border-top:1px solid var(--border);margin:40px auto}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="inner">
-    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
-    <h1>Preparando o ambiente</h1>
-    <p class="sub">Trabalhando com Texto em Python I — Unidade 0. Instale o Python e as bibliotecas, baixe o modelo e os dados, e rode os exemplos e exercícios.</p>
-    <span class="pill">Comece por aqui 🚀</span><br>
-    <a class="navlink" href="../Unidade-1/unidade1_manipulando_texto.html">Ir para a Unidade 1 · Manipulando texto com Python &rarr;</a>
-  </div>
+<header id="title-block-header">
+<h1 class="title">Preparando o ambiente</h1>
+<p class="subtitle">Trabalhando com Texto em Python I · Unidade 0</p>
+<p class="author">CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia</p>
+<p class="date">2026</p>
 </header>
-
-<div class="wrap">
-
-  <div class="obj">
-    <h4>Objetivos</h4>
-    <p>Antes de começar as unidades, você precisa deixar o computador pronto. Ao final desta preparação, você terá:</p>
-    <ul>
-      <li><strong>Python 3</strong> instalado e funcionando;</li>
-      <li>um <strong>ambiente virtual</strong> isolado para o curso;</li>
-      <li>as <strong>bibliotecas</strong> (spaCy, pandas, scikit‑learn, matplotlib, Jupyter);</li>
-      <li>o <strong>modelo de linguagem</strong> do spaCy baixado;</li>
-      <li>os <strong>dados</strong> (corpus) na pasta certa;</li>
-      <li>os <strong>exercícios</strong> rodando com correção automática.</li>
-    </ul>
-  </div>
-  <div class="call tip"><span class="lbl">Dica</span><p>Faça esta preparação <strong>uma vez</strong>. Depois, sempre que for estudar, basta <strong>ativar o ambiente virtual</strong> (passo 2) e começar.</p></div>
-
-  <h2 id="s1"><span class="num">1.</span> Python 3</h2>
-  <p>O curso usa <strong>Python 3.9 ou mais novo</strong>. Verifique se já tem, no terminal:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>python3 --version</code></pre>
-  <p>Se aparecer algo como <code class="inl">Python 3.11.x</code>, está pronto. Se não tiver Python, baixe em <a href="https://www.python.org/downloads/">python.org/downloads</a> (Windows/macOS) ou instale pelo gerenciador do seu sistema (no macOS, via <a href="https://brew.sh">Homebrew</a>: <code class="inl">brew install python</code>).</p>
-
-  <h2 id="s2"><span class="num">2.</span> Ambiente virtual (venv)</h2>
-  <p>Um <strong>ambiente virtual</strong> isola as bibliotecas do curso, sem bagunçar o resto do sistema. Crie um na pasta do curso:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>python3 -m venv .venv</code></pre>
-  <p>E <strong>ative‑o</strong> (você repete este passo toda vez que for estudar):</p>
-  <pre class="code"><span class="tag">Terminal</span><code><span class="cmt"># macOS / Linux</span>
-source .venv/bin/activate
-
-<span class="cmt"># Windows (PowerShell)</span>
-.venv\Scripts\Activate.ps1</code></pre>
-  <p>Quando ativo, o nome <code class="inl">(.venv)</code> aparece no início da linha do terminal. Para sair, use <code class="inl">deactivate</code>.</p>
-
-  <h2 id="s3"><span class="num">3.</span> Instalar as bibliotecas</h2>
-  <p>Com o ambiente <strong>ativado</strong>, atualize o <code class="inl">pip</code> e instale tudo de uma vez:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>pip install --upgrade pip
-pip install -r requirements.txt</code></pre>
-  <p>Se preferir instalar manualmente:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>pip install spacy pandas scikit-learn matplotlib jupyterlab</code></pre>
-
-  <h2 id="s4"><span class="num">4.</span> Baixar o modelo de linguagem do spaCy</h2>
-  <p>O spaCy separa a biblioteca do <strong>modelo</strong> treinado. As Unidades 2 e 3 usam o modelo <strong>pequeno</strong> de inglês; a Unidade 5 usa o <strong>médio</strong>:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>python -m spacy download en_core_web_sm
-python -m spacy download en_core_web_md</code></pre>
-  <p>Teste se carregou:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>python -c "import spacy; nlp = spacy.load('en_core_web_sm'); print('spaCy OK')"</code></pre>
-
-  <h2 id="s5"><span class="num">5.</span> Os dados (corpus)</h2>
-  <p>Os exemplos usam alguns arquivos de texto (notícias) e uma planilha de comentários (o corpus <strong>SOCC</strong>). Coloque‑os numa pasta chamada <code class="inl">data/</code>, ao lado dos seus notebooks:</p>
-  <pre class="code"><span class="tag">Estrutura</span><code>data/
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#python-3" id="toc-python-3">1. Python 3</a></li>
+<li><a href="#ambiente-virtual-venv" id="toc-ambiente-virtual-venv">2.
+Ambiente virtual (venv)</a></li>
+<li><a href="#instalar-as-bibliotecas" id="toc-instalar-as-bibliotecas">3. Instalar as bibliotecas</a></li>
+<li><a href="#baixar-o-modelo-de-linguagem-do-spacy" id="toc-baixar-o-modelo-de-linguagem-do-spacy">4. Baixar o modelo de
+linguagem do spaCy</a></li>
+<li><a href="#os-dados-corpus" id="toc-os-dados-corpus">5. Os dados
+(corpus)</a></li>
+<li><a href="#rodar-os-exemplos" id="toc-rodar-os-exemplos">6. Rodar os
+exemplos</a></li>
+<li><a href="#rodar-os-exercícios-correção-automática" id="toc-rodar-os-exercícios-correção-automática">7. Rodar os exercícios
+(correção automática)</a></li>
+<li><a href="#checklist-final" id="toc-checklist-final">Checklist
+final</a></li>
+</ul>
+</nav>
+<h3 id="objetivos">Objetivos</h3>
+<p>Antes de começar as unidades, você precisa deixar o computador
+pronto. Ao final desta preparação, você terá:</p>
+<ul>
+<li><strong>Python 3</strong> instalado e funcionando;</li>
+<li>um <strong>ambiente virtual</strong> isolado para o curso;</li>
+<li>as <strong>bibliotecas</strong> (spaCy, pandas, scikit‑learn,
+matplotlib, Jupyter);</li>
+<li>o <strong>modelo de linguagem</strong> do spaCy baixado;</li>
+<li>os <strong>dados</strong> (corpus) na pasta certa;</li>
+<li>os <strong>exercícios</strong> rodando com correção automática.</li>
+</ul>
+<div class="dica">
+<p><strong>Dica:</strong> faça esta preparação <strong>uma vez</strong>.
+Depois, sempre que for estudar, basta <strong>ativar o ambiente
+virtual</strong> (passo 2) e começar.</p>
+</div>
+<hr />
+<h2 id="python-3">1. Python 3</h2>
+<p>O curso usa <strong>Python 3.9 ou mais novo</strong>. Verifique se já
+tem, no terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span></span></code></pre></div>
+<p>Se aparecer algo como <code>Python 3.11.x</code>, está pronto. Se não
+tiver Python, baixe em <a href="https://www.python.org/downloads/">python.org/downloads</a>
+(Windows/macOS) ou instale pelo gerenciador do seu sistema (no macOS,
+via <a href="https://brew.sh">Homebrew</a>:
+<code>brew install python</code>).</p>
+<hr />
+<h2 id="ambiente-virtual-venv">2. Ambiente virtual (venv)</h2>
+<p>Um <strong>ambiente virtual</strong> isola as bibliotecas do curso,
+sem bagunçar o resto do sistema. Crie um na pasta do curso:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span></code></pre></div>
+<p>E <strong>ative‑o</strong> (você repete este passo toda vez que for
+estudar):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS / Linux</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows (PowerShell)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv\Scripts\Activate.ps1</span></span></code></pre></div>
+<p>Quando ativo, o nome <code>(.venv)</code> aparece no início da linha
+do terminal. Para sair, use <code>deactivate</code>.</p>
+<hr />
+<h2 id="instalar-as-bibliotecas">3. Instalar as bibliotecas</h2>
+<p>Com o ambiente <strong>ativado</strong>, atualize o <code>pip</code>
+e instale tudo de uma vez:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div>
+<p>Se preferir instalar manualmente:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install spacy pandas scikit-learn matplotlib jupyterlab</span></code></pre></div>
+<hr />
+<h2 id="baixar-o-modelo-de-linguagem-do-spacy">4. Baixar o modelo de
+linguagem do spaCy</h2>
+<p>O spaCy separa a biblioteca do <strong>modelo</strong> treinado. As
+Unidades 2 e 3 usam o modelo <strong>pequeno</strong> de inglês; a
+Unidade 5 usa o <strong>médio</strong>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> spacy download en_core_web_sm</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> spacy download en_core_web_md</span></code></pre></div>
+<p>Teste se carregou:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import spacy; nlp = spacy.load(&#39;en_core_web_sm&#39;); print(&#39;spaCy OK&#39;)&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="os-dados-corpus">5. Os dados (corpus)</h2>
+<p>Os exemplos usam alguns arquivos de texto (notícias) e uma planilha
+de comentários (o corpus <strong>SOCC</strong>). Coloque‑os numa pasta
+chamada <code>data/</code>, ao lado dos seus notebooks:</p>
+<pre><code>data/
   NYT_1991-01-16-A15.txt
   WP_1990-08-10-25A.txt
   WP_1991-01-17-A1B.txt
   socc_gnm_articles.csv</code></pre>
-  <p>Esses arquivos vêm do material do curso de referência <em>Applied Language Technology</em> — repositório em <a href="https://github.com/Applied-Language-Technology">github.com/Applied-Language-Technology</a>. Baixe‑os de lá e salve na pasta <code class="inl">data/</code>.</p>
-  <div class="call note"><span class="lbl">Nota</span><p>Os caminhos no material (ex.: <code class="inl">open('data/NYT_1991-01-16-A15.txt')</code>) supõem que você está rodando o Python <strong>na pasta que contém <code class="inl">data/</code></strong>.</p></div>
-
-  <h2 id="s6"><span class="num">6.</span> Rodar os exemplos</h2>
-  <p>Cada unidade traz blocos de código para você experimentar. A forma mais confortável é o <strong>Jupyter</strong>:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>jupyter lab</code></pre>
-  <p>Isso abre o Jupyter no navegador; crie um notebook novo e cole os blocos de código da unidade, executando célula por célula (<code class="inl">Shift + Enter</code>). Você também pode salvar o código em um arquivo <code class="inl">.py</code> e rodar com <code class="inl">python3 arquivo.py</code>.</p>
-
-  <h2 id="s7"><span class="num">7.</span> Rodar os exercícios (correção automática)</h2>
-  <p>Cada unidade tem um conjunto de exercícios com <strong>testes automáticos</strong>, na pasta <code class="inl">exercicios/</code>. Edite o arquivo da unidade (ex.: <code class="inl">unidade1_exercicios.py</code>), substituindo cada <code class="inl">todo(...)</code> pela sua solução, e rode:</p>
-  <pre class="code"><span class="tag">Terminal</span><code>cd exercicios
-python3 -m unittest unidade1_test</code></pre>
-  <p>Quando aparecer <code class="inl">OK</code>, você acertou todos. Enquanto houver <code class="inl">todo(...)</code>, o teste falha de propósito.</p>
-  <div class="call tip"><span class="lbl">Bom saber</span><p>Os testes dos exercícios usam <strong>só a biblioteca padrão</strong> do Python — não precisam do spaCy nem do pandas. Assim, eles rodam em qualquer lugar, inclusive em corretores automáticos como o <strong>Judge0</strong>.</p></div>
-
-  <hr>
-  <div class="obj">
-    <h4>Checklist final</h4>
-    <p>Antes de ir para a Unidade 1, confirme:</p>
-    <ul class="check">
-      <li><code class="inl">python3 --version</code> mostra <strong>3.9 ou mais novo</strong></li>
-      <li>o ambiente virtual está <strong>ativado</strong> (<code class="inl">(.venv)</code> aparece no terminal)</li>
-      <li><code class="inl">pip install -r requirements.txt</code> rodou sem erros</li>
-      <li><code class="inl">python -c "import spacy; spacy.load('en_core_web_sm')"</code> imprime <strong>spaCy OK</strong></li>
-      <li>a pasta <code class="inl">data/</code> contém os arquivos do corpus</li>
-      <li><code class="inl">python3 -m unittest unidade1_test</code> roda (mesmo que os exercícios ainda falhem)</li>
-    </ul>
-  </div>
-  <p>Tudo certo? <strong>Vá para a <a href="../Unidade-1/unidade1_manipulando_texto.html">Unidade 1 — Manipulando texto com Python</a>.</strong></p>
-
-  <footer>
-    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
-  </footer>
+<p>Esses arquivos vêm do material do curso de referência <em>Applied
+Language Technology</em> — repositório em <a href="https://github.com/Applied-Language-Technology">github.com/Applied-Language-Technology</a>.
+Baixe‑os de lá e salve na pasta <code>data/</code>.</p>
+<div class="nota">
+<p><strong>Nota:</strong> os caminhos no material (ex.:
+<code>open(&#39;data/NYT_1991-01-16-A15.txt&#39;)</code>) supõem que você está
+rodando o Python <strong>na pasta que contém
+<code>data/</code></strong>.</p>
 </div>
+<hr />
+<h2 id="rodar-os-exemplos">6. Rodar os exemplos</h2>
+<p>Cada unidade traz blocos de código para você experimentar. A forma
+mais confortável é o <strong>Jupyter</strong>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> lab</span></code></pre></div>
+<p>Isso abre o Jupyter no navegador; crie um notebook novo e cole os
+blocos de código da unidade, executando célula por célula
+(<code>Shift + Enter</code>). Você também pode salvar o código em um
+arquivo <code>.py</code> e rodar com
+<code>python3 arquivo.py</code>.</p>
+<hr />
+<h2 id="rodar-os-exercícios-correção-automática">7. Rodar os exercícios
+(correção automática)</h2>
+<p>Cada unidade tem um conjunto de exercícios com <strong>testes
+automáticos</strong>, na pasta <code>exercicios/</code>. Edite o arquivo
+da unidade (ex.: <code>unidade1_exercicios.py</code>), substituindo cada
+<code>todo(...)</code> pela sua solução, e rode:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> exercicios</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> unittest unidade1_test</span></code></pre></div>
+<p>Quando aparecer <code>OK</code>, você acertou todos. Enquanto houver
+<code>todo(...)</code>, o teste falha de propósito.</p>
+<div class="dica">
+<p><strong>Bom saber:</strong> os testes dos exercícios usam <strong>só
+a biblioteca padrão</strong> do Python — não precisam do spaCy nem do
+pandas. Assim, eles rodam em qualquer lugar, inclusive em corretores
+automáticos como o <strong>Judge0</strong>.</p>
+</div>
+<hr />
+<h2 id="checklist-final">Checklist final</h2>
+<p>Antes de ir para a Unidade 1, confirme:</p>
+<ul class="task-list">
+<li><label><input type="checkbox"></input><code>python3 --version</code>
+mostra <strong>3.9 ou mais novo</strong></label></li>
+<li><label><input type="checkbox"></input>o ambiente virtual está
+<strong>ativado</strong> (<code>(.venv)</code> aparece no
+terminal)</label></li>
+<li><label><input type="checkbox"></input><code>pip install -r requirements.txt</code> rodou sem
+erros</label></li>
+<li><label><input type="checkbox"></input><code>python -c &quot;import spacy; spacy.load(&#39;en_core_web_sm&#39;)&quot;</code>
+imprime <strong>spaCy OK</strong></label></li>
+<li><label><input type="checkbox"></input>a pasta <code>data/</code> contém os
+arquivos do corpus</label></li>
+<li><label><input type="checkbox"></input><code>python3 -m unittest unidade1_test</code> roda
+(mesmo que os exercícios ainda falhem)</label></li>
+</ul>
+<p>Tudo certo? <strong>Vá para a <a href="../Unidade-1/unidade1_manipulando_texto.html">Unidade 1 —
+Manipulando texto com Python</a>.</strong></p>
 </body>
 </html>

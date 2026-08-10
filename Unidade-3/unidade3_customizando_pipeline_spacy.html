@@ -1,188 +1,306 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unidade 3 — Customizando o pipeline do spaCy</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
-    --accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
-    --code-bg:#1e2430; --code-ink:#e6e9ef;
-    --out-bg:#f0f2f7; --out-ink:#2f3646; --out-border:#e6e8ef; --out-tag:#9aa4b8;
-    --h3-ink:#2b3242;
-    --c-comment:#7fd18b; --c-string:#f0b866; --c-kw:#c792ea; --c-num:#82aaff;
-    --note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
-    --border:#e6e8ef; --radius:16px;
-    --mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
-  header.hero{background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);
-    color:#fff;padding:56px 22px 46px;margin-bottom:38px;
-    box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
-  header.hero .inner{max-width:900px;margin:0 auto}
-  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:700;opacity:.9;margin:0 0 12px}
-  header.hero h1{font-size:2.15rem;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
-  header.hero p.sub{margin:0;opacity:.94;font-size:1.05rem;max-width:640px}
-  .pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
-    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:18px;backdrop-filter:blur(4px)}
-  .navlink{display:inline-block;color:#fff;opacity:.85;font-size:13px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4)}
-  .navlink:hover{opacity:1}
-  h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:52px 0 14px;padding-left:16px;
-    border-left:5px solid var(--accent);line-height:1.25}
-  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
-  h3{font-size:1.18rem;font-weight:700;margin:34px 0 10px;color:var(--h3-ink)}
-  h3::before{content:"§ ";color:var(--accent2);font-weight:800}
-  p{margin:14px 0}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
-  a:hover{border-color:var(--accent)}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
-  code.inl{background:var(--accent-soft);color:var(--inl-ink);font-family:var(--mono);
-    font-size:.86em;padding:2px 7px;border-radius:7px;font-weight:600}
-  strong{color:var(--ink-strong);font-weight:700}
-  ul,ol{margin:14px 0;padding-left:24px}
-  li{margin:7px 0}
-  .obj{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:20px 24px;margin:26px 0;box-shadow:0 6px 22px -16px rgba(30,36,48,.35)}
-  .obj h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-  /* code */
-  pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;
-    padding:18px 20px;overflow-x:auto;margin:20px 0;font-family:var(--mono);
-    font-size:14.5px;line-height:1.6;position:relative;
-    box-shadow:0 16px 34px -22px rgba(0,0,0,.7)}
-  pre.code{border-top:3px solid var(--accent)}
-  pre .tag{position:absolute;top:0;right:14px;transform:translateY(-50%);
-    background:var(--accent);color:#fff;font-family:var(--sans);font-size:10.5px;
-    font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:999px}
-  pre.out{background:var(--out-bg);color:var(--out-ink);border:1px solid var(--out-border);
-    box-shadow:none;border-top:3px solid var(--out-tag)}
-  pre.out .tag{background:var(--out-tag)}
-  pre code{font-family:inherit;white-space:pre}
-  .c{color:var(--c-comment);font-style:italic}
-  .s{color:var(--c-string)}
-  .k{color:var(--c-kw);font-weight:600}
-  .n{color:var(--c-num)}
-  /* callouts */
-  .call{border-radius:14px;padding:14px 18px 14px 16px;margin:22px 0;
-    border-left:5px solid;background:var(--surface);border:1px solid var(--border)}
-  .call p{margin:6px 0}
-  .call .lbl{font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
-  .call.note{border-left-color:var(--note)} .call.note .lbl{color:var(--note)}
-  .call.tip{border-left-color:var(--tip)} .call.tip .lbl{color:var(--tip)}
-  .call.warn{border-left-color:var(--warn)} .call.warn .lbl{color:var(--warn)}
-  hr{border:none;border-top:1px solid var(--border);margin:44px 0}
-  footer{color:var(--muted);font-size:14px;margin-top:40px}
-  .toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin:0 0 10px}
-  .toc h4{margin:0 0 10px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .toc ol{margin:0;padding-left:20px}
-  .toc a{border:none}
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-      --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-      --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152}
-  }
-  :root[data-theme="dark"]{
-    --bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#ffffff;--muted:#9aa3b2;
-    --accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--h3-ink:#dfe4ee;
-    --out-bg:#161923;--out-ink:#cdd4e0;--out-border:#2a2f3d;--out-tag:#3a4152;
-  }
-  :root[data-theme="light"]{
-    --bg:#f6f7fb;--surface:#ffffff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
-    --accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--h3-ink:#2b3242;
-    --out-bg:#f0f2f7;--out-ink:#2f3646;--out-border:#e6e8ef;--out-tag:#9aa4b8;
-  }
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Customizando o pipeline do spaCy</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+background-color: #232629;
+color: #7a7c7d;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d; padding-left: 4px; }
+div.sourceCode
+{ color: #cfcfc2; background-color: #232629; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #cfcfc2; } 
+code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } 
+code span.an { color: #3f8058; } 
+code span.at { color: #2980b9; } 
+code span.bn { color: #f67400; } 
+code span.bu { color: #7f8c8d; } 
+code span.cf { color: #fdbc4b; font-weight: bold; } 
+code span.ch { color: #3daee9; } 
+code span.cn { color: #27aeae; font-weight: bold; } 
+code span.co { color: #7a7c7d; } 
+code span.cv { color: #7f8c8d; } 
+code span.do { color: #a43340; } 
+code span.dt { color: #2980b9; } 
+code span.dv { color: #f67400; } 
+code span.er { color: #da4453; text-decoration: underline; } 
+code span.ex { color: #0099ff; font-weight: bold; } 
+code span.fl { color: #f67400; } 
+code span.fu { color: #8e44ad; } 
+code span.im { color: #27ae60; } 
+code span.in { color: #c45b00; } 
+code span.kw { color: #cfcfc2; font-weight: bold; } 
+code span.op { color: #cfcfc2; } 
+code span.ot { color: #27ae60; } 
+code span.pp { color: #27ae60; } 
+code span.re { color: #2980b9; background-color: #153042; } 
+code span.sc { color: #3daee9; } 
+code span.ss { color: #da4453; } 
+code span.st { color: #f44f4f; } 
+code span.va { color: #27aeae; } 
+code span.vs { color: #da4453; } 
+code span.wa { color: #da4453; } 
+</style>
+  <style type="text/css">
+:root{
+--bg:#f6f7fb; --surface:#ffffff; --ink:#1f2430; --ink-strong:#161a22; --muted:#5b6472;
+--accent:#6c4cf1; --accent2:#00b4d8; --accent-soft:#efe9ff; --inl-ink:#5a34d6;
+--code-bg:#1e2430; --code-ink:#e6e9ef;
+--border:#e6e8ef; --radius:16px;
+--note:#3b82f6; --tip:#10b981; --warn:#f59e0b;
+--table-head:#efe9ff; --table-stripe:#f8f9fc;
+--mono:'SF Mono',ui-monospace,'JetBrains Mono','Fira Code',Menlo,Consolas,monospace;
+--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,'Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+:root{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;
+--table-head:#241f43;--table-stripe:#171a23}
+}
+:root[data-theme="dark"]{--bg:#12141c;--surface:#1a1d27;--ink:#e6e9f0;--ink-strong:#fff;--muted:#9aa3b2;
+--accent-soft:#2a2350;--inl-ink:#c8b6ff;--border:#2a2f3d;--table-head:#241f43;--table-stripe:#171a23}
+:root[data-theme="light"]{--bg:#f6f7fb;--surface:#fff;--ink:#1f2430;--ink-strong:#161a22;--muted:#5b6472;
+--accent-soft:#efe9ff;--inl-ink:#5a34d6;--border:#e6e8ef;--table-head:#efe9ff;--table-stripe:#f8f9fc}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+
+body > *{max-width:860px;margin-left:auto;margin-right:auto;padding-left:22px;padding-right:22px}
+header#title-block-header{max-width:none;padding:52px 22px 40px;margin-bottom:32px;
+background:linear-gradient(135deg,#6c4cf1 0%,#8b5cf6 45%,#00b4d8 120%);color:#fff;
+box-shadow:0 18px 40px -20px rgba(108,76,241,.6)}
+header#title-block-header > *{max-width:860px;margin:0 auto;padding:0}
+header#title-block-header .title{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+header#title-block-header .subtitle{font-size:1.1rem;opacity:.95;margin:8px 0 0;font-weight:600}
+header#title-block-header .author,header#title-block-header .date{opacity:.9;font-size:.9rem;margin:6px 0 0}
+h1,h2,h3{line-height:1.25}
+h1{font-size:1.7rem;font-weight:800;color:var(--accent);margin:44px auto 14px;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:40px auto 12px;
+padding-left:14px;border-left:5px solid var(--accent)}
+h3{font-size:1.15rem;font-weight:700;color:var(--ink-strong);margin:28px auto 8px}
+p{margin:13px auto}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(108,76,241,.3)}
+a:hover{border-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+strong{color:var(--ink-strong);font-weight:700}
+ul,ol{margin:12px auto}
+li{margin:6px 0}
+
+code{font-family:var(--mono);font-size:.88em}
+p code,li code,td code{background:var(--accent-soft);color:var(--inl-ink);
+padding:2px 7px;border-radius:7px;font-weight:600;font-size:.84em}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:16px 18px;
+overflow-x:auto;margin:18px auto;border-top:3px solid var(--accent);
+box-shadow:0 16px 34px -22px rgba(0,0,0,.7);line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-weight:400;font-size:14px}
+
+div.dica,div.nota,div.atencao,div.objetivos{
+border:1px solid var(--border);border-left:5px solid var(--accent);
+background:var(--surface);border-radius:14px;padding:12px 18px;margin:20px auto}
+div.dica{border-left-color:var(--tip)}
+div.nota{border-left-color:var(--note)}
+div.atencao{border-left-color:var(--warn)}
+div.objetivos{border-left-color:var(--accent);background:var(--accent-soft)}
+div.dica::before{content:"Dica";color:var(--tip)}
+div.nota::before{content:"Nota";color:var(--note)}
+div.atencao::before{content:"Atenção";color:var(--warn)}
+div.objetivos::before{content:"Objetivos";color:var(--accent)}
+div.dica::before,div.nota::before,div.atencao::before,div.objetivos::before{
+display:block;font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+div.dica p:last-child,div.nota p:last-child,div.atencao p:last-child,div.objetivos :last-child{margin-bottom:0}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:18px auto;
+border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+thead th{background:var(--table-head);color:var(--ink-strong);font-weight:700}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+blockquote{margin:16px auto;padding:4px 0 4px 16px;border-left:3px solid var(--border);
+color:var(--muted);font-style:italic}
+hr{border:none;border-top:1px solid var(--border);margin:40px auto}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="inner">
-    <p class="eyebrow">CiberExt 26‑29 · FEELT38103 · Universidade Federal de Uberlândia</p>
-    <h1>Customizando o pipeline do spaCy</h1>
-    <p class="sub">Trabalhando com Texto em Python I — Unidade 3. Modificar o pipeline, processar em lote, atributos personalizados, salvar em disco e mesclar sintagmas e entidades.</p>
-    <span class="pill">Adaptado de Applied Language Technology · mooc.fi</span><br>
-    <a class="navlink" href="../Unidade-2/unidade2_processando_com_spacy.html">&larr; Unidade 2 · Processando textos com spaCy</a>
-  </div>
+<header id="title-block-header">
+<h1 class="title">Customizando o pipeline do spaCy</h1>
+<p class="subtitle">Trabalhando com Texto em Python I · Unidade 3</p>
+<p class="author">CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia</p>
+<p class="date">2026</p>
 </header>
-
-<div class="wrap">
-
-  <nav class="toc">
-    <h4>Nesta unidade</h4>
-    <ol>
-      <li><a href="#s1">Modificando pipelines do spaCy</a></li>
-      <li><a href="#s2">Processando textos com eficiência</a></li>
-      <li><a href="#s3">Adicionando atributos personalizados</a></li>
-      <li><a href="#s4">Gravando textos processados em disco</a></li>
-      <li><a href="#s5">Simplificando a saída: sintagmas e entidades</a></li>
-    </ol>
-  </nav>
-
-  <div class="obj">
-    <h4>Objetivos de aprendizagem</h4>
-    <ul>
-      <li>Examinar e modificar o pipeline do spaCy.</li>
-      <li>Processar textos com eficiência.</li>
-      <li>Adicionar atributos personalizados a objetos do spaCy.</li>
-      <li>Salvar em disco os textos processados.</li>
-      <li>Mesclar sintagmas nominais e entidades nomeadas em tokens únicos.</li>
-    </ul>
-  </div>
-
-  <p>Vamos começar importando a biblioteca spaCy e o módulo <code class="inl">displacy</code>, usado para desenhar árvores de dependência, e carregando um modelo de linguagem para o inglês:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa a biblioteca spaCy e o modulo displacy
-from spacy import displacy
-import spacy
-
-# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
-nlp = spacy.load('en_core_web_sm')
-
-# Chama a variavel para examinar o objeto
-nlp</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>&lt;spacy.lang.en.English at 0x294522f10&gt;</code></pre>
-
-  <h2 id="s1"><span class="num">1.</span> Modificando pipelines do spaCy</h2>
-  <p>O objeto <code class="inl">Language</code> é, essencialmente, um <strong>pipeline</strong> que aplica um modelo de linguagem ao texto, executando as tarefas para as quais o modelo foi treinado. As tarefas realizadas dependem dos <strong>componentes</strong> presentes no pipeline.</p>
-  <p>Podemos examinar os componentes com o atributo <code class="inl">pipeline</code> de um objeto <code class="inl">Language</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">nlp.pipeline</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[('tok2vec', &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0&gt;),
- ('tagger', &lt;spacy.pipeline.tagger.Tagger at 0x294cf3ca0&gt;),
- ('parser', &lt;spacy.pipeline.dep_parser.DependencyParser at 0x294b566d0&gt;),
- ('attribute_ruler', &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x295187680&gt;),
- ('lemmatizer', &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540&gt;),
- ('ner', &lt;spacy.pipeline.ner.EntityRecognizer at 0x294b56740&gt;)]</code></pre>
-  <p>Isso retorna um objeto <code class="inl">SimpleFrozenList</code> do spaCy, composto por <strong>tuplas</strong> com dois itens: o <strong>nome</strong> do componente (ex.: <code class="inl">tagger</code>) e o <strong>componente</strong> que executa a tarefa (ex.: <code class="inl">spacy.pipeline.tok2vec.Tok2Vec</code>).</p>
-  <p>Componentes como <code class="inl">tagger</code>, <code class="inl">parser</code>, <code class="inl">ner</code> e <code class="inl">lemmatizer</code> já são familiares da unidade anterior. Há dois novos:</p>
-  <ul>
-    <li><strong><code class="inl">tok2vec</code></strong> mapeia os tokens para suas representações numéricas (veremos na Parte III).</li>
-    <li><strong><code class="inl">attribute_ruler</code></strong> aplica regras definidas pelo usuário aos tokens e adiciona essa informação como atributo, se solicitado.</li>
-  </ul>
-  <div class="call note"><span class="lbl">Nota</span><p>A lista em <code class="inl">nlp.pipeline</code> <strong>não</strong> inclui o <code class="inl">Tokenizer</code>, porque todo texto precisa ser tokenizado para qualquer processamento ocorrer. Por isso ele fica no atributo <code class="inl">tokenizer</code>, e não em <code class="inl">pipeline</code>.</p></div>
-
-  <h3>1.1 Excluindo componentes para ganhar desempenho</h3>
-  <p><strong>Todo componente tem um custo computacional.</strong> Se você não precisa da saída de um componente, não deve incluí‑lo, pois o processamento fica mais lento. Para excluir, forneça o argumento <code class="inl">exclude</code> com os nomes dos componentes ao chamar <code class="inl">load()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de
-# entidades nomeadas ('ner') e a analise de dependencias sintaticas ('parser').
-nlp = spacy.load('en_core_web_sm', exclude=['ner', 'parser'])
-
-# Examina os componentes ativos no objeto Language 'nlp'
-nlp.pipeline</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[('tok2vec', &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760&gt;),
- ('tagger', &lt;spacy.pipeline.tagger.Tagger at 0x296c7ba00&gt;),
- ('attribute_ruler', &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40&gt;),
- ('lemmatizer', &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200&gt;)]</code></pre>
-  <p>Como mostra a saída, <code class="inl">ner</code> e <code class="inl">parser</code> não estão mais no pipeline.</p>
-
-  <h3>1.2 Analisando o pipeline com <code class="inl">analyze_pipes()</code></h3>
-  <p>O método <code class="inl">analyze_pipes()</code> dá uma visão geral dos componentes. Definindo <code class="inl">pretty</code> como <code class="inl">True</code>, o spaCy imprime uma tabela com os componentes e as anotações que produzem:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Analisa o pipeline e guarda a analise na variavel 'pipe_analysis'
-pipe_analysis = nlp.analyze_pipes(pretty=True)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>============================= Pipeline Overview =============================
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#modificando-pipelines-do-spacy" id="toc-modificando-pipelines-do-spacy">1. Modificando pipelines do
+spaCy</a></li>
+<li><a href="#processando-textos-com-eficiência" id="toc-processando-textos-com-eficiência">2. Processando textos com
+eficiência</a></li>
+<li><a href="#adicionando-atributos-personalizados-aos-objetos-do-spacy" id="toc-adicionando-atributos-personalizados-aos-objetos-do-spacy">3.
+Adicionando atributos personalizados aos objetos do spaCy</a></li>
+<li><a href="#gravando-textos-processados-em-disco" id="toc-gravando-textos-processados-em-disco">4. Gravando textos
+processados em disco</a></li>
+<li><a href="#simplificando-a-saída-sintagmas-nominais-e-entidades-nomeadas" id="toc-simplificando-a-saída-sintagmas-nominais-e-entidades-nomeadas">5.
+Simplificando a saída: sintagmas nominais e entidades nomeadas</a></li>
+<li><a href="#quiz" id="toc-quiz">Quiz</a></li>
+<li><a href="#resumo-da-unidade" id="toc-resumo-da-unidade">Resumo da
+unidade</a></li>
+</ul>
+</nav>
+<h3 id="objetivos-de-aprendizagem">Objetivos de aprendizagem</h3>
+<p>Ao final desta unidade, você deverá saber:</p>
+<ul>
+<li><strong>examinar e modificar</strong> o pipeline do spaCy;</li>
+<li><strong>processar textos com eficiência</strong>;</li>
+<li><strong>adicionar atributos personalizados</strong> a objetos do
+spaCy;</li>
+<li><strong>salvar em disco</strong> os textos processados;</li>
+<li><strong>mesclar</strong> sintagmas nominais e entidades nomeadas em
+tokens únicos.</li>
+</ul>
+<p>Vamos começar importando a biblioteca spaCy e o módulo
+<code>displacy</code>, usado para desenhar árvores de dependência, e
+carregando um modelo de linguagem para o inglês:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a biblioteca spaCy e o modulo displacy</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de lingua inglesa e o atribui a variavel &#39;nlp&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o objeto</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nlp</span></code></pre></div>
+<pre class="text"><code>&lt;spacy.lang.en.English at 0x294522f10&gt;</code></pre>
+<hr />
+<h2 id="modificando-pipelines-do-spacy">1. Modificando pipelines do
+spaCy</h2>
+<p>O objeto <code>Language</code> é, essencialmente, um
+<strong>pipeline</strong> que aplica um modelo de linguagem ao texto,
+executando as tarefas para as quais o modelo foi treinado. As tarefas
+realizadas dependem dos <strong>componentes</strong> presentes no
+pipeline.</p>
+<p>Podemos examinar os componentes de um pipeline usando o atributo
+<code>pipeline</code> de um objeto <code>Language</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nlp.pipeline</span></code></pre></div>
+<pre class="text"><code>[(&#39;tok2vec&#39;, &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x294cf3dc0&gt;),
+ (&#39;tagger&#39;, &lt;spacy.pipeline.tagger.Tagger at 0x294cf3ca0&gt;),
+ (&#39;parser&#39;, &lt;spacy.pipeline.dep_parser.DependencyParser at 0x294b566d0&gt;),
+ (&#39;attribute_ruler&#39;, &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x295187680&gt;),
+ (&#39;lemmatizer&#39;, &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x295191540&gt;),
+ (&#39;ner&#39;, &lt;spacy.pipeline.ner.EntityRecognizer at 0x294b56740&gt;)]</code></pre>
+<p>Isso retorna um objeto <code>SimpleFrozenList</code> do spaCy,
+composto por <strong>tuplas</strong> do Python com dois itens:</p>
+<ul>
+<li>o <strong>nome</strong> do componente (por exemplo,
+<code>tagger</code>);</li>
+<li>o <strong>componente</strong> que efetivamente executa a tarefa (por
+exemplo, <code>spacy.pipeline.tok2vec.Tok2Vec</code>).</li>
+</ul>
+<p>Componentes como <code>tagger</code>, <code>parser</code>,
+<code>ner</code> e <code>lemmatizer</code> já devem ser familiares da
+unidade anterior. Há, porém, dois componentes que ainda não
+encontramos:</p>
+<ul>
+<li><strong><code>tok2vec</code></strong> mapeia os tokens para suas
+representações numéricas (veremos essas representações na Parte
+III).</li>
+<li><strong><code>attribute_ruler</code></strong> aplica regras
+definidas pelo usuário aos tokens — por exemplo, correspondências a um
+dado padrão linguístico — e adiciona essa informação ao token como um
+atributo, se solicitado.</li>
+</ul>
+<div class="nota">
+<p><strong>Nota:</strong> a lista de componentes em
+<code>nlp.pipeline</code> <strong>não</strong> inclui o
+<code>Tokenizer</code>, porque todo texto precisa ser tokenizado para
+que qualquer processamento ocorra. Por isso, o <code>Tokenizer</code>
+fica no atributo <code>tokenizer</code> do objeto <code>Language</code>,
+e não no atributo <code>pipeline</code>.</p>
+</div>
+<h3 id="excluindo-componentes-para-ganhar-desempenho">1.1 Excluindo
+componentes para ganhar desempenho</h3>
+<p>É importante entender que <strong>todo componente do pipeline tem um
+custo computacional</strong>. Se você não precisa da saída de um
+componente, não deve incluí‑lo no pipeline, pois o processamento ficará
+mais lento.</p>
+<p>Para excluir um componente, forneça o argumento <code>exclude</code>
+com uma <em>string</em> (ou uma lista) contendo os nomes dos componentes
+a excluir, ao inicializar o objeto <code>Language</code> com a função
+<code>load()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># entidades nomeadas (&#39;ner&#39;) e a analise de dependencias sintaticas (&#39;parser&#39;).</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>, exclude<span class="op">=</span>[<span class="st">&#39;ner&#39;</span>, <span class="st">&#39;parser&#39;</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Examina os componentes ativos no objeto Language &#39;nlp&#39;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>nlp.pipeline</span></code></pre></div>
+<pre class="text"><code>[(&#39;tok2vec&#39;, &lt;spacy.pipeline.tok2vec.Tok2Vec at 0x29514d760&gt;),
+ (&#39;tagger&#39;, &lt;spacy.pipeline.tagger.Tagger at 0x296c7ba00&gt;),
+ (&#39;attribute_ruler&#39;, &lt;spacy.pipeline.attributeruler.AttributeRuler at 0x296c6bb40&gt;),
+ (&#39;lemmatizer&#39;, &lt;spacy.lang.en.lemmatizer.EnglishLemmatizer at 0x296c72200&gt;)]</code></pre>
+<p>Como mostra a saída, os componentes <code>ner</code> e
+<code>parser</code> <strong>não</strong> estão mais no pipeline.</p>
+<h3 id="analisando-o-pipeline-com-analyze_pipes">1.2 Analisando o
+pipeline com <code>analyze_pipes()</code></h3>
+<p>O objeto <code>Language</code> também fornece o método
+<code>analyze_pipes()</code>, que dá uma visão geral dos componentes e
+de suas interações. Definindo o atributo <code>pretty</code> como
+<code>True</code>, o spaCy imprime uma tabela com os componentes e as
+anotações que produzem:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analisa o pipeline e guarda a analise na variavel &#39;pipe_analysis&#39;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pipe_analysis <span class="op">=</span> nlp.analyze_pipes(pretty<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<pre class="text"><code>============================= Pipeline Overview =============================
 
 #   Component         Assigns       Requires   Scores      Retokenizes
 -   ---------------   -----------   --------   ---------   -----------
@@ -192,194 +310,329 @@ pipe_analysis = nlp.analyze_pipes(pretty=True)</code></pre>
 3   lemmatizer        token.lemma              lemma_acc   False
 
 ✔ No problems found.</code></pre>
-  <p>O método retorna um <strong>dicionário</strong> Python. Você pode usá‑lo para verificar que nenhum problema foi encontrado <strong>antes</strong> de processar grandes volumes. Os relatórios ficam sob a chave <code class="inl">problems</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Examina o valor guardado sob a chave 'problems'
-pipe_analysis['problems']</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>{'tok2vec': [], 'tagger': [], 'attribute_ruler': [], 'lemmatizer': []}</code></pre>
-  <p>Podemos escrever um trecho que <strong>verifica</strong> isso. Percorremos o dicionário com <code class="inl">items()</code> e usamos <code class="inl">assert</code> com <code class="inl">len()</code> e o operador <code class="inl">==</code> para checar que a lista tem tamanho <code class="inl">0</code>; caso contrário, o Python levanta um <code class="inl">AssertionError</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os pares chave/valor do dicionario. Atribui a chave e o valor
-# as variaveis 'component_name' e 'problem_list'.
-for component_name, problem_list in pipe_analysis['problems'].items():
-
-    # Usa 'assert' para checar a lista de problemas; levanta Error se necessario.
-    assert len(problem_list) == 0, f"There is a problem with {component_name}: {problem_list}!"</code></pre>
-  <p>Usamos uma <em>f‑string</em>: o <code class="inl">f</code> antes das aspas permite <strong>inserir variáveis</strong> entre chaves <code class="inl">{}</code>. Se nenhum problema for encontrado, o laço passa silenciosamente.</p>
-
-  <h2 id="s2"><span class="num">2.</span> Processando textos com eficiência</h2>
-  <p>Ao trabalhar com grandes volumes, é desejável processá‑los da forma mais eficiente possível. Vamos definir um exemplo com uma <strong>lista</strong> de três frases da Wikipédia em inglês:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Reinicializa o modelo de linguagem, pois precisamos da analise de
-# dependencias nas proximas secoes.
-nlp = spacy.load('en_core_web_sm')
-
-# Define uma lista de frases de exemplo
-sents = ["On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production.",
-         "The 'Complex Modernization' initiative expanded two existing nuclear sites to produce new bomb parts.",
-         "The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee."]
-
-# Chama a variavel para examinar a saida
-sents</code></pre>
-  <p>Os objetos <code class="inl">Language</code> têm um método específico, <code class="inl">pipe()</code>, para processar textos em uma <strong>lista</strong>. Ele foi otimizado para processar em <strong>lotes</strong> (<em>batches</em>), sendo mais rápido que um laço <code class="inl">for</code>. O <code class="inl">pipe()</code> recebe uma lista e retorna um <strong>gerador</strong> (<em>generator</em>):</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Alimenta a lista de frases ao metodo pipe()
-docs = nlp.pipe(sents)
-
-# Chama a variavel para examinar a saida
-docs</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>&lt;generator object Language.pipe at 0x296d0b580&gt;</code></pre>
-  <p>Geradores contêm outros objetos e os <strong>produzem</strong> (<em>yield</em>) quando chamados. Para recuperar todos, convertemos o gerador em uma <strong>lista</strong>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Converte o gerador pipe em uma lista
-docs = list(docs)
-
-# Chama a variavel para examinar a saida
-docs</code></pre>
-  <p>Isso nos dá uma lista de objetos <code class="inl">Doc</code> prontos para processamento posterior.</p>
-
-  <h2 id="s3"><span class="num">3.</span> Adicionando atributos personalizados aos objetos do spaCy</h2>
-  <p>O spaCy permite <strong>definir atributos personalizados</strong> para objetos <code class="inl">Doc</code>, <code class="inl">Span</code> e <code class="inl">Token</code> — úteis para guardar informações adicionais sobre os textos. Usamos o método <code class="inl">set_extension()</code>. Como o atributo é adicionado a <strong>todos</strong> os <code class="inl">Doc</code>, primeiro importamos o objeto <code class="inl">Doc</code> genérico:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa o objeto Doc do modulo 'tokens' do spaCy
-from spacy.tokens import Doc
-
-# Adiciona dois atributos personalizados ao objeto Doc, 'age' e 'location',
-# usando o metodo set_extension().
-Doc.set_extension("age", default=None)
-Doc.set_extension("location", default=None)</code></pre>
-  <p>O argumento <code class="inl">default</code> define um valor padrão, aqui a palavra‑chave <code class="inl">None</code>.</p>
-  <div class="call note"><span class="lbl">Nota</span><p>Diferentemente de atributos como <code class="inl">sents</code> ou <code class="inl">heads</code>, os personalizados ficam sob um atributo que consiste no sublinhado <code class="inl">_</code> — por exemplo, <code class="inl">Doc._.age</code>.</p></div>
-  <p>Vamos definir um dicionário aninhado <code class="inl">sents_dict</code> com três chaves (<code class="inl">0</code>, <code class="inl">1</code>, <code class="inl">2</code>), cujos valores são dicionários com <code class="inl">age</code>, <code class="inl">location</code> e <code class="inl">text</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Cria um dicionario cujos valores sao outros dicionarios
-# com tres chaves: 'age', 'location' e 'text'.
-sents_dict = {0: {"age": 23,
-                  "location": "Helsinki",
-                  "text": "The Senate Square is by far the most important landmark in Helsinki."
-                 },
-              1: {"age": 35,
-                  "location": "Tallinn",
-                  "text": "The Old Town, for sure."
-                 },
-              2: {"age": 58,
-                  "location": "Stockholm",
-                  "text": "Södermalm is interesting!"
-                 }
-             }</code></pre>
-  <p>Percorremos o dicionário, processamos cada texto e definimos os atributos personalizados:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Prepara uma lista vazia para guardar os textos processados
-docs = []
-
-# Percorre os pares de chave e valor do dicionario 'sents_dict'.
-# Os pares chave/valor ficam disponiveis pelo metodo items().
-# Chamamos essas chaves e valores de 'key' e 'data'; ou seja, usamos
-# a variavel 'data' para se referir ao dicionario aninhado.
-for key, data in sents_dict.items():
-
-    # Recupera o valor da chave 'text' do dicionario aninhado.
-    # Alimenta esse texto ao modelo em 'nlp' e guarda o resultado em 'doc'.
-    doc = nlp(data['text'])
-
-    # Recupera os valores de 'age' e 'location' do dicionario aninhado.
-    # Atribui esses valores aos atributos personalizados do objeto Doc.
-    # Lembre-se: atributos personalizados ficam sob o pseudo-atributo '_'!
-    doc._.age = data['age']
-    doc._.location = data['location']
-
-    # Acrescenta o Doc atual em 'doc' a lista 'docs'
-    docs.append(doc)</code></pre>
-  <p>Isso produz uma lista de <code class="inl">Doc</code>s. Vamos percorrê‑la e imprimir cada um com seus atributos:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre cada objeto Doc na lista 'docs'
-for doc in docs:
-
-    # Imprime cada Doc e os atributos 'age' e 'location'
-    print(doc, doc._.age, doc._.location)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki
+<p>O método <code>analyze_pipes()</code> retorna um
+<strong>dicionário</strong> Python, com a mesma informação da tabela.
+Você pode usá‑lo para verificar que nenhum problema foi encontrado
+<strong>antes</strong> de processar grandes volumes de dados. Os
+relatórios de problemas ficam guardados sob a chave
+<code>problems</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Examina o valor guardado sob a chave &#39;problems&#39;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pipe_analysis[<span class="st">&#39;problems&#39;</span>]</span></code></pre></div>
+<pre class="text"><code>{&#39;tok2vec&#39;: [], &#39;tagger&#39;: [], &#39;attribute_ruler&#39;: [], &#39;lemmatizer&#39;: []}</code></pre>
+<p>Isso retorna um dicionário com os nomes dos componentes como chaves,
+cujos valores são <strong>listas de problemas</strong>. Neste caso, as
+listas estão vazias, porque não há problemas.</p>
+<p>Podemos escrever facilmente um trecho de código que
+<strong>verifica</strong> se isso é realmente verdade. Para isso,
+percorremos o dicionário <code>pipe_analysis</code> usando o método
+<code>items()</code> para obter os pares chave/valor, e usamos a
+instrução <code>assert</code> com a função <code>len()</code> e o
+operador de comparação <code>==</code> para checar que a lista tem
+tamanho <code>0</code>. Se essa afirmação <strong>não</strong> for
+verdadeira (ou seja, se houver algum problema), o Python levanta um
+<code>AssertionError</code> e para:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares chave/valor do dicionario. Atribui a chave e o valor</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># as variaveis &#39;component_name&#39; e &#39;problem_list&#39;.</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> component_name, problem_list <span class="kw">in</span> pipe_analysis[<span class="st">&#39;problems&#39;</span>].items():</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa &#39;assert&#39; para checar a lista de problemas; levanta Error se necessario.</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(problem_list) <span class="op">==</span> <span class="dv">0</span>, <span class="ss">f&quot;There is a problem with </span><span class="sc">{</span>component_name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>problem_list<span class="sc">}</span><span class="ss">!&quot;</span></span></code></pre></div>
+<p>Aqui também imprimimos uma mensagem de erro usando uma
+<em>f‑string</em>: o <code>f</code> antes das aspas declara que a
+<em>string</em> pode ser formatada, permitindo <strong>inserir
+variáveis</strong> entre chaves <code>{}</code>. Se um erro for
+levantado, essas partes serão preenchidas com os valores atuais de
+<code>component_name</code> e <code>problem_list</code>. Se nenhum
+problema for encontrado, o laço passa silenciosamente.</p>
+<hr />
+<h2 id="processando-textos-com-eficiência">2. Processando textos com
+eficiência</h2>
+<p>Ao trabalhar com grandes volumes de dados, é altamente desejável
+processá‑los da forma mais eficiente possível. Para ilustrar as boas
+práticas, vamos definir um exemplo com uma <strong>lista</strong> de
+três frases da Wikipédia em inglês:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reinicializa o modelo de linguagem, pois precisamos da analise de</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dependencias nas proximas secoes.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma lista de frases de exemplo</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>sents <span class="op">=</span> [<span class="st">&quot;On October 1, 2009, the Obama administration went ahead with a Bush administration program, increasing nuclear weapons production.&quot;</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;The &#39;Complex Modernization&#39; initiative expanded two existing nuclear sites to produce new bomb parts.&quot;</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee.&quot;</span>]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>sents</span></code></pre></div>
+<p>Os objetos <code>Language</code> do spaCy têm um método específico,
+<code>pipe()</code>, para processar textos guardados em uma
+<strong>lista</strong>. Esse método foi otimizado para essa finalidade:
+ele processa os textos em <strong>lotes</strong> (<em>batches</em>), em
+vez de individualmente, o que o torna mais rápido do que processar cada
+item com um laço <code>for</code>.</p>
+<p>O método <code>pipe()</code> recebe uma lista como entrada e retorna
+um <strong>gerador</strong> (<em>generator</em>) do Python:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alimenta a lista de frases ao metodo pipe()</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> nlp.pipe(sents)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>docs</span></code></pre></div>
+<pre class="text"><code>&lt;generator object Language.pipe at 0x296d0b580&gt;</code></pre>
+<p>Geradores são objetos do Python que contêm outros objetos. Quando
+chamado, um gerador <strong>produz</strong> (<em>yields</em>) os objetos
+contidos nele. Para recuperar todos os objetos de um gerador, precisamos
+convertê‑lo em outro tipo, como uma <strong>lista</strong> — pense na
+lista como uma estrutura capaz de coletar a saída do gerador para
+exame:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte o gerador pipe em uma lista</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> <span class="bu">list</span>(docs)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>docs</span></code></pre></div>
+<p>Isso nos dá uma lista de objetos <code>Doc</code> do spaCy prontos
+para processamento posterior.</p>
+<hr />
+<h2 id="adicionando-atributos-personalizados-aos-objetos-do-spacy">3.
+Adicionando atributos personalizados aos objetos do spaCy</h2>
+<p>A unidade anterior mostrou como acessar as anotações linguísticas do
+spaCy por meio de seus atributos. Além disso, o spaCy permite
+<strong>definir atributos personalizados</strong> para objetos
+<code>Doc</code>, <code>Span</code> e <code>Token</code>. Esses
+atributos podem guardar, por exemplo, informações adicionais sobre os
+textos — se você trabalha com textos que trazem dados sobre os usuários
+da língua, pode incorporar essa informação diretamente nos objetos do
+spaCy.</p>
+<p>Atributos personalizados são adicionados ao objeto <code>Doc</code>
+com o método <code>set_extension()</code>. Como esses atributos são
+adicionados a <strong>todos</strong> os objetos <code>Doc</code> (e não
+a um <code>Doc</code> individual), primeiro importamos o objeto
+<code>Doc</code> genérico do módulo <code>tokens</code> do spaCy:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto Doc do modulo &#39;tokens&#39; do spaCy</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> Doc</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona dois atributos personalizados ao objeto Doc, &#39;age&#39; e &#39;location&#39;,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># usando o metodo set_extension().</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>Doc.set_extension(<span class="st">&quot;age&quot;</span>, default<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>Doc.set_extension(<span class="st">&quot;location&quot;</span>, default<span class="op">=</span><span class="va">None</span>)</span></code></pre></div>
+<p>Usamos o argumento <code>default</code> para definir um valor padrão
+para ambos, com a palavra‑chave <code>None</code> do Python.</p>
+<div class="nota">
+<p><strong>Nota:</strong> diferentemente de atributos como
+<code>sents</code> ou <code>heads</code>, os atributos personalizados
+ficam sob um atributo que consiste no caractere sublinhado
+<code>_</code> — por exemplo, <code>Doc._.age</code>.</p>
+</div>
+<p>Para exemplificar, vamos definir um dicionário Python. O dicionário
+<code>sents_dict</code> tem três chaves (<code>0</code>, <code>1</code>
+e <code>2</code>), cujos valores são, por sua vez, dicionários com três
+chaves: <code>age</code>, <code>location</code> e <code>text</code>.
+Isso mostra como as estruturas de dados do Python costumam ser
+<strong>aninhadas</strong>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um dicionario cujos valores sao outros dicionarios</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># com tres chaves: &#39;age&#39;, &#39;location&#39; e &#39;text&#39;.</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>sents_dict <span class="op">=</span> {<span class="dv">0</span>: {<span class="st">&quot;age&quot;</span>: <span class="dv">23</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;location&quot;</span>: <span class="st">&quot;Helsinki&quot;</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;text&quot;</span>: <span class="st">&quot;The Senate Square is by far the most important landmark in Helsinki.&quot;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                 },</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>              <span class="dv">1</span>: {<span class="st">&quot;age&quot;</span>: <span class="dv">35</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;location&quot;</span>: <span class="st">&quot;Tallinn&quot;</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;text&quot;</span>: <span class="st">&quot;The Old Town, for sure.&quot;</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                 },</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>              <span class="dv">2</span>: {<span class="st">&quot;age&quot;</span>: <span class="dv">58</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;location&quot;</span>: <span class="st">&quot;Stockholm&quot;</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;text&quot;</span>: <span class="st">&quot;Södermalm is interesting!&quot;</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                 }</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>             }</span></code></pre></div>
+<p>Vamos percorrer o dicionário <code>sents_dict</code> para processar
+os exemplos e adicionar os atributos personalizados aos objetos
+<code>Doc</code> resultantes:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepara uma lista vazia para guardar os textos processados</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> []</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares de chave e valor do dicionario &#39;sents_dict&#39;.</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Os pares chave/valor ficam disponiveis pelo metodo items().</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Chamamos essas chaves e valores de &#39;key&#39; e &#39;data&#39;; ou seja, usamos</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># a variavel &#39;data&#39; para se referir ao dicionario aninhado.</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, data <span class="kw">in</span> sents_dict.items():</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera o valor da chave &#39;text&#39; do dicionario aninhado.</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Alimenta esse texto ao modelo em &#39;nlp&#39; e guarda o resultado em &#39;doc&#39;.</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    doc <span class="op">=</span> nlp(data[<span class="st">&#39;text&#39;</span>])</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera os valores de &#39;age&#39; e &#39;location&#39; do dicionario aninhado.</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Atribui esses valores aos atributos personalizados do objeto Doc.</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Lembre-se: atributos personalizados ficam sob o pseudo-atributo &#39;_&#39;!</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    doc._.age <span class="op">=</span> data[<span class="st">&#39;age&#39;</span>]</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    doc._.location <span class="op">=</span> data[<span class="st">&#39;location&#39;</span>]</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Acrescenta o Doc atual em &#39;doc&#39; a lista &#39;docs&#39;</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    docs.append(doc)</span></code></pre></div>
+<p>Isso produz uma lista de objetos <code>Doc</code>, guardada em
+<code>docs</code>. Vamos percorrê‑la e imprimir cada <code>Doc</code>
+com seus atributos personalizados:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre cada objeto Doc na lista &#39;docs&#39;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> doc <span class="kw">in</span> docs:</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime cada Doc e os atributos &#39;age&#39; e &#39;location&#39;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(doc, doc._.age, doc._.location)</span></code></pre></div>
+<pre class="text"><code>The Senate Square is by far the most important landmark in Helsinki. 23 Helsinki
 The Old Town, for sure. 35 Tallinn
 Södermalm is interesting! 58 Stockholm</code></pre>
-
-  <h3>3.1 Filtrando dados com compreensão de lista</h3>
-  <p>Os atributos personalizados podem ser usados para <strong>filtrar</strong> dados. Uma forma eficiente é a <strong>compreensão de lista</strong> (<em>list comprehension</em>) — como um laço <code class="inl">for</code> declarado "na hora", entre colchetes <code class="inl">[]</code>, com três partes: (1) o que guardar na nova lista; (2) o <code class="inl">for ... in</code> percorrendo os itens; (3) o <code class="inl">if</code> com a condição:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa uma compreensao de lista para filtrar os Docs cujo atributo
-# 'age' tenha valor abaixo de 40.
-under_forty = [doc for doc in docs if doc._.get('age') < 40]
-
-# Chama a variavel para examinar a saida
-under_forty</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[The Senate Square is by far the most important landmark in Helsinki.,
+<h3 id="filtrando-dados-com-compreensão-de-lista">3.1 Filtrando dados
+com compreensão de lista</h3>
+<p>Os atributos personalizados podem ser usados, por exemplo, para
+<strong>filtrar</strong> os dados. Uma forma eficiente é a
+<strong>compreensão de lista</strong> (<em>list comprehension</em>), que
+avalia o conteúdo de uma lista existente e monta uma nova lista com base
+em algum critério — é como um laço <code>for</code> declarado “na hora”,
+entre colchetes <code>[]</code>. Ela tem três componentes:</p>
+<ol type="1">
+<li>a referência a <code>doc</code> <strong>à esquerda</strong> do
+<code>for</code> define o que será guardado na nova lista (no caso, o
+próprio objeto <code>Doc</code>);</li>
+<li>o <code>for ... in</code> funciona como num laço comum, percorrendo
+os itens de <code>docs</code>;</li>
+<li>o <code>if</code> define uma <strong>condição</strong>: só incluímos
+objetos <code>Doc</code> cujo atributo <code>age</code> tenha valor
+abaixo de 40.</li>
+</ol>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa uma compreensao de lista para filtrar os Docs cujo atributo</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &#39;age&#39; tenha valor abaixo de 40.</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>under_forty <span class="op">=</span> [doc <span class="cf">for</span> doc <span class="kw">in</span> docs <span class="cf">if</span> doc._.get(<span class="st">&#39;age&#39;</span>) <span class="op">&lt;</span> <span class="dv">40</span>]</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>under_forty</span></code></pre></div>
+<pre class="text"><code>[The Senate Square is by far the most important landmark in Helsinki.,
  The Old Town, for sure.]</code></pre>
-  <p>Isso retorna uma lista com apenas dois <code class="inl">Doc</code>s que atendem ao critério.</p>
-
-  <h2 id="s4"><span class="num">4.</span> Gravando textos processados em disco</h2>
-  <p>Com grandes volumes, primeiro garanta que o pipeline funciona com <strong>poucos</strong> textos; depois processe tudo e <strong>salve</strong>. O spaCy oferece o tipo <code class="inl">DocBin</code> para armazenar objetos <code class="inl">Doc</code> com suas anotações:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Importa o objeto DocBin do modulo 'tokens' do spaCy
-from spacy.tokens import DocBin
-
-# Inicializa um objeto DocBin e adiciona os Docs de 'docs'
-docbin = DocBin(docs=docs)</code></pre>
-  <div class="call warn"><span class="lbl">Atenção</span><p>Se você adicionou <strong>atributos personalizados</strong> a <code class="inl">Doc</code>s, <code class="inl">Span</code>s ou <code class="inl">Token</code>s, também é preciso definir <code class="inl">store_user_data=True</code> — por exemplo, <code class="inl">DocBin(docs=docs, store_user_data=True)</code>.</p></div>
-  <p>Verificamos que os três <code class="inl">Doc</code>s entraram no <code class="inl">DocBin</code> com o método <code class="inl">__len__()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Obtem o numero de Docs no DocBin
-docbin.__len__()</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>3</code></pre>
-  <p>O método <code class="inl">add()</code> permite adicionar mais <code class="inl">Doc</code>s:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Define uma string, alimenta o modelo em 'nlp' e adiciona o
-# Doc resultante ao objeto DocBin 'docbin'
-docbin.add(nlp("Yet another Doc object."))
-
-# Verifica que o Doc foi adicionado; o tamanho agora deve ser 4
-docbin.__len__()</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>4</code></pre>
-  <p>Gravamos o <code class="inl">DocBin</code> em disco com <code class="inl">to_disk()</code>, que recebe o argumento <code class="inl">path</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Grava o objeto DocBin em disco
-docbin.to_disk(path='data/docbin.spacy')</code></pre>
-  <p>Para <strong>carregar</strong>, inicialize um <code class="inl">DocBin</code> vazio e use <code class="inl">from_disk()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Inicializa um novo DocBin e usa 'from_disk' para carregar os dados do disco.
-# Atribui o resultado a variavel 'docbin_loaded'.
-docbin_loaded = DocBin().from_disk(path='data/docbin.spacy')
-
-# Chama a variavel para examinar a saida
-docbin_loaded</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>&lt;spacy.tokens._serialize.DocBin at 0x2953a4c40&gt;</code></pre>
-  <p>Para acessar os <code class="inl">Doc</code>s guardados, use <code class="inl">get_docs()</code>, passando o <strong>vocabulário</strong> (<code class="inl">nlp.vocab</code>) necessário para reconstruir os dados:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Usa 'get_docs' para recuperar os Docs do DocBin, passando o
-# vocabulario em 'nlp.vocab' para reconstruir os dados.
-# Converte o gerador resultante em uma lista para exame.
-docs_loaded = list(docbin_loaded.get_docs(nlp.vocab))
-
-# Chama a variavel para examinar a saida
-docs_loaded</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>[The Senate Square is by far the most important landmark in Helsinki.,
+<p>Isso retorna uma lista com apenas dois objetos <code>Doc</code> que
+atendem ao critério.</p>
+<hr />
+<h2 id="gravando-textos-processados-em-disco">4. Gravando textos
+processados em disco</h2>
+<p>Ao trabalhar com grandes volumes de textos, primeiro garanta que o
+pipeline produz o resultado desejado usando <strong>poucos</strong>
+textos. Quando tudo estiver funcionando, processe o conjunto completo e
+<strong>salve o resultado</strong>, pois processar grandes volumes
+consome tempo e recursos.</p>
+<p>O spaCy oferece um tipo de objeto especial, o <code>DocBin</code>,
+para armazenar objetos <code>Doc</code> com suas anotações
+linguísticas:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto DocBin do modulo &#39;tokens&#39; do spaCy</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> DocBin</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inicializa um objeto DocBin e adiciona os Docs de &#39;docs&#39;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>docbin <span class="op">=</span> DocBin(docs<span class="op">=</span>docs)</span></code></pre></div>
+<div class="atencao">
+<p><strong>Atenção:</strong> se você adicionou <strong>atributos
+personalizados</strong> a <code>Doc</code>s, <code>Span</code>s ou
+<code>Token</code>s, também é preciso definir o argumento
+<code>store_user_data</code> como <code>True</code> — por exemplo,
+<code>DocBin(docs=docs, store_user_data=True)</code>.</p>
+</div>
+<p>Podemos verificar que os três <code>Doc</code>s entraram no
+<code>DocBin</code> examinando a saída do método
+<code>__len__()</code>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtem o numero de Docs no DocBin</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>docbin.<span class="fu">__len__</span>()</span></code></pre></div>
+<pre class="text"><code>3</code></pre>
+<p>O método <code>add()</code> permite adicionar mais objetos
+<code>Doc</code> ao <code>DocBin</code>, se necessário:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma string, alimenta o modelo em &#39;nlp&#39; e adiciona o</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Doc resultante ao objeto DocBin &#39;docbin&#39;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>docbin.add(nlp(<span class="st">&quot;Yet another Doc object.&quot;</span>))</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica que o Doc foi adicionado; o tamanho agora deve ser 4</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>docbin.<span class="fu">__len__</span>()</span></code></pre></div>
+<pre class="text"><code>4</code></pre>
+<p>Depois de populado, o <code>DocBin</code> deve ser <strong>gravado em
+disco</strong> com o método <code>to_disk()</code>, que recebe um único
+argumento, <code>path</code>, definindo o caminho do arquivo. Vamos
+gravar o <code>DocBin</code> em um arquivo chamado
+<code>docbin.spacy</code>, no diretório <code>data</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grava o objeto DocBin em disco</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>docbin.to_disk(path<span class="op">=</span><span class="st">&#39;data/docbin.spacy&#39;</span>)</span></code></pre></div>
+<p>Para <strong>carregar</strong> um <code>DocBin</code> do disco,
+primeiro inicialize um <code>DocBin</code> vazio com
+<code>DocBin()</code> e use o método <code>from_disk()</code>:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inicializa um novo DocBin e usa &#39;from_disk&#39; para carregar os dados do disco.</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui o resultado a variavel &#39;docbin_loaded&#39;.</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>docbin_loaded <span class="op">=</span> DocBin().from_disk(path<span class="op">=</span><span class="st">&#39;data/docbin.spacy&#39;</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>docbin_loaded</span></code></pre></div>
+<pre class="text"><code>&lt;spacy.tokens._serialize.DocBin at 0x2953a4c40&gt;</code></pre>
+<p>Por fim, para acessar os objetos <code>Doc</code> guardados no
+<code>DocBin</code>, use o método <code>get_docs()</code>. Ele recebe um
+único argumento, <code>vocab</code>, que precisa do
+<strong>vocabulário</strong> de um objeto <code>Language</code>
+(guardado no atributo <code>vocab</code>) para reconstruir a informação
+armazenada no <code>DocBin</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa &#39;get_docs&#39; para recuperar os Docs do DocBin, passando o</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># vocabulario em &#39;nlp.vocab&#39; para reconstruir os dados.</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte o gerador resultante em uma lista para exame.</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>docs_loaded <span class="op">=</span> <span class="bu">list</span>(docbin_loaded.get_docs(nlp.vocab))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>docs_loaded</span></code></pre></div>
+<pre class="text"><code>[The Senate Square is by far the most important landmark in Helsinki.,
  The Old Town, for sure.,
  Södermalm is interesting!,
  Yet another Doc object.]</code></pre>
-  <div class="call tip"><span class="lbl">Resumindo</span><p>O ideal é processar os textos <strong>uma vez</strong>, gravá‑los em disco e carregá‑los para as análises seguintes.</p></div>
-
-  <h2 id="s5"><span class="num">5.</span> Simplificando a saída: sintagmas nominais e entidades nomeadas</h2>
-
-  <h3>5.1 Mesclando sintagmas nominais</h3>
-  <p>Às vezes é mais vantajoso operar com unidades maiores que tokens individuais, como <strong>sintagmas nominais</strong> (<em>noun phrases</em>). O spaCy dá acesso a eles pelo atributo <code class="inl">noun_chunks</code> de um <code class="inl">Doc</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Primeiro laco: percorre a lista 'docs'; 'doc' se refere aos itens da lista
-for doc in docs:
-
-    # Percorre cada sintagma nominal do objeto Doc
-    for noun_chunk in doc.noun_chunks:
-
-        # Imprime o sintagma nominal
-        print(noun_chunk)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>The Senate Square
+<p>Isso retorna uma lista com os quatro <code>Doc</code>s adicionados ao
+<code>DocBin</code>.</p>
+<div class="dica">
+<p><strong>Resumindo:</strong> o ideal é processar os textos <strong>uma
+vez</strong>, gravá‑los em disco e carregá‑los para as análises
+seguintes.</p>
+</div>
+<hr />
+<h2 id="simplificando-a-saída-sintagmas-nominais-e-entidades-nomeadas">5.
+Simplificando a saída: sintagmas nominais e entidades nomeadas</h2>
+<h3 id="mesclando-sintagmas-nominais">5.1 Mesclando sintagmas
+nominais</h3>
+<p>Tarefas como anotação morfossintática e análise de dependências fazem
+previsões sobre <strong>tokens individuais</strong>. Às vezes, porém, é
+mais vantajoso operar com unidades linguísticas maiores, como
+<strong>sintagmas nominais</strong> (<em>noun phrases</em>) formados por
+vários tokens.</p>
+<p>O spaCy dá acesso aos sintagmas nominais pelo atributo
+<code>noun_chunks</code> de um objeto <code>Doc</code>. Vamos imprimir
+os sintagmas de cada <code>Doc</code> na lista <code>docs</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Primeiro laco: percorre a lista &#39;docs&#39;; &#39;doc&#39; se refere aos itens da lista</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> doc <span class="kw">in</span> docs:</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Percorre cada sintagma nominal do objeto Doc</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> noun_chunk <span class="kw">in</span> doc.noun_chunks:</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Imprime o sintagma nominal</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(noun_chunk)</span></code></pre></div>
+<pre class="text"><code>The Senate Square
 the most important landmark
 Helsinki
 The Old Town
 Södermalm</code></pre>
-  <p>Para <strong>mesclar</strong> os sintagmas em um único token, o spaCy oferece a função <code class="inl">merge_noun_chunks</code>, adicionada ao pipeline com <code class="inl">add_pipe</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Adiciona o componente que mescla sintagmas nominais em Tokens unicos
-nlp.add_pipe('merge_noun_chunks')</code></pre>
-  <div class="call note"><span class="lbl">Nota</span><p>Não é preciso reatribuir o objeto <code class="inl">Language</code> à mesma variável — o <code class="inl">add_pipe</code> adiciona o componente automaticamente.</p></div>
-  <p>Processando as frases novamente com <code class="inl">pipe()</code>, ao percorrer os tokens do primeiro <code class="inl">Doc</code> (<code class="inl">[0]</code>) vemos os sintagmas <strong>mesclados</strong> e rotulados como <code class="inl">NOUN</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Aplica o objeto Language 'nlp' a lista de frases em 'sents'
-docs = list(nlp.pipe(sents))
-
-# Percorre os Tokens do primeiro Doc da lista
-for token in docs[0]:
-
-    # Imprime o Token e sua classe gramatical
-    print(token, token.pos_)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>On ADP
+<p>Para <strong>mesclar</strong> os sintagmas nominais em um único
+token, o spaCy oferece a função <code>merge_noun_chunks</code>, que pode
+ser adicionada ao pipeline com o método <code>add_pipe</code>:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona o componente que mescla sintagmas nominais em Tokens unicos</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>nlp.add_pipe(<span class="st">&#39;merge_noun_chunks&#39;</span>)</span></code></pre></div>
+<div class="nota">
+<p><strong>Nota:</strong> não é preciso reatribuir o objeto
+<code>Language</code> à mesma variável para atualizá‑lo — o método
+<code>add_pipe</code> adiciona o componente automaticamente.</p>
+</div>
+<p>Processando novamente as três frases com <code>pipe()</code>, tudo
+<strong>parece</strong> igual (uma lista com três <code>Doc</code>s).
+Mas, ao percorrer os tokens do primeiro <code>Doc</code>
+(<code>[0]</code>), vemos que os sintagmas nominais agora estão
+<strong>mesclados</strong> e rotulados como <code>NOUN</code>:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica o objeto Language &#39;nlp&#39; a lista de frases em &#39;sents&#39;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> <span class="bu">list</span>(nlp.pipe(sents))</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os Tokens do primeiro Doc da lista</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> docs[<span class="dv">0</span>]:</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o Token e sua classe gramatical</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.pos_)</span></code></pre></div>
+<pre class="text"><code>On ADP
 October PROPN
 1 NUM
 , PUNCT
@@ -394,39 +647,51 @@ a Bush administration program NOUN
 increasing VERB
 nuclear weapons production NOUN
 . PUNCT</code></pre>
-  <p>Rotular como <code class="inl">NOUN</code> é uma aproximação razoável, já que as palavras‑núcleo são substantivos. Mesclar os sintagmas <strong>simplifica</strong> a árvore sintática:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python">displacy.render(docs[0], style='dep')</code></pre>
-  <p>Os sintagmas continuam disponíveis em <code class="inl">noun_chunks</code>, guardados como <code class="inl">Span</code>s com atributos <code class="inl">start</code> e <code class="inl">end</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Percorre os sintagmas nominais do primeiro Doc [0] na lista 'docs'
-for noun_chunk in docs[0].noun_chunks:
-
-    # Imprime o sintagma, seu tipo, e os indices onde comeca e termina
-    print(noun_chunk, type(noun_chunk), noun_chunk.start, noun_chunk.end)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>October &lt;class 'spacy.tokens.span.Span'&gt; 1 2
-the Obama administration &lt;class 'spacy.tokens.span.Span'&gt; 6 7
-a Bush administration program &lt;class 'spacy.tokens.span.Span'&gt; 10 11
-nuclear weapons production &lt;class 'spacy.tokens.span.Span'&gt; 13 14</code></pre>
-
-  <h3>5.2 Mesclando entidades nomeadas</h3>
-  <p>Entidades nomeadas são mescladas do mesmo modo, com <code class="inl">merge_entities</code>. Primeiro removemos a função <code class="inl">merge_noun_chunks</code> com <code class="inl">remove_pipe()</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Remove a funcao 'merge_noun_chunks' do pipeline em 'nlp'
-nlp.remove_pipe('merge_noun_chunks')
-
-# Processa as frases originais novamente
-docs = list(nlp.pipe(sents))</code></pre>
-  <p>Em seguida, adicionamos <code class="inl">merge_entities</code> e reprocessamos, examinando o terceiro <code class="inl">Doc</code>:</p>
-  <pre class="code"><span class="tag">Python</span><code class="lang-python"># Adiciona a funcao 'merge_entities' ao pipeline
-nlp.add_pipe('merge_entities')
-
-# Processa os dados novamente
-docs = list(nlp.pipe(sents))
-
-# Percorre os Tokens do terceiro Doc da lista
-for token in docs[2]:
-
-    # Imprime o Token e sua classe gramatical
-    print(token, token.pos_)</code></pre>
-  <pre class="out"><span class="tag">Saída</span><code>The DET
+<p>Rotular os sintagmas nominais como <code>NOUN</code> é uma
+aproximação razoável, já que suas palavras‑núcleo são substantivos. Como
+a renderização com displaCy mostra, mesclar os sintagmas
+<strong>simplifica</strong> a árvore sintática:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>displacy.render(docs[<span class="dv">0</span>], style<span class="op">=</span><span class="st">&#39;dep&#39;</span>)</span></code></pre></div>
+<p>Embora os sintagmas nominais estejam agora representados por tokens
+únicos, eles continuam disponíveis no atributo <code>noun_chunks</code>.
+O spaCy os guarda como objetos <code>Span</code>, cujos atributos
+<code>start</code> e <code>end</code> determinam onde o
+<code>Span</code> começa e termina:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os sintagmas nominais do primeiro Doc [0] na lista &#39;docs&#39;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> noun_chunk <span class="kw">in</span> docs[<span class="dv">0</span>].noun_chunks:</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o sintagma, seu tipo, e os indices onde comeca e termina</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(noun_chunk, <span class="bu">type</span>(noun_chunk), noun_chunk.start, noun_chunk.end)</span></code></pre></div>
+<pre class="text"><code>October &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 1 2
+the Obama administration &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 6 7
+a Bush administration program &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 10 11
+nuclear weapons production &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 13 14</code></pre>
+<h3 id="mesclando-entidades-nomeadas">5.2 Mesclando entidades
+nomeadas</h3>
+<p>Entidades nomeadas podem ser mescladas do mesmo modo, fornecendo
+<code>merge_entities</code> ao método <code>add_pipe()</code>. Primeiro,
+removemos a função <code>merge_noun_chunks</code> do pipeline com o
+método <code>remove_pipe()</code>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove a funcao &#39;merge_noun_chunks&#39; do pipeline em &#39;nlp&#39;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>nlp.remove_pipe(<span class="st">&#39;merge_noun_chunks&#39;</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Processa as frases originais novamente</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> <span class="bu">list</span>(nlp.pipe(sents))</span></code></pre></div>
+<p>O método retorna uma tupla com o nome do componente removido e o
+próprio componente. Em seguida, adicionamos o componente
+<code>merge_entities</code>:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona a funcao &#39;merge_entities&#39; ao pipeline</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>nlp.add_pipe(<span class="st">&#39;merge_entities&#39;</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Processa os dados novamente</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> <span class="bu">list</span>(nlp.pipe(sents))</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os Tokens do terceiro Doc da lista</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> docs[<span class="dv">2</span>]:</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o Token e sua classe gramatical</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.pos_)</span></code></pre></div>
+<pre class="text"><code>The DET
 administration NOUN
 built VERB
 new ADJ
@@ -452,110 +717,100 @@ Oak Ridge PROPN
 , PUNCT
 Tennessee PROPN
 . PUNCT</code></pre>
-  <p>Entidades nomeadas com vários tokens — como os topônimos <em>"Los Alamos"</em> e <em>"New Mexico"</em> — foram <strong>mescladas</strong> em tokens únicos.</p>
-
-  <h2>Quiz</h2>
-  <p>Marque a alternativa correta (a resposta certa está destacada com ✅).</p>
-  <p><strong>1. Por que remover do pipeline componentes que você não usa?</strong></p>
-  <ol>
-    <li>Cada componente tem um custo computacional ✅</li>
-    <li>Deixa o código mais bonito</li>
-    <li>É obrigatório</li>
-  </ol>
-  <p><strong>2. Qual argumento de <code class="inl">load()</code> exclui componentes do pipeline?</strong></p>
-  <ol>
-    <li><code class="inl">exclude</code> ✅</li>
-    <li><code class="inl">remove</code></li>
-    <li><code class="inl">skip</code></li>
-  </ol>
-  <p><strong>3. Por que o <code class="inl">Tokenizer</code> não aparece em <code class="inl">nlp.pipeline</code>?</strong></p>
-  <ol>
-    <li>Ele sempre roda e fica em <code class="inl">nlp.tokenizer</code> ✅</li>
-    <li>Foi removido do spaCy</li>
-    <li>É opcional e estava desligado</li>
-  </ol>
-  <p><strong>4. Onde ficam os atributos personalizados de um <code class="inl">Doc</code>?</strong></p>
-  <ol>
-    <li>Sob um atributo que consiste no sublinhado (<code class="inl">Doc._</code>) ✅</li>
-    <li>Numa coluna extra do texto</li>
-    <li>Dentro de <code class="inl">nlp.meta</code></li>
-  </ol>
-  <p><strong>5. Qual método processa uma lista de textos em lote (mais rápido)?</strong></p>
-  <ol>
-    <li><code class="inl">pipe()</code> ✅</li>
-    <li><code class="inl">apply()</code></li>
-    <li><code class="inl">map()</code></li>
-  </ol>
-  <p><strong>6. Para que serve o <code class="inl">DocBin</code>?</strong></p>
-  <ol>
-    <li>Guardar e gravar <code class="inl">Doc</code>s processados em disco ✅</li>
-    <li>Baixar modelos de linguagem</li>
-    <li>Treinar o modelo</li>
-  </ol>
-
-  <hr>
-  <div class="obj">
-    <h4>Resumo da unidade</h4>
-    <ol>
-      <li>Examinar o pipeline com <code class="inl">nlp.pipeline</code> e entender <code class="inl">tok2vec</code>/<code class="inl">attribute_ruler</code>.</li>
-      <li>Excluir componentes (<code class="inl">exclude=[...]</code>) e auditar o pipeline com <code class="inl">analyze_pipes()</code> e <code class="inl">assert</code>.</li>
-      <li>Processar em lote com <code class="inl">nlp.pipe()</code>, entendendo geradores e conversão para lista.</li>
-      <li>Adicionar atributos personalizados (<code class="inl">set_extension()</code>, <code class="inl">Doc._.</code>) e filtrar com compreensão de lista.</li>
-      <li>Gravar e carregar com <code class="inl">DocBin</code> (<code class="inl">to_disk()</code>, <code class="inl">from_disk()</code>, <code class="inl">get_docs()</code>).</li>
-      <li>Mesclar sintagmas nominais e entidades com <code class="inl">add_pipe()</code>/<code class="inl">remove_pipe()</code>.</li>
-    </ol>
-  </div>
-
-  <div class="call note"><span class="lbl">Exercícios sugeridos</span>
-    <ol>
-      <li>Carregue o modelo excluindo apenas o <code class="inl">lemmatizer</code> e confirme, com <code class="inl">nlp.pipeline</code>, que ele não está mais presente.</li>
-      <li>Adicione um atributo personalizado <code class="inl">source</code> ao <code class="inl">Doc</code> e preencha‑o com o nome do arquivo de origem ao processar textos da Unidade 1.</li>
-      <li>Processe as notícias da Unidade 1 com <code class="inl">nlp.pipe()</code>, grave em um <code class="inl">DocBin</code> e recarregue do disco, conferindo o número de <code class="inl">Doc</code>s.</li>
-      <li>Compare a árvore de dependências de uma frase <strong>com</strong> e <strong>sem</strong> <code class="inl">merge_noun_chunks</code> e descreva a diferença.</li>
-    </ol>
-  </div>
-
-  <footer>
-    <p><strong>Referências.</strong> <em>Applied Language Technology</em> (MOOC), Universidade de Helsinque — <a href="https://applied-language-technology.mooc.fi/">applied-language-technology.mooc.fi</a>. Honnibal, M.; Montani, I. et al. <em>spaCy: Industrial-strength Natural Language Processing in Python</em> — <a href="https://spacy.io/">spacy.io</a>.</p>
-    <p>Material produzido para o Programa CiberExt 26‑29 / FEELT38103 — Universidade Federal de Uberlândia.</p>
-  </footer>
-</div>
-
-<script>
-(function(){
-  var KW = new Set(['import','from','as','for','in','with','def','return','if','else','elif',
-    'while','and','or','not','is','None','True','False','lambda','pass','break','continue','class','try','except','assert']);
-  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function hlLine(line){
-    var out='', i=0, n=line.length;
-    while(i<n){
-      var c=line[i];
-      if(c==='#'){ out+='<span class="c">'+esc(line.slice(i))+'</span>'; break; }
-      if(c==="'"||c==='"'){
-        var q=c, j=i+1;
-        while(j<n && line[j]!==q){ if(line[j]==='\\') j++; j++; }
-        out+='<span class="s">'+esc(line.slice(i,Math.min(j+1,n)))+'</span>';
-        i=j+1; continue;
-      }
-      if(/[A-Za-z_]/.test(c)){
-        var j2=i; while(j2<n && /[A-Za-z0-9_]/.test(line[j2])) j2++;
-        var w=line.slice(i,j2);
-        out+= KW.has(w) ? '<span class="k">'+esc(w)+'</span>' : esc(w);
-        i=j2; continue;
-      }
-      if(/[0-9]/.test(c)){
-        var j3=i; while(j3<n && /[0-9.]/.test(line[j3])) j3++;
-        out+='<span class="n">'+esc(line.slice(i,j3))+'</span>'; i=j3; continue;
-      }
-      out+=esc(c); i++;
-    }
-    return out;
-  }
-  document.querySelectorAll('code.lang-python').forEach(function(el){
-    var src=el.textContent;
-    el.innerHTML=src.split('\n').map(hlLine).join('\n');
-  });
-})();
-</script>
+<p>Entidades nomeadas com vários tokens — como os topônimos <em>“Los
+Alamos”</em> e <em>“New Mexico”</em> — foram <strong>mescladas</strong>
+em tokens únicos.</p>
+<hr />
+<h2 id="quiz">Quiz</h2>
+<p>Marque a alternativa correta (a resposta certa está destacada com
+✅).</p>
+<p><strong>1. Por que remover do pipeline componentes que você não
+usa?</strong></p>
+<ol type="1">
+<li>Cada componente tem um custo computacional ✅</li>
+<li>Deixa o código mais bonito</li>
+<li>É obrigatório</li>
+</ol>
+<p><strong>2. Qual argumento de <code>load()</code> exclui componentes
+do pipeline?</strong></p>
+<ol type="1">
+<li><code>exclude</code> ✅</li>
+<li><code>remove</code></li>
+<li><code>skip</code></li>
+</ol>
+<p><strong>3. Por que o <code>Tokenizer</code> não aparece em
+<code>nlp.pipeline</code>?</strong></p>
+<ol type="1">
+<li>Ele sempre roda e fica em <code>nlp.tokenizer</code> ✅</li>
+<li>Foi removido do spaCy</li>
+<li>É opcional e estava desligado</li>
+</ol>
+<p><strong>4. Onde ficam os atributos personalizados de um
+<code>Doc</code>?</strong></p>
+<ol type="1">
+<li>Sob um atributo que consiste no sublinhado (<code>Doc._</code>)
+✅</li>
+<li>Numa coluna extra do texto</li>
+<li>Dentro de <code>nlp.meta</code></li>
+</ol>
+<p><strong>5. Qual método processa uma lista de textos em lote (mais
+rápido)?</strong></p>
+<ol type="1">
+<li><code>pipe()</code> ✅</li>
+<li><code>apply()</code></li>
+<li><code>map()</code></li>
+</ol>
+<p><strong>6. Para que serve o <code>DocBin</code>?</strong></p>
+<ol type="1">
+<li>Guardar e gravar <code>Doc</code>s processados em disco ✅</li>
+<li>Baixar modelos de linguagem</li>
+<li>Treinar o modelo</li>
+</ol>
+<h2 id="resumo-da-unidade">Resumo da unidade</h2>
+<p>Nesta unidade, você aprendeu a:</p>
+<ol type="1">
+<li><strong>examinar</strong> o pipeline com <code>nlp.pipeline</code> e
+entender componentes como <code>tok2vec</code> e
+<code>attribute_ruler</code>;</li>
+<li><strong>excluir componentes</strong> (<code>exclude=[...]</code>)
+para ganhar desempenho e <strong>auditar</strong> o pipeline com
+<code>analyze_pipes()</code> e <code>assert</code>;</li>
+<li><strong>processar textos em lote</strong> com
+<code>nlp.pipe()</code>, entendendo geradores e a conversão para
+lista;</li>
+<li><strong>adicionar atributos personalizados</strong>
+(<code>set_extension()</code>, <code>Doc._.</code>) e
+<strong>filtrar</strong> dados com compreensão de lista;</li>
+<li><strong>gravar e carregar</strong> textos processados com
+<code>DocBin</code> (<code>to_disk()</code>, <code>from_disk()</code>,
+<code>get_docs()</code>);</li>
+<li><strong>mesclar</strong> sintagmas nominais
+(<code>merge_noun_chunks</code>) e entidades nomeadas
+(<code>merge_entities</code>) com
+<code>add_pipe()</code>/<code>remove_pipe()</code>.</li>
+</ol>
+<h3 id="exercícios-sugeridos">Exercícios sugeridos</h3>
+<ol type="1">
+<li>Carregue o modelo excluindo apenas o <code>lemmatizer</code> e
+confirme, com <code>nlp.pipeline</code>, que ele não está mais
+presente.</li>
+<li>Adicione um atributo personalizado <code>source</code> ao
+<code>Doc</code> e preencha‑o com o nome do arquivo de origem ao
+processar textos da Unidade 1.</li>
+<li>Processe as notícias da Unidade 1 com <code>nlp.pipe()</code>, grave
+tudo em um <code>DocBin</code> e recarregue do disco, conferindo o
+número de <code>Doc</code>s.</li>
+<li>Compare a árvore de dependências (<code>displacy</code>) de uma
+frase <strong>com</strong> e <strong>sem</strong>
+<code>merge_noun_chunks</code> e descreva a diferença.</li>
+</ol>
+<hr />
+<h3 id="referências">Referências</h3>
+<ul>
+<li>Rögnvaldsson, E. et al. <em>Applied Language Technology</em> (MOOC).
+Universidade de Helsinque. <a href="https://applied-language-technology.mooc.fi/" class="uri">https://applied-language-technology.mooc.fi/</a></li>
+<li>Honnibal, M.; Montani, I. et al. <em>spaCy: Industrial-strength
+Natural Language Processing in Python</em>. <a href="https://spacy.io/" class="uri">https://spacy.io/</a></li>
+</ul>
 </body>
 </html>

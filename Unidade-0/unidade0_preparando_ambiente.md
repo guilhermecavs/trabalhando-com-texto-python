@@ -1,8 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 0 — Preparando o ambiente
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-
+---
+title: "Preparando o ambiente"
+subtitle: "Trabalhando com Texto em Python I · Unidade 0"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos
@@ -16,7 +17,9 @@ Antes de começar as unidades, você precisa deixar o computador pronto. Ao fina
 - os **dados** (corpus) na pasta certa;
 - os **exercícios** rodando com correção automática.
 
-> 💡 **Dica:** faça esta preparação **uma vez**. Depois, sempre que for estudar, basta **ativar o ambiente virtual** (passo 2) e começar.
+::: dica
+**Dica:** faça esta preparação **uma vez**. Depois, sempre que for estudar, basta **ativar o ambiente virtual** (passo 2) e começar.
+:::
 
 ---
 
@@ -102,7 +105,9 @@ data/
 
 Esses arquivos vêm do material do curso de referência *Applied Language Technology* — repositório em [github.com/Applied-Language-Technology](https://github.com/Applied-Language-Technology). Baixe‑os de lá e salve na pasta `data/`.
 
-> 📝 **Nota:** os caminhos no material (ex.: `open('data/NYT_1991-01-16-A15.txt')`) supõem que você está rodando o Python **na pasta que contém `data/`**.
+::: nota
+**Nota:** os caminhos no material (ex.: `open('data/NYT_1991-01-16-A15.txt')`) supõem que você está rodando o Python **na pasta que contém `data/`**.
+:::
 
 ---
 
@@ -129,7 +134,9 @@ python3 -m unittest unidade1_test
 
 Quando aparecer `OK`, você acertou todos. Enquanto houver `todo(...)`, o teste falha de propósito.
 
-> ✅ **Bom saber:** os testes dos exercícios usam **só a biblioteca padrão** do Python — não precisam do spaCy nem do pandas. Assim, eles rodam em qualquer lugar, inclusive em corretores automáticos como o **Judge0**.
+::: dica
+**Bom saber:** os testes dos exercícios usam **só a biblioteca padrão** do Python — não precisam do spaCy nem do pandas. Assim, eles rodam em qualquer lugar, inclusive em corretores automáticos como o **Judge0**.
+:::
 
 ---
 

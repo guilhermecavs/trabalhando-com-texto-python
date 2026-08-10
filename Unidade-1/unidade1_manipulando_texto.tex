@@ -1,657 +1,1320 @@
-% !TEX program = pdflatex
-% ============================================================================
-%  Unidade 1 - Manipulando texto com Python
-%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
-%
-%  COMPILAR COM:  pdflatex unidade1_manipulando_texto.tex   (rodar 2x)
-%
-%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
-%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry,
-%    listings, tcolorbox, titlesec, enumitem, hyperref, microtype
-% ============================================================================
-\documentclass[11pt,a4paper]{article}
-
-\usepackage[utf8]{inputenc}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  brazilian,
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{35,38,41}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.58,0.85,0.30}{\textbf{\colorbox[rgb]{0.30,0.12,0.14}{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.25,0.50,0.35}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.48,0.49,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{\textbf{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.99,0.74,0.29}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.64,0.20,0.25}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.60,1.00}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.56,0.27,0.68}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.77,0.36,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{\colorbox[rgb]{0.08,0.19,0.26}{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.96,0.31,0.31}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% ==========================================================================
+%  Cabecalho LaTeX do curso "Trabalhando com Texto em Python I"
+%  Injetado pelo pandoc (-H) ao gerar o .tex de cada unidade.
+% ==========================================================================
 \usepackage[T1]{fontenc}
-\usepackage[brazilian]{babel}
 \usepackage{lmodern}
 \usepackage[scaled=0.92]{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
-\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
 \usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{listings}
 \usepackage[most]{tcolorbox}
-\tcbuselibrary{listings,skins,breakable}
+\tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
-\usepackage{hyperref}
+\usepackage{enumitem}
 
-% -------------------------------------------------------------- paleta ------
+% -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
 \definecolor{cyan}{HTML}{00B4D8}
 \definecolor{subink}{HTML}{2B3242}
-\definecolor{codebg}{HTML}{1E2430}
-\definecolor{codetext}{HTML}{E6E9EF}
-\definecolor{ccomment}{HTML}{7FD18B}
-\definecolor{cstring}{HTML}{F0B866}
-\definecolor{ckw}{HTML}{C792EA}
-\definecolor{cbuiltin}{HTML}{82AAFF}
-\definecolor{outbg}{HTML}{F0F2F7}
-\definecolor{outtext}{HTML}{2F3646}
-\definecolor{outframe}{HTML}{9AA4B8}
 \definecolor{notec}{HTML}{3B82F6}
 \definecolor{tipc}{HTML}{10B981}
 \definecolor{warnc}{HTML}{F59E0B}
+
+% -------- emojis / simbolos unicode que podem aparecer no texto --------
+% simbolos com significado
+\newunicodechar{✅}{{\color{tipc}\checkmark}}
+\newunicodechar{✔}{{\color{tipc}\checkmark}}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↹}{\ensuremath{\hookrightarrow}}
+\newunicodechar{°}{\textdegree}
+\newunicodechar{·}{\textperiodcentered}
+\newunicodechar{´}{'}
+\newunicodechar{‑}{-}
+% emojis decorativos -> removidos no PDF
+\newunicodechar{💡}{}
+\newunicodechar{🚀}{}
+\newunicodechar{📝}{}
+\newunicodechar{⚠}{}
+\newunicodechar{🐍}{}
+\newunicodechar{🎉}{}
+\newunicodechar{🍕}{}
+\newunicodechar{👍}{}
+\newunicodechar{💋}{}
+\newunicodechar{😚}{}
+\newunicodechar{🚂}{}
+\newunicodechar{❤}{}
+
+% -------- caixas de callout (usadas pelo filtro callouts.lua) --------
+\newtcolorbox{notebox}{enhanced,breakable,colback=notec!6,colframe=notec,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}{enhanced,breakable,colback=warnc!8,colframe=warnc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}{enhanced,breakable,colback=accent!5,colframe=accent,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,
+  before skip=10pt,after skip=14pt}
+
+% -------- titulos coloridos --------
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{subink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{cyan}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.1ex}
+
+% codigo inline colorido
 \definecolor{inlink}{HTML}{5A34D6}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlink}\oldtexttt{#1}}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Manipulando texto com Python},
+  pdfauthor={CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia},
+  pdflang={pt-BR},
+  colorlinks=true,
+  linkcolor={accent},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={cyan},
+  pdfcreator={LaTeX via pandoc}}
 
-\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
-  pdftitle={Manipulando texto com Python},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
-
-% --------------------------------------------------- estilo do codigo -------
-\lstset{
-  extendedchars=true,
-  breaklines=true,
-  breakatwhitespace=false,
-  keepspaces=true,
-  columns=fullflexible,
-  tabsize=4,
-  showstringspaces=false,
-  literate=%
-    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
-    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-    {ç}{{\c c}}1 {Ç}{{\c C}}1
-    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
-    {—}{{---}}1 {–}{{--}}1
-    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+\title{Manipulando texto com Python}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
-
-\lstdefinestyle{pystyle}{
-  language=Python,
-  basicstyle=\ttfamily\small\color{codetext},
-  keywordstyle=\color{ckw}\bfseries,
-  keywordstyle=[2]\color{cbuiltin},
-  morekeywords=[2]{open,print,list,type,read,split,pop,join,replace,compile,
-    sub,exists,is_dir,is_file,glob,read_text,write_text,Path},
-  commentstyle=\color{ccomment}\itshape,
-  stringstyle=\color{cstring},
-}
-\lstdefinestyle{outstyle}{
-  basicstyle=\ttfamily\small\color{outtext},
-}
-
-% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
-\newtcblisting{pybox}{
-  breakable, enhanced,
-  listing only, listing options={style=pystyle},
-  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
-  borderline west={3pt}{0pt}{accent},
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-% caixa de saida (fundo claro)
-\newtcblisting{outbox}{
-  breakable, enhanced,
-  listing only, listing options={style=outstyle},
-  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-
-% ------------------------------------------------------ caixas de aviso -----
-\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
-
-% ------------------------------------------------------ titulos de secao ----
-\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
-  {\thesection.}{0.5em}{}
-\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
-  {\thesubsection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{6pt}
-\titlespacing*{\subsection}{0pt}{12pt}{4pt}
-
-% codigo em linha (verbatim, colorido) via atalho @...@
-\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
+\makeatother
+\subtitle{Trabalhando com Texto em Python I · Unidade 1}
+\author{CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia}
+\date{2026}
 
 \begin{document}
+\maketitle
 
-% --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
-  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
-  before skip=0pt, after skip=20pt]
-  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
-  {\Huge\bfseries Manipulando texto com Python}\\[8pt]
-  {\large Trabalhando com Texto em Python I \ --- \ Unidade 1}\\[6pt]
-  {\normalsize Do texto simples às expressões regulares e ao processamento de múltiplos arquivos.}\\[10pt]
-  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
-\end{tcolorbox}
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\subsubsection{Objetivos de
+aprendizagem}\label{objetivos-de-aprendizagem}
 
-\begin{objbox}
 Ao final desta unidade, você deverá ser capaz de:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item compreender a diferença entre texto formatado (\textit{rich text}), estruturado (\textit{structured text}) e simples (\textit{plain text});
-  \item entender o conceito de codificação de caracteres (\textit{text encoding});
-  \item carregar arquivos de texto simples no Python e manipular o seu conteúdo;
-  \item definir padrões flexíveis de busca com expressões regulares;
-  \item processar vários arquivos de uma só vez e salvar os resultados.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{compreender a diferença} entre texto formatado (\emph{rich
+  text}), texto estruturado (\emph{structured text}) e texto simples
+  (\emph{plain text});
+\item
+  \textbf{entender o conceito} de codificação de caracteres (\emph{text
+  encoding});
+\item
+  \textbf{carregar arquivos} de texto simples no Python e
+  \textbf{manipular} o seu conteúdo;
+\item
+  \textbf{definir padrões flexíveis} de busca com expressões regulares;
+\item
+  \textbf{processar vários arquivos} de uma só vez e salvar os
+  resultados.
 \end{itemize}
-\end{objbox}
 
-% =========================================================== 1 ==============
-\section{Computadores e texto}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Os computadores podem armazenar e representar texto em formatos diferentes. Conhecer a distinção entre esses tipos é \textbf{fundamental} para processá-los programaticamente, porque cada formato traz consigo informações (ou ruídos) distintos.
+\subsection{1. Computadores e texto}\label{computadores-e-texto}
 
-\subsection{O que é texto formatado (\textit{rich text})?}
-Processadores de texto, como o Microsoft Word, produzem \textbf{texto formatado} (\textit{rich text}): texto cuja aparência foi estilizada de alguma maneira específica. É possível definir estilos visuais para os elementos do documento --- títulos com fontes próprias, trechos em itálico ou negrito para dar ênfase, além de imagens e tabelas. Esse é o formato padrão dos editores modernos do tipo \textit{WYSIWYG} (\textit{what you see is what you get}).
+Os computadores podem armazenar e representar texto em formatos
+diferentes. Conhecer a distinção entre esses tipos é
+\textbf{fundamental} para processá‑los programaticamente, porque cada
+formato traz consigo informações (ou ruídos) distintos.
 
-\subsection{O que é texto simples (\textit{plain text})?}
-Diferentemente do texto formatado, o \textbf{texto simples} (\textit{plain text}) não contém nenhuma informação sobre a aparência visual: ele é feito \textbf{apenas de caracteres} --- letras, números, sinais de pontuação, espaços e quebras de linha. A definição é flexível, mas, em geral, refere-se a texto sem qualquer formatação ou estilo.
+\subsubsection{\texorpdfstring{1.1 O que é texto formatado (\emph{rich
+text})?}{1.1 O que é texto formatado (rich text)?}}\label{o-que-uxe9-texto-formatado-rich-text}
 
-\subsection{O que é texto estruturado (\textit{structured text})?}
-O \textbf{texto estruturado} pode ser entendido como um caso especial de texto simples que inclui sequências de caracteres usadas para \textbf{formatar o texto para exibição}. São exemplos os textos descritos por linguagens de marcação como XML, Markdown ou HTML. Abaixo, uma frase em texto simples envolvida por marcadores (\textit{tags}) HTML de parágrafo @<p>@. A marca de abertura @<p>@ e a de fechamento @</p>@ informam ao computador que o conteúdo entre elas forma um parágrafo:
+Processadores de texto, como o Microsoft Word, produzem \textbf{texto
+formatado} (\emph{rich text}): texto cuja aparência foi estilizada de
+alguma maneira específica.
 
-\begin{pybox}
-<p>This is an example sentence.</p>
-\end{pybox}
+O texto formatado permite definir estilos visuais para os elementos do
+documento. Títulos, por exemplo, podem usar uma fonte diferente da do
+corpo do texto, que por sua vez pode empregar itálico ou negrito para
+dar ênfase. O texto formatado também pode incluir imagens, tabelas e
+outros elementos.
 
-\subsection{Por que isso importa?}
-Ao reunir textos para formar um \textbf{corpus}, é provável que parte deles tenha origem em formato formatado ou estruturado:
-\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
-  \item Documentos impressos digitalizados por \textbf{reconhecimento óptico de caracteres} (\textit{OCR}) e convertidos para texto simples tendem a acumular \textbf{erros}. Esse OCR ``sujo'' pode afetar a análise textual (Hill \& Hengchen, 2019).
-  \item Documentos raspados de fóruns ou sites costumam trazer vestígios de marcadores de marcação, arrastados para o texto simples durante a conversão.
+Esse é o formato padrão dos processadores de texto modernos do tipo
+\emph{WYSIWYG} (\emph{what you see is what you get} --- ``o que você vê
+é o que você obtém'').
+
+\subsubsection{\texorpdfstring{1.2 O que é texto simples (\emph{plain
+text})?}{1.2 O que é texto simples (plain text)?}}\label{o-que-uxe9-texto-simples-plain-text}
+
+Diferentemente do texto formatado, o \textbf{texto simples} (\emph{plain
+text}) não contém nenhuma informação sobre a aparência visual: ele é
+feito \textbf{apenas de caracteres}.
+
+Neste contexto, ``caracteres'' abrange letras, números, sinais de
+pontuação, espaços e quebras de linha. A definição de texto simples é um
+tanto flexível, mas, em geral, refere‑se a texto sem qualquer informação
+de formatação ou estilo.
+
+\subsubsection{\texorpdfstring{1.3 O que é texto estruturado
+(\emph{structured
+text})?}{1.3 O que é texto estruturado (structured text)?}}\label{o-que-uxe9-texto-estruturado-structured-text}
+
+O \textbf{texto estruturado} (\emph{structured text}) pode ser entendido
+como um caso especial de texto simples que inclui sequências de
+caracteres usadas para \textbf{formatar o texto para exibição}.
+
+São exemplos de texto estruturado os textos descritos por linguagens de
+marcação como XML, Markdown ou HTML.
+
+O exemplo abaixo mostra uma frase em texto simples envolvida por
+marcadores (\emph{tags}) HTML de parágrafo
+\texttt{\textless{}p\textgreater{}}. A marca de abertura
+\texttt{\textless{}p\textgreater{}} e a de fechamento
+\texttt{\textless{}/p\textgreater{}} informam ao computador que todo o
+conteúdo colocado entre elas forma um parágrafo:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{\textless{}}\KeywordTok{p}\DataTypeTok{\textgreater{}}\NormalTok{This is an example sentence.}\DataTypeTok{\textless{}/}\KeywordTok{p}\DataTypeTok{\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+Essa informação é usada para estruturar o texto simples no momento de
+renderizá‑lo para exibição, normalmente aplicando estilo à sua
+aparência.
+
+\subsubsection{1.4 Por que isso importa?}\label{por-que-isso-importa}
+
+Ao reunir um conjunto de textos para formar um \textbf{corpus}, é bem
+provável que parte deles tenha origem em formato formatado ou
+estruturado, dependendo do meio de onde vieram:
+
+\begin{itemize}
+\tightlist
+\item
+  Se você coleta documentos impressos que foram digitalizados por
+  \textbf{reconhecimento óptico de caracteres} (\emph{optical character
+  recognition}, OCR) e depois convertidos de texto formatado para texto
+  simples, a remoção das informações de formatação tende a
+  \textbf{introduzir erros} no texto resultante. Trabalhar com esse tipo
+  de OCR ``sujo'' pode afetar os resultados da análise textual (Hill \&
+  Hengchen, 2019).
+\item
+  Se você coleta documentos digitais raspando fóruns de discussão ou
+  sites, é provável que encontre vestígios de texto estruturado na forma
+  de marcadores de marcação, que podem ser arrastados para o texto
+  simples durante a conversão.
 \end{itemize}
-O texto simples é, de longe, o formato \textbf{mais interoperável}, por ser fácil de ler para os computadores --- por isso as linguagens de programação trabalham com ele.
 
-\begin{notebox}[Em resumo]
-Ao trabalhar com texto simples, muitas vezes será preciso lidar com os vestígios deixados pela conversão a partir de texto formatado ou estruturado.
+O texto simples é, de longe, o formato \textbf{mais interoperável} para
+texto, por ser fácil de ler para os computadores. É por isso que as
+linguagens de programação trabalham com texto simples --- e, se você
+pretende usar programação para manipular texto, precisa saber o que é
+texto simples.
+
+\begin{notebox}
+
+\textbf{Em resumo:} ao trabalhar com texto simples, muitas vezes será
+preciso lidar com os vestígios deixados pela conversão a partir de texto
+formatado ou estruturado.
+
 \end{notebox}
 
-% =========================================================== 2 ==============
-\section{Codificação de texto \textnormal{\textit{(text encoding)}}}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Para serem lidos pelos computadores, os textos simples precisam ser \textbf{codificados}. A \textbf{codificação de caracteres} mapeia cada caractere (letras, números, pontuação, espaços\ldots) para uma representação numérica compreendida pela máquina. O ideal seria não termos de lidar com isso --- mas, na prática, precisamos, porque existem \textbf{vários sistemas} de codificação e eles \textbf{não são compatíveis entre si}.
+\subsection{\texorpdfstring{2. Codificação de texto (\emph{text
+encoding})}{2. Codificação de texto (text encoding)}}\label{codificauxe7uxe3o-de-texto-text-encoding}
 
-\subsection{ASCII}
-O \textbf{ASCII} (\textit{American Standard Code for Information Interchange}) é um sistema pioneiro que serviu de base para muitos sistemas modernos. Ainda é bastante usado, mas é \textbf{muito limitado}: se o seu idioma inclui caracteres como @ä@, @ö@ --- ou os nossos @á@, @ç@, @ã@ ---, o ASCII não dá conta.
+Para serem lidos pelos computadores, os textos simples precisam ser
+\textbf{codificados}. Isso é feito por meio da \textbf{codificação de
+caracteres} (\emph{character encoding}), que mapeia cada caractere
+(letras, números, pontuação, espaços\ldots) para uma representação
+numérica compreendida pela máquina.
 
-\subsection{Unicode}
-O \textbf{Unicode} é um padrão para codificar a maioria dos sistemas de escrita do mundo, cobrindo cerca de \textbf{140 mil caracteres} entre escritas modernas e históricas, símbolos e emojis. Por exemplo, o emoji de fatia de pizza tem o código @U+1F355@, e o espaço em branco corresponde a @U+0020@. O Unicode pode ser implementado por diferentes codificações, como o \textbf{UTF-8}.
+O ideal seria não termos de lidar com operações de baixo nível como a
+codificação de caracteres --- mas, na prática, precisamos, porque
+existem \textbf{vários sistemas} de codificação e eles \textbf{não são
+compatíveis entre si}. Essa é a origem de boa parte das dores de cabeça
+de quem trabalha com texto simples.
 
-\begin{tipbox}[Ponto-chave]
-O UTF-8 é \textbf{retrocompatível com o ASCII}: as codificações do ASCII são um subconjunto do UTF-8. Assim, um arquivo em ASCII pode ser decodificado como UTF-8 --- mas o \textbf{contrário não vale}.
-\end{tipbox}
+Há dois sistemas de codificação com os quais você provavelmente vai se
+deparar: \textbf{ASCII} e \textbf{Unicode}.
 
-% =========================================================== 3 ==============
-\section{Carregando arquivos de texto simples no Python}
+\subsubsection{2.1 ASCII}\label{ascii}
 
-Arquivos de texto simples são carregados com a função @open()@. O primeiro argumento deve ser uma \textit{string} com o \textbf{caminho} do arquivo. Aqui, o caminho aponta para @NYT_1991-01-16-A15.txt@, no diretório @data@ --- diretório e nome separados por uma barra @/@:
+O \textbf{ASCII} (\emph{American Standard Code for Information
+Interchange}) é um sistema pioneiro de codificação de caracteres que
+serviu de base para muitos sistemas modernos.
 
-\begin{pybox}
-open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8')
-\end{pybox}
+O ASCII ainda é bastante usado, mas é \textbf{muito limitado} quanto à
+variedade de caracteres. Se o seu idioma inclui caracteres como
+\texttt{ä}, \texttt{ö} --- ou os nossos \texttt{á}, \texttt{ç},
+\texttt{ã} ---, o ASCII não dá conta.
 
-\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
-  \item @encoding@: o Python 3 assume UTF-8 por padrão, mas deixamos explícito passando @utf-8@.
-  \item @mode@: a \textit{string} @r@ (de \textit{read}) indica que queremos \textbf{apenas ler}.
-  \item Usamos @open()@ junto do @with@, que garante o \textbf{fechamento} do arquivo após o bloco indentado --- evitando consumo desnecessário de memória.
+\subsubsection{2.2 Unicode}\label{unicode}
+
+O \textbf{Unicode} é um padrão para codificar texto na maioria dos
+sistemas de escrita usados no mundo, cobrindo cerca de \textbf{140 mil
+caracteres} entre escritas modernas e históricas, símbolos e emojis.
+
+Por exemplo, o emoji de fatia de pizza 🍕 tem o ``código'' Unicode
+\texttt{U+1F355}, enquanto o código correspondente a um espaço em branco
+é \texttt{U+0020}.
+
+O Unicode pode ser implementado por diferentes codificações, como o
+\textbf{UTF‑8}, definido pelo próprio padrão Unicode.
+
+O UTF‑8 é \textbf{retrocompatível com o ASCII}. Em outras palavras, as
+codificações do ASCII formam um subconjunto do UTF‑8 --- o que facilita
+bastante a nossa vida. Assim, mesmo que um arquivo de texto simples
+tenha sido codificado em ASCII, podemos decodificá‑lo como UTF‑8;
+\textbf{o contrário, porém, não vale}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Carregando arquivos de texto simples no
+Python}\label{carregando-arquivos-de-texto-simples-no-python}
+
+Arquivos de texto simples podem ser carregados no Python com a função
+\texttt{open()}.
+
+O primeiro argumento de \texttt{open()} deve ser uma \emph{string}
+contendo o \textbf{caminho} para o arquivo que será aberto. Aqui, temos
+um caminho que aponta para um arquivo chamado
+\texttt{NYT\_1991-01-16-A15.txt}, localizado em um diretório chamado
+\texttt{data}. Na definição do caminho, o diretório e o nome do arquivo
+são separados por uma barra \texttt{/}.
+
+Para acessar o arquivo apontado por esse caminho, passamos o caminho
+como \emph{string} ao argumento \texttt{file} da função \texttt{open()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\BuiltInTok{open}\NormalTok{(}\BuiltInTok{file}\OperatorTok{=}\StringTok{\textquotesingle{}data/NYT\_1991{-}01{-}16{-}A15.txt\textquotesingle{}}\NormalTok{, mode}\OperatorTok{=}\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Vale entender os demais argumentos:
+
+\begin{itemize}
+\tightlist
+\item
+  Por padrão, o Python 3 assume que o texto está codificado em
+  \textbf{UTF‑8}, mas podemos deixar isso explícito com o argumento
+  \texttt{encoding}, passando a \emph{string} \texttt{utf-8}.
+\item
+  O argumento \texttt{mode} define o que queremos fazer com o arquivo. A
+  \emph{string} \texttt{r} (de \emph{read}) indica que queremos
+  \textbf{apenas ler} o arquivo.
+\item
+  Usamos \texttt{open()} junto da instrução \texttt{with}, que garante
+  que o arquivo será \textbf{fechado} após executarmos o que precisamos
+  dentro do bloco de código indentado que segue o \texttt{with}. Isso
+  evita que o arquivo continue consumindo memória e recursos depois que
+  não precisamos mais dele.
 \end{itemize}
 
-\begin{pybox}
-# Abre um arquivo e o atribui à variável 'file'
-with open(file='data/NYT_1991-01-16-A15.txt', mode='r', encoding='utf-8') as file:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Abre um arquivo e o atribui à variável \textquotesingle{}file\textquotesingle{}}
+\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\BuiltInTok{file}\OperatorTok{=}\StringTok{\textquotesingle{}data/NYT\_1991{-}01{-}16{-}A15.txt\textquotesingle{}}\NormalTok{, mode}\OperatorTok{=}\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as} \BuiltInTok{file}\NormalTok{:}
 
-    # A instrução 'with' deve ser seguida por um bloco de código indentado.
-    # Aqui chamamos o método read() para ler o conteúdo do arquivo e
-    # atribuímos o resultado à variável 'text'.
-    text = file.read()
-\end{pybox}
+    \CommentTok{\# A instrução \textquotesingle{}with\textquotesingle{} deve ser seguida por um bloco de código indentado.}
+    \CommentTok{\# Aqui chamamos o método read() para ler o conteúdo do arquivo e}
+    \CommentTok{\# atribuímos o resultado à variável \textquotesingle{}text\textquotesingle{}.}
+\NormalTok{    text }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read()}
+\end{Highlighting}
+\end{Shaded}
 
-A palavra @as@ instrui o Python a atribuir o retorno de @open()@ à variável @file@. Ao chamá-la, obtemos um objeto @TextIOWrapper@:
+Repare que \texttt{with} e \texttt{open()} são seguidos da palavra
+\texttt{as} e de uma variável chamada \texttt{file}. Isso instrui o
+Python a atribuir à variável \texttt{file} aquilo que \texttt{open()}
+retornar.
 
-\begin{pybox}
-# Chama a variável para examinar o objeto
-file
-\end{pybox}
-\begin{outbox}
-<_io.TextIOWrapper name='data/NYT_1991-01-16-A15.txt' mode='r' encoding='utf-8'>
-\end{outbox}
+Se agora chamarmos a variável \texttt{file}, obtemos um objeto Python do
+tipo \texttt{TextIOWrapper}, que carrega três informações: o caminho do
+arquivo (no argumento \texttt{name}) e os argumentos \texttt{mode} e
+\texttt{encoding} que definimos acima:
 
-Se tentarmos chamar @read()@ \textbf{fora} do bloco @with@, o Python levanta um erro, porque o arquivo já foi fechado:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Chama a variável para examinar o objeto}
+\BuiltInTok{file}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Tenta usar o método read() para ler o conteúdo do arquivo
-file.read()
-\end{pybox}
-\begin{outbox}
-ValueError: I/O operation on closed file.
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\textless{}\_io.TextIOWrapper name=\textquotesingle{}data/NYT\_1991{-}01{-}16{-}A15.txt\textquotesingle{} mode=\textquotesingle{}r\textquotesingle{} encoding=\textquotesingle{}utf{-}8\textquotesingle{}\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
 
-Esse comportamento é o esperado --- importante sobretudo ao trabalhar com \textbf{milhares de arquivos}. Vejamos o conteúdo lido, guardado em @text@. Como é longo, pegamos uma \textbf{fatia} dos primeiros 500 caracteres com @[:500]@. Adicionar colchetes após o nome da variável permite acessar partes do objeto; @text[1]@ recuperaria o caractere na posição 1, e o @:@ antes do número recupera todos os caracteres até a posição 500.
+Tenha em mente que, no bloco indentado após o \texttt{with}, chamamos o
+método \texttt{read()} do objeto \texttt{TextIOWrapper}. Esse método leu
+o conteúdo do arquivo, que atribuímos à variável \texttt{text}.
 
-\begin{pybox}
-# Recupera os primeiros 500 caracteres da variável 'text'
-text[:500]
-\end{pybox}
-\begin{outbox}
-'U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis
-Whose Visas Have Expired\nBy JAMES BARRON\nNew York Times (1923-Current file);
-Jan 16, 1991; ... the Justice Department'
-\end{outbox}
+No entanto, se tentarmos chamar \texttt{read()} para a variável
+\texttt{file} \textbf{fora} do bloco \texttt{with}, o Python levanta um
+erro, porque o arquivo já foi fechado:
 
-Há sequências estranhas: uma marca BOM (@U+FEFF@) no início e vários @\n@. A primeira é a ``assinatura'' de que o arquivo é UTF-8; as demais indicam \textbf{quebra de linha}. Isso fica evidente ao usar @print()@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Tenta usar o método read() para ler o conteúdo do arquivo}
+\BuiltInTok{file}\NormalTok{.read()}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Imprime os primeiros 1000 caracteres da variável 'text'
-print(text[:1000])
-\end{pybox}
-\begin{outbox}
-U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis Whose Visas Have Expired
-By JAMES BARRON
-New York Times (1923-Current file); Jan 16, 1991;
-...
-   The Federal Bureau of Investigation has been ordered to track down as many as
-   3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday.
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ValueError: I/O operation on closed file.}
+\end{Highlighting}
+\end{Shaded}
 
-O Python interpreta o @\n@ e insere a quebra de linha. As primeiras linhas contêm \textbf{metadados} (nome, autor, fonte), que antecedem o corpo do texto.
+Esse comportamento é o esperado: queremos que o arquivo seja fechado,
+para que não consuma memória nem recursos quando não é mais necessário.
+Isso é especialmente importante ao trabalhar com \textbf{milhares de
+arquivos}, pois cada arquivo aberto ocupa memória.
 
-% =========================================================== 4 ==============
-\section{Manipulando texto}
+Vejamos agora o resultado de \texttt{read()}, guardado em \texttt{text}.
+O texto é bem longo, então vamos pegar apenas uma \textbf{fatia} com os
+primeiros 500 caracteres, usando colchetes \texttt{{[}:500{]}}.
+Adicionar colchetes logo após o nome de uma variável permite acessar
+partes do objeto, quando o objeto permite isso. Por exemplo,
+\texttt{text{[}1{]}} recuperaria o caractere na posição 1; o \texttt{:}
+antes do número instrui o Python a recuperar \textbf{todos} os
+caracteres até o de posição 500.
 
-Como @text@ é um objeto \textit{string}, podemos usar todos os métodos de manipulação de \textit{strings} do Python.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recupera os primeiros 500 caracteres da variável \textquotesingle{}text\textquotesingle{}}
+\NormalTok{text[:}\DecValTok{500}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Substituindo com \textnormal{\texttt{replace()}}}
-Vamos trocar todas as quebras de linha @"\n"@ por \textit{strings} vazias @""@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\textquotesingle{}﻿U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis Whose Visas Have Expired\textbackslash{}nBy JAMES BARRON\textbackslash{}nNew York Times (1923{-}Current file); Jan 16, 1991; ... the Justice Department\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Substitui as quebras de linha \n por strings vazias e atribui o resultado
-# à variável 'processed_text'
-processed_text = text.replace('\n', '')
+A maior parte do texto está legível, mas há sequências estranhas, como
+\texttt{﻿} bem no início e vários \texttt{\textbackslash{}n} ao longo do
+texto:
 
-# Imprime os primeiros 1000 caracteres da variável 'processed_text'
-print(processed_text[:1000])
-\end{pybox}
-
-Agora o texto ficou ``grudado'', mas ainda dá para identificar o início de cada parágrafo, marcado por \textbf{três espaços}.
-
-\begin{warnbox}
-Remover as quebras de linha também fundiu os metadados em um único parágrafo. Sempre fique atento aos \textbf{efeitos indesejados} de substituições e transformações!
-\end{warnbox}
-
-\subsection{Dividindo com \textnormal{\texttt{split()}}}
-Sabendo que os metadados estão separados do corpo por três espaços, usamos @split()@ para \textbf{dividir a \textit{string} em uma lista}, com os três espaços como separador:
-
-\begin{pybox}
-# Usa o método split() com três espaços como separador. Atribui o
-# resultado à variável 'processed_text'.
-processed_text = processed_text.split(sep='   ')
-
-# Imprime o resultado da variável 'processed_text'
-print(processed_text)
-\end{pybox}
-
-O método retorna uma \textbf{lista} de \textit{strings}:
-
-\begin{pybox}
-# Verifica o tipo do objeto na variável 'processed_text'
-type(processed_text)
-\end{pybox}
-\begin{outbox}
-list
-\end{outbox}
-
-Os metadados ficaram no \textbf{primeiro item} (índice @0@ --- o Python conta do zero):
-
-\begin{pybox}
-# Recupera o objeto string no índice 0 da lista 'processed_text'
-processed_text[0]
-\end{pybox}
-
-\subsection{Removendo itens com \textnormal{\texttt{pop()}}}
-Para remover os metadados, usamos @pop()@, que espera o índice do item a remover:
-
-\begin{pybox}
-# Chama o método pop() da lista 'processed_text' com o
-# índice do item a ser removido.
-processed_text.pop(0)
-\end{pybox}
-
-Não atribuímos o resultado a uma variável porque as listas são \textbf{mutáveis}: @pop()@ altera a lista \textit{in place}. Conferindo os três primeiros itens, o metadado já não aparece:
-
-\begin{pybox}
-# Recupera os três primeiros itens da lista 'processed_text'
-processed_text[:3]
-\end{pybox}
-
-\subsection{Reunindo com \textnormal{\texttt{join()}}}
-Para voltar de lista para \textit{string}, usamos @join()@, que espera um \textbf{iterável}. O ponto que confunde: o @join()@ é chamado \textbf{sobre a \textit{string} que serve de ``cola''}. Aqui, a cola é a sequência original de parágrafo (@'\n   '@ --- quebra de linha e três espaços):
-
-\begin{pybox}
-# Usa o método join() para unir os itens da lista 'processed_text'
-# usando a string '\n   ' — uma quebra de linha e três espaços. Guarda o
-# resultado na variável de mesmo nome.
-processed_text = '\n   '.join(processed_text)
-
-# Verifica o resultado imprimindo os primeiros 1000 caracteres da string
-# resultante em 'processed_text'
-print(processed_text[:1000])
-\end{pybox}
-
-O @join()@ devolve uma \textit{string} com as quebras de parágrafo originais!
-
-\subsection{Um \textit{pipeline} de substituições com laço \textnormal{\texttt{for}}}
-O OCR deixou uma \textbf{mistura de aspas}. Para padronizar tudo em @"@ sem repetir @replace()@ à mão, combinamos \textbf{listas} e \textbf{tuplas}. Cada tupla guarda o caractere a substituir e o seu substituto:
-
-\begin{pybox}
-# Define uma lista com quatro tuplas, cada uma com duas strings: o caractere
-# a ser substituido e o seu substituto.
-pipeline = [('“', '"'), ('´´', '"'), ('”', '"'), ('’’', '"')]
-\end{pybox}
-
-Isso mostra como estruturas de dados são \textbf{aninhadas}: a lista contém tuplas, e as tuplas contêm \textit{strings}. Agora percorremos a lista com um laço @for@ (a próxima linha deve ser \textbf{indentada}):
-
-\begin{pybox}
-# Percorre as tuplas da lista 'pipeline'. Cada tupla tem dois valores, que
-# atribuimos as variaveis 'old' e 'new' automaticamente!
-for old, new in pipeline:
-
-    # Usa o metodo replace() para substituir a string da variavel 'old'
-    # pela string da variavel 'new'
-    processed_text = processed_text.replace(old, new)
-\end{pybox}
-
-A cada volta, atualizamos a \textit{string} em @processed_text@. Para entender a diferença entre usar \textbf{uma} variável em vez de duas:
-
-\begin{pybox}
-# Percorre os itens da variavel 'pipeline'
-for our_tuple in pipeline:
-
-    # Imprime o objeto retornado
-    print(our_tuple)
-\end{pybox}
-\begin{outbox}
-('“', '"')
-('´´', '"')
-('”', '"')
-('’’', '"')
-\end{outbox}
-
-Com uma variável, o laço devolve a \textbf{tupla inteira}; com duas, o Python avança até as \textit{strings} dentro dela. Preste sempre atenção aos itens contidos na lista!
-
-% =========================================================== 5 ==============
-\section{Manipulando texto em escala}
-
-O ideal é aplicar o mesmo procedimento a dez, cem ou mil arquivos com o mesmo esforço. Para isso, precisamos de padrões \textbf{mais flexíveis} que as \textit{strings} fixas, e de abrir/fechar arquivos automaticamente --- capacidades dos módulos de \textbf{expressões regulares} e de \textbf{manipulação de arquivos}.
-
-\subsection{Expressões regulares}
-Expressões regulares são uma ``linguagem'' para definir \textbf{padrões de busca}, permitindo \textbf{curingas} e \textbf{quantificadores}. Ativamos o módulo @re@:
-
-\begin{pybox}
-import re
-\end{pybox}
-
-Carregamos um arquivo e pegamos seus \textbf{últimos} 2000 caracteres:
-
-\begin{pybox}
-# Define o caminho do arquivo e o abre para leitura (r) com codificacao utf-8
-with open(file='data/WP_1990-08-10-25A.txt', mode='r', encoding='utf-8') as file:
-
-    # Le o conteudo do arquivo com o metodo .read()
-    text = file.read()
-
-# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero
-extract = text[-2000:]
-
-# Imprime o resultado
-print(extract)
-\end{pybox}
-
-O texto tem muitos erros de OCR, como sequências @....@ e @,,,,@. Compilamos uma expressão que busca \textbf{dois ou mais pontos finais} com @compile()@. O prefixo @r@ guarda a \textit{string} em formato ``bruto'' (\textit{raw}):
-
-\begin{pybox}
-# Compila uma expressao regular e a atribui a variavel 'stops'
-stops = re.compile(r'\.{2,}')
-
-# Vamos verificar o tipo da expressao regular!
-type(stops)
-\end{pybox}
-\begin{outbox}
-re.Pattern
-\end{outbox}
-
-\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
-  \item A \textbf{barra invertida} @\@ antes do @.@ diz que queremos o ponto ``de verdade'' (nas regex, @.@ é um curinga).
-  \item As \textbf{chaves} @{2,}@ buscam o item anterior \textbf{duas ou mais vezes}.
+\begin{itemize}
+\tightlist
+\item
+  A sequência \texttt{﻿} é apenas uma declaração explícita (uma
+  ``assinatura'') de que o arquivo foi codificado em UTF‑8. Nem todo
+  arquivo UTF‑8 contém essa sequência.
+\item
+  As sequências \texttt{\textbackslash{}n} indicam \textbf{quebra de
+  linha}.
 \end{itemize}
 
-Aplicamos com @sub()@, que recebe @repl@ (o substituto) e @string@ (onde procurar):
+Isso fica evidente se usarmos a função \texttt{print()} para imprimir os
+primeiros 1000 caracteres:
 
-\begin{pybox}
-# Aplica a expressao regular ao texto em 'extract' e salva a saida
-# na mesma variavel, essencialmente sobrescrevendo o texto antigo.
-extract = stops.sub(repl='', string=extract)
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime os primeiros 1000 caracteres da variável \textquotesingle{}text\textquotesingle{}}
+\BuiltInTok{print}\NormalTok{(text[:}\DecValTok{1000}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
 
-# Imprime o texto para examinar o resultado
-print(extract)
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{U.S. TAKING STEPS TO CURB TERRORISM: F.B.I. Is Ordered to Find Iraqis Whose Visas Have Expired}
+\NormalTok{By JAMES BARRON}
+\NormalTok{New York Times (1923{-}Current file); Jan 16, 1991;}
+\NormalTok{ProQuest Historical Newspapers: The New York Times with Index pg. A15}
+\NormalTok{...}
+\NormalTok{   The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday.}
+\end{Highlighting}
+\end{Shaded}
+
+Como se vê, o Python sabe interpretar as sequências
+\texttt{\textbackslash{}n} e insere uma quebra de linha ao encontrá‑las
+durante a impressão. Note também que as primeiras linhas do arquivo
+contêm \textbf{metadados} do artigo (nome, autor e fonte), que antecedem
+o corpo do texto.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Manipulando texto}\label{manipulando-texto}
+
+Como todo o conteúdo guardado em \texttt{text} é um objeto
+\emph{string}, podemos usar todos os métodos de manipulação de
+\emph{strings} do Python.
+
+\subsubsection{\texorpdfstring{4.1 Substituindo com
+\texttt{replace()}}{4.1 Substituindo com replace()}}\label{substituindo-com-replace}
+
+Vamos usar o método \texttt{replace()} para trocar todas as quebras de
+linha \texttt{"\textbackslash{}n"} por \emph{strings} vazias \texttt{""}
+e guardar o resultado em \texttt{processed\_text}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Substitui as quebras de linha \textbackslash{}n por strings vazias e atribui o resultado}
+\CommentTok{\# à variável \textquotesingle{}processed\_text\textquotesingle{}}
+\NormalTok{processed\_text }\OperatorTok{=}\NormalTok{ text.replace(}\StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Imprime os primeiros 1000 caracteres da variável \textquotesingle{}processed\_text\textquotesingle{}}
+\BuiltInTok{print}\NormalTok{(processed\_text[:}\DecValTok{1000}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+Agora todo o texto ficou ``grudado''. Ainda assim, conseguimos
+identificar o início de cada parágrafo, marcado por \textbf{três espaços
+em branco}.
+
+\begin{quote}
+⚠ Atenção: remover as quebras de linha também fez os metadados do artigo
+se fundirem em um único parágrafo. Sempre fique atento aos
+\textbf{efeitos indesejados} de substituições e outras transformações!
+\end{quote}
+
+\subsubsection{\texorpdfstring{4.2 Dividindo com
+\texttt{split()}}{4.2 Dividindo com split()}}\label{dividindo-com-split}
+
+Se nos interessa apenas o corpo do artigo, podemos remover os metadados
+com facilidade, pois sabemos que eles estão separados do corpo por três
+espaços. A maneira mais simples é usar \texttt{split()} para
+\textbf{dividir a \emph{string} em uma lista}, usando os três espaços
+como separador:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa o método split() com três espaços como separador. Atribui o}
+\CommentTok{\# resultado à variável \textquotesingle{}processed\_text\textquotesingle{}.}
+\NormalTok{processed\_text }\OperatorTok{=}\NormalTok{ processed\_text.split(sep}\OperatorTok{=}\StringTok{\textquotesingle{}   \textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Imprime o resultado da variável \textquotesingle{}processed\_text\textquotesingle{}}
+\BuiltInTok{print}\NormalTok{(processed\_text)}
+\end{Highlighting}
+\end{Shaded}
+
+O método \texttt{split()} retorna uma \textbf{lista} de objetos
+\emph{string}. Podemos confirmar isso verificando o tipo do objeto:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Verifica o tipo do objeto na variável \textquotesingle{}processed\_text\textquotesingle{}}
+\BuiltInTok{type}\NormalTok{(processed\_text)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{list}
+\end{Highlighting}
+\end{Shaded}
+
+Os metadados ficaram no \textbf{primeiro item} da lista, pois a primeira
+sequência de três espaços aparece justamente onde os metadados terminam.
+Vamos buscar esse primeiro item --- lembre que o Python começa a contar
+do zero, então ele está no índice \texttt{0}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recupera o objeto string no índice 0 da lista \textquotesingle{}processed\_text\textquotesingle{}}
+\NormalTok{processed\_text[}\DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{\texorpdfstring{4.3 Removendo itens com
+\texttt{pop()}}{4.3 Removendo itens com pop()}}\label{removendo-itens-com-pop}
+
+Para remover os metadados e manter apenas o corpo do texto, usamos o
+método \texttt{pop()} da lista. Ele espera um número inteiro: o índice
+do item a ser removido.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Chama o método pop() da lista \textquotesingle{}processed\_text\textquotesingle{} com o}
+\CommentTok{\# índice do item a ser removido.}
+\NormalTok{processed\_text.pop(}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Você pode se perguntar por que \textbf{não} atribuímos o resultado a uma
+variável. A resposta é que as listas do Python são \textbf{mutáveis}, ou
+seja, podem ser alteradas ``no lugar'' (\emph{in place}). O método
+\texttt{pop()} modifica a lista sem precisar reatribuir o valor à
+variável. Podemos conferir recuperando os três primeiros itens:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recupera os três primeiros itens da lista \textquotesingle{}processed\_text\textquotesingle{}}
+\NormalTok{processed\_text[:}\DecValTok{3}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+O primeiro item da lista \textbf{não corresponde mais} aos metadados.
+
+\subsubsection{\texorpdfstring{4.4 Reunindo com
+\texttt{join()}}{4.4 Reunindo com join()}}\label{reunindo-com-join}
+
+Para converter a lista de volta em uma \emph{string}, usamos o método
+\texttt{join()} de um objeto \emph{string}. O \texttt{join()} espera um
+\textbf{iterável} como entrada (algo que possa ser percorrido, como uma
+lista ou um dicionário).
+
+Aqui pode haver certa confusão: o \texttt{join()} deve ser chamado
+\textbf{sobre a \emph{string} que servirá de ``cola''} entre os itens do
+iterável. No nosso caso, queremos usar como cola a sequência original
+que separava os parágrafos --- uma quebra de linha e três espaços
+(\texttt{\textquotesingle{}\textbackslash{}n\ \ \ \textquotesingle{}}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa o método join() para unir os itens da lista \textquotesingle{}processed\_text\textquotesingle{}}
+\CommentTok{\# usando a string \textquotesingle{}\textbackslash{}n   \textquotesingle{} — uma quebra de linha e três espaços. Guarda o}
+\CommentTok{\# resultado na variável de mesmo nome.}
+\NormalTok{processed\_text }\OperatorTok{=} \StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{   \textquotesingle{}}\NormalTok{.join(processed\_text)}
+
+\CommentTok{\# Verifica o resultado imprimindo os primeiros 1000 caracteres da string}
+\CommentTok{\# resultante em \textquotesingle{}processed\_text\textquotesingle{}}
+\BuiltInTok{print}\NormalTok{(processed\_text[:}\DecValTok{1000}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+Aplicar o \texttt{join()} devolve uma \emph{string} com as quebras de
+parágrafo originais!
+
+\subsubsection{\texorpdfstring{4.5 Um ``pipeline'' de substituições com
+laço
+\texttt{for}}{4.5 Um ``pipeline'' de substituições com laço for}}\label{um-pipeline-de-substituiuxe7uxf5es-com-lauxe7o-for}
+
+Examinando o texto de perto, dá para ver resquícios da digitalização: o
+OCR resultou em uma \textbf{mistura de aspas} de tipos diferentes, como
+\texttt{"}, \texttt{“}, \texttt{”}, \texttt{’’} e \texttt{‘‘}. Se
+quiséssemos extrair citações do corpo do texto, seria bom padronizar as
+aspas. Vamos escolher \texttt{"} (uma aspa dupla simples) como padrão.
+
+Poderíamos aplicar \texttt{replace()} separadamente para cada tipo de
+aspa, mas isso seria tedioso. Para tornar o processo mais eficiente,
+combinamos duas estruturas de dados do Python: \textbf{listas} e
+\textbf{tuplas}.
+
+Começamos definindo uma lista chamada \texttt{pipeline}. Criamos e
+preenchemos uma lista simplesmente colocando objetos entre colchetes
+\texttt{{[}{]}}, separados por vírgula. Como \texttt{replace()} recebe
+duas \emph{strings}, combinamos cada par em uma \textbf{tupla} ---
+estruturas finitas e ordenadas, marcadas por parênteses \texttt{(\ )}.
+Em cada tupla, colocamos o caractere a ser substituído na primeira
+\emph{string} e o substituto na segunda:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define uma lista com quatro tuplas, cada uma com duas strings: o caractere}
+\CommentTok{\# a ser substituido e o seu substituto.}
+\NormalTok{pipeline }\OperatorTok{=}\NormalTok{ [(}\StringTok{\textquotesingle{}“\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}´´\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}”\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}’’\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+Isso ilustra como diferentes estruturas de dados costumam ser
+\textbf{aninhadas} no Python: a lista contém tuplas, e as tuplas contêm
+\emph{strings}.
+
+Agora podemos percorrer cada item da lista com um laço \texttt{for}, que
+itera pelos itens na ordem em que aparecem. Cada item é uma tupla com
+duas \emph{strings}. Para entrar no laço, o Python espera que a próxima
+linha esteja \textbf{indentada} (use a tecla \texttt{Tab\ ↹}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre as tuplas da lista \textquotesingle{}pipeline\textquotesingle{}. Cada tupla tem dois valores, que}
+\CommentTok{\# atribuimos as variaveis \textquotesingle{}old\textquotesingle{} e \textquotesingle{}new\textquotesingle{} automaticamente!}
+\ControlFlowTok{for}\NormalTok{ old, new }\KeywordTok{in}\NormalTok{ pipeline:}
+
+    \CommentTok{\# Usa o metodo replace() para substituir a string da variavel \textquotesingle{}old\textquotesingle{}}
+    \CommentTok{\# pela string da variavel \textquotesingle{}new\textquotesingle{}}
+\NormalTok{    processed\_text }\OperatorTok{=}\NormalTok{ processed\_text.replace(old, new)}
+\end{Highlighting}
+\end{Shaded}
+
+O que acontece dentro do laço é exatamente o que fizemos antes com
+\texttt{replace()}, mas, em vez de definir manualmente as
+\emph{strings}, usamos as \emph{strings} contidas nas variáveis
+\texttt{old} e \texttt{new}! A cada volta, atualizamos automaticamente a
+\emph{string} em \texttt{processed\_text}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime a string}
+\BuiltInTok{print}\NormalTok{(processed\_text)}
+\end{Highlighting}
+\end{Shaded}
+
+Conseguimos realizar uma série de substituições percorrendo a lista de
+tuplas, que definia os padrões a substituir e seus substitutos.
+
+\textbf{Recapitulando a sintaxe do \texttt{for}:} declaramos o início do
+laço com \texttt{for}, seguido de uma variável usada para se referir aos
+itens obtidos da lista. A lista percorrida vem precedida de \texttt{in}
+e do nome da variável atribuída à lista inteira.
+
+Para entender melhor, vejamos o que acontece se definirmos
+\textbf{apenas uma} variável, \texttt{our\_tuple}, para os itens
+obtidos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre os itens da variavel \textquotesingle{}pipeline\textquotesingle{}}
+\ControlFlowTok{for}\NormalTok{ our\_tuple }\KeywordTok{in}\NormalTok{ pipeline:}
+
+    \CommentTok{\# Imprime o objeto retornado}
+    \BuiltInTok{print}\NormalTok{(our\_tuple)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(\textquotesingle{}“\textquotesingle{}, \textquotesingle{}"\textquotesingle{})}
+\NormalTok{(\textquotesingle{}´´\textquotesingle{}, \textquotesingle{}"\textquotesingle{})}
+\NormalTok{(\textquotesingle{}”\textquotesingle{}, \textquotesingle{}"\textquotesingle{})}
+\NormalTok{(\textquotesingle{}’’\textquotesingle{}, \textquotesingle{}"\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
+
+Isso imprime as \textbf{tuplas} inteiras! O Python é esperto o bastante
+para entender que uma única variável se refere aos itens (as tuplas) da
+lista, ao passo que, com duas variáveis, ele avança até as
+\emph{strings} contidas dentro de cada tupla. Ao escrever laços
+\texttt{for}, preste muita atenção aos itens contidos na lista!
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Manipulando texto em
+escala}\label{manipulando-texto-em-escala}
+
+O ideal é que o Python permita manipular texto \textbf{em escala}, isto
+é, aplicar o mesmo procedimento a dez, cem ou mil arquivos com o mesmo
+esforço. Para isso, precisamos definir padrões \textbf{mais flexíveis}
+do que as \emph{strings} fixas usadas com \texttt{replace()}, além de
+abrir e fechar arquivos automaticamente. Essas capacidades vêm dos
+módulos de \textbf{expressões regulares} e de \textbf{manipulação de
+arquivos}.
+
+\subsubsection{\texorpdfstring{5.1 Expressões regulares (\emph{regular
+expressions})}{5.1 Expressões regulares (regular expressions)}}\label{expressuxf5es-regulares-regular-expressions}
+
+As expressões regulares são uma ``linguagem'' que permite definir
+\textbf{padrões de busca}. Esses padrões podem ser usados para encontrar
+(ou encontrar e substituir) trechos em objetos \emph{string}.
+Diferentemente das \emph{strings} fixas, elas permitem definir
+\textbf{curingas} (caracteres que representam qualquer caractere),
+\textbf{quantificadores} (que casam sequências repetidas) e muito mais.
+
+O Python oferece expressões regulares por meio do módulo \texttt{re},
+que ativamos com o comando \texttt{import}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ re}
+\end{Highlighting}
+\end{Shaded}
+
+Vamos carregar um arquivo, ler seu conteúdo, atribuir os
+\textbf{últimos} 2000 caracteres à variável \texttt{extract} e imprimir
+o resultado:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define o caminho do arquivo e o abre para leitura (r) com codificacao utf{-}8}
+\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\BuiltInTok{file}\OperatorTok{=}\StringTok{\textquotesingle{}data/WP\_1990{-}08{-}10{-}25A.txt\textquotesingle{}}\NormalTok{, mode}\OperatorTok{=}\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as} \BuiltInTok{file}\NormalTok{:}
+
+    \CommentTok{\# Le o conteudo do arquivo com o metodo .read()}
+\NormalTok{    text }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read()}
+
+\CommentTok{\# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero}
+\NormalTok{extract }\OperatorTok{=}\NormalTok{ text[}\OperatorTok{{-}}\DecValTok{2000}\NormalTok{:]}
+
+\CommentTok{\# Imprime o resultado}
+\BuiltInTok{print}\NormalTok{(extract)}
+\end{Highlighting}
+\end{Shaded}
+
+O texto tem muitos erros de OCR, principalmente sequências como
+\texttt{....} e \texttt{,,,,}.
+
+Vamos \textbf{compilar} nossa primeira expressão regular, que busca
+sequências de dois ou mais pontos finais, com a função
+\texttt{compile()} do módulo \texttt{re}. Ela recebe uma \emph{string}
+como entrada. Note o prefixo \texttt{r} antes da \emph{string}: ele diz
+ao Python para guardar a \emph{string} em formato ``bruto''
+(\emph{raw}), ou seja, exatamente como aparece.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compila uma expressao regular e a atribui a variavel \textquotesingle{}stops\textquotesingle{}}
+\NormalTok{stops }\OperatorTok{=}\NormalTok{ re.}\BuiltInTok{compile}\NormalTok{(}\VerbatimStringTok{r\textquotesingle{}}\CharTok{\textbackslash{}.}\OperatorTok{\{2,\}}\VerbatimStringTok{\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Vamos verificar o tipo da expressao regular!}
+\BuiltInTok{type}\NormalTok{(stops)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{re.Pattern}
+\end{Highlighting}
+\end{Shaded}
+
+Vamos destrinchar essa expressão:
+
+\begin{itemize}
+\tightlist
+\item
+  Ela é definida por uma \emph{string} do Python (aspas simples
+  \texttt{\textquotesingle{}\ \ \textquotesingle{}}).
+\item
+  Precisamos de uma \textbf{barra invertida} \texttt{\textbackslash{}}
+  antes do ponto final \texttt{.}, porque, nas expressões regulares, o
+  ponto final é um \textbf{curinga} que representa qualquer caractere. A
+  barra diz ao Python que queremos o ponto final ``de verdade''.
+\item
+  As \textbf{chaves} \texttt{\{\ \}} instruem a expressão a buscar
+  ocorrências do item anterior (\texttt{\textbackslash{}.}, nosso ponto
+  de verdade) que aconteçam \textbf{duas ou mais vezes} (\texttt{2,}).
+  Isso preserva os usos legítimos de um único ponto final.
+\end{itemize}
+
+Em português claro: buscamos ocorrências de \textbf{dois ou mais pontos
+finais}.
+
+Para aplicar a expressão a algum texto, usamos o método \texttt{sub()}
+do objeto recém‑criado \texttt{stops}. O \texttt{sub()} recebe dois
+argumentos:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{repl}: a \emph{string} usada para \textbf{substituir} as
+  ocorrências encontradas;
+\item
+  \texttt{string}: o objeto \emph{string} onde procurar as ocorrências.
+\end{itemize}
+
+O método retorna a \emph{string} modificada:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Aplica a expressao regular ao texto em \textquotesingle{}extract\textquotesingle{} e salva a saida}
+\CommentTok{\# na mesma variavel, essencialmente sobrescrevendo o texto antigo.}
+\NormalTok{extract }\OperatorTok{=}\NormalTok{ stops.sub(repl}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, string}\OperatorTok{=}\NormalTok{extract)}
+
+\CommentTok{\# Imprime o texto para examinar o resultado}
+\BuiltInTok{print}\NormalTok{(extract)}
+\end{Highlighting}
+\end{Shaded}
 
 As sequências de pontos finais desapareceram.
 
-\subsection{Alternativas na expressão regular}
-Acrescentando \textbf{alternativas} com parênteses @()@ e a barra vertical @|@, buscamos \textbf{dois ou mais pontos finais ou vírgulas}:
+\subsubsection{5.2 Alternativas na expressão
+regular}\label{alternativas-na-expressuxe3o-regular}
 
-\begin{pybox}
-# Compila uma expressao regular e a atribui a variavel 'punct'
-punct = re.compile(r'(\.|,){2,}')
-\end{pybox}
+Podemos tornar a expressão mais poderosa acrescentando
+\textbf{alternativas}. Vamos compilar outra e guardá‑la em
+\texttt{punct}:
 
-Reiniciamos @extract@ a partir de @text@ e aplicamos o novo padrão:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compila uma expressao regular e a atribui a variavel \textquotesingle{}punct\textquotesingle{}}
+\NormalTok{punct }\OperatorTok{=}\NormalTok{ re.}\BuiltInTok{compile}\NormalTok{(}\VerbatimStringTok{r\textquotesingle{}}\KeywordTok{(}\CharTok{\textbackslash{}.}\ControlFlowTok{|}\VerbatimStringTok{,}\KeywordTok{)}\OperatorTok{\{2,\}}\VerbatimStringTok{\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original
-extract = text[-2000:]
+A novidade são os \textbf{parênteses} \texttt{(\ )} e a \textbf{barra
+vertical} \texttt{\textbar{}} entre eles, que separa o ponto final
+\texttt{\textbackslash{}.} da vírgula \texttt{,}. Caracteres entre
+parênteses e separados por \texttt{\textbar{}} marcam
+\textbf{alternativas}. Em português claro: buscamos ocorrências de
+\textbf{dois ou mais pontos finais ou vírgulas}.
 
-# Aplica a expressao regular
-extract = punct.sub(repl='', string=extract)
+Para garantir que o padrão funcione como esperado, recuperamos o texto
+original de \texttt{text} e o reatribuímos a \texttt{extract},
+sobrescrevendo as edições anteriores:
 
-# Imprime o resultado
-print(extract)
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original}
+\NormalTok{extract }\OperatorTok{=}\NormalTok{ text[}\OperatorTok{{-}}\DecValTok{2000}\NormalTok{:]}
 
-Sucesso! Pontos finais \textbf{e} vírgulas foram removidos com uma única expressão. Sequências mais irregulares exigiriam padrões mais complexos.
+\CommentTok{\# Aplica a expressao regular}
+\NormalTok{extract }\OperatorTok{=}\NormalTok{ punct.sub(repl}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, string}\OperatorTok{=}\NormalTok{extract)}
+
+\CommentTok{\# Imprime o resultado}
+\BuiltInTok{print}\NormalTok{(extract)}
+\end{Highlighting}
+\end{Shaded}
+
+Sucesso! As sequências de pontos finais \textbf{e} de vírgulas podem ser
+removidas com uma única expressão regular.
+
+Sequências mais irregulares vindas de erros de OCR --- como
+\texttt{\textquotesingle{}-\textquotesingle{}*},
+\texttt{-\textgreater{}."}, \texttt{/*—.} --- são bem mais difíceis de
+capturar e exigiriam expressões mais complexas. Essa complexidade é
+justamente o que torna as expressões regulares tão poderosas, mas
+aprender a usá‑las leva \textbf{tempo e paciência}.
 
 \begin{tipbox}
-Use um serviço como \href{https://regex101.com}{regex101.com} para aprender e testar expressões regulares interativamente. E lembre-se: para identificar padrões confiáveis, observe sempre \textbf{mais de um} texto do seu corpus.
+
+\textbf{Dica:} use um serviço como
+\href{https://regex101.com}{regex101.com} para aprender e testar
+expressões regulares interativamente.
+
 \end{tipbox}
 
-\subsection{Processando múltiplos arquivos}
-Corpora costumam ter textos em vários arquivos. A classe @Path@ do módulo @pathlib@ simplifica abrir, ler, processar e fechar arquivos programaticamente --- e \textbf{infere automaticamente} o tipo de caminho do sistema operacional (Windows, Linux, macOS):
+Na prática, criar expressões que cubram o máximo de casos é
+particularmente difícil. Capturar a maioria dos erros --- talvez
+distribuindo as transformações em uma \textbf{sequência de etapas} (um
+\emph{pipeline}) --- já ajuda muito a preparar o texto para análise.
+Lembre‑se, porém: para identificar padrões de manipulação de forma
+confiável, você deve sempre observar \textbf{mais de um} texto do seu
+corpus.
 
-\begin{pybox}
-from pathlib import Path
-\end{pybox}
-\begin{pybox}
-# Cria um objeto Path que aponta para o diretorio 'data' e o atribui
-# a variavel 'corpus_dir'
-corpus_dir = Path('data')
-\end{pybox}
+\subsubsection{5.3 Processando múltiplos
+arquivos}\label{processando-muxfaltiplos-arquivos}
 
-O objeto oferece métodos úteis que retornam valores \textbf{booleanos} (@True@/@False@):
+Muitos corpora contêm textos em vários arquivos. Para manipular grandes
+volumes de texto com eficiência, precisamos abrir os arquivos, ler seu
+conteúdo, executar as operações desejadas e fechá‑los --- tudo
+\textbf{programaticamente}.
 
-\begin{pybox}
-# Usa o metodo exists() para verificar se o caminho e valido
-corpus_dir.exists()
-\end{pybox}
-\begin{outbox}
-True
-\end{outbox}
+Esse procedimento fica bem simples com a classe \texttt{Path} do módulo
+\texttt{pathlib} do Python. Usar \texttt{from\ ...\ import\ ...} permite
+importar \textbf{apenas parte} de um módulo --- aqui, só a classe
+\texttt{Path}:
 
-\begin{pybox}
-# Usa o metodo is_dir() para verificar se o caminho aponta para um diretorio
-corpus_dir.is_dir()
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
+\end{Highlighting}
+\end{Shaded}
 
-# Usa o metodo is_file() para verificar se o caminho aponta para um arquivo
-corpus_dir.is_file()
-\end{pybox}
-\begin{outbox}
-True
-False
-\end{outbox}
+A classe \texttt{Path} codifica informações sobre caminhos em uma
+estrutura de diretórios. O grande trunfo dela é \textbf{inferir
+automaticamente} o tipo de caminho usado pelo seu sistema operacional.
+Isso importa porque Windows, Linux e macOS usam caminhos de arquivo
+diferentes; a classe \texttt{Path} nos poupa de muita dor de cabeça,
+sobretudo se quisermos que o código rode em sistemas diferentes.
 
-Usamos @glob()@ (de \textit{global}) para coletar os arquivos @.txt@. O @*@ é um \textbf{curinga}; convertemos o resultado em lista com @list()@:
+Nosso repositório contém um diretório chamado \texttt{data}, com os
+arquivos de texto que viemos usando. Vamos inicializar um objeto
+\texttt{Path} apontando para esse diretório e atribuí‑lo à variável
+\texttt{corpus\_dir}:
 
-\begin{pybox}
-# Coleta todos os arquivos com sufixo .txt no diretorio 'corpus_dir' e converte o resultado em uma lista
-files = list(corpus_dir.glob(pattern='*.txt'))
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cria um objeto Path que aponta para o diretorio \textquotesingle{}data\textquotesingle{} e o atribui}
+\CommentTok{\# a variavel \textquotesingle{}corpus\_dir\textquotesingle{}}
+\NormalTok{corpus\_dir }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-# Mostra o resultado
-files
-\end{pybox}
-\begin{outbox}
-[PosixPath('data/WP_1990-08-10-25A.txt'),
- PosixPath('data/NYT_1991-01-16-A15.txt'),
- PosixPath('data/WP_1991-01-17-A1B.txt')]
-\end{outbox}
+O objeto \texttt{Path} tem vários métodos e atributos úteis. Podemos,
+por exemplo, verificar se o caminho é válido com \texttt{exists()}, que
+retorna um valor \textbf{booleano} (\texttt{True} ou \texttt{False}):
 
-Com a lista de três @Path@, iteramos e gravamos cada arquivo modificado com um novo nome:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa o metodo exists() para verificar se o caminho e valido}
+\NormalTok{corpus\_dir.exists()}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Percorre a lista de objetos Path em 'files'. Refere-se a cada arquivo
-# pela variavel 'file'.
-for file in files:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{True}
+\end{Highlighting}
+\end{Shaded}
 
-    # Usa o metodo read_text() de um objeto Path para ler o conteudo do arquivo.
-    # Passa o valor 'utf-8' ao argumento 'encoding' para declarar a codificacao.
-    # Guarda o resultado na variavel 'text'.
-    text = file.read_text(encoding='utf-8')
+Também podemos checar se o caminho é um diretório com
+\texttt{is\_dir()}, e garantir que ele \textbf{não} aponta para um
+arquivo com \texttt{is\_file()}:
 
-    # Aplica a expressao regular definida acima para remover a pontuacao
-    # excessiva do texto. Guarda o resultado na variavel 'mod_text'.
-    mod_text = punct.sub('', text)
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa o metodo is\_dir() para verificar se o caminho aponta para um diretorio}
+\NormalTok{corpus\_dir.is\_dir()}
+\end{Highlighting}
+\end{Shaded}
 
-    # Define um novo nome de arquivo com o prefixo 'mod_' criando uma nova string.
-    # O objeto Path guarda o nome do arquivo como string no atributo 'name'.
-    # Combina as duas strings com o operador '+'.
-    new_filename = 'mod_' + file.name
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{True}
+\end{Highlighting}
+\end{Shaded}
 
-    # Define um novo objeto Path que aponta para o novo arquivo. O objeto Path
-    # junta automaticamente o diretorio e o nome do arquivo para nos.
-    new_path = Path('data', new_filename)
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Usa o metodo is\_file() para verificar se o caminho aponta para um arquivo}
+\NormalTok{corpus\_dir.is\_file()}
+\end{Highlighting}
+\end{Shaded}
 
-    # Imprime uma mensagem de status usando formatacao de string. Ao adicionar
-    # o prefixo 'f' a uma string, podemos usar chaves {} para inserir uma
-    # variavel dentro da string. Aqui inserimos o caminho atual do arquivo.
-    print(f'Writing modified text to {new_path}')
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{False}
+\end{Highlighting}
+\end{Shaded}
 
-    # Usa o metodo write_text() para escrever o texto modificado de 'mod_text'
-    # no arquivo, com codificacao UTF-8.
-    new_path.write_text(mod_text, encoding='utf-8')
-\end{pybox}
-\begin{outbox}
-Writing modified text to data/mod_WP_1990-08-10-25A.txt
-Writing modified text to data/mod_NYT_1991-01-16-A15.txt
-Writing modified text to data/mod_WP_1991-01-17-A1B.txt
-\end{outbox}
+Sabendo que o caminho aponta para um diretório, usamos o método
+\texttt{glob()} para coletar todos os arquivos de texto. O nome
+\texttt{glob} vem de \emph{global} e foi implementado originalmente como
+um programa para casar nomes de arquivos e caminhos usando curingas. O
+\texttt{glob()} exige o argumento \texttt{pattern}, que recebe uma
+\emph{string}: o \texttt{*} (asterisco) atua como \textbf{curinga},
+representando qualquer sequência de caracteres antes de \texttt{.txt}
+(sufixo comum de arquivos de texto simples). Convertendo o resultado em
+lista com \texttt{list()}, podemos percorrê‑lo facilmente:
 
-Os objetos @Path@ oferecem @read_text()@ e @write_text()@, que leem e gravam \textbf{sem} o @with@ --- fechando o arquivo automaticamente após a leitura.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Coleta todos os arquivos com sufixo .txt no diretorio \textquotesingle{}corpus\_dir\textquotesingle{} e converte o resultado em uma lista}
+\NormalTok{files }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(corpus\_dir.glob(pattern}\OperatorTok{=}\StringTok{\textquotesingle{}*.txt\textquotesingle{}}\NormalTok{))}
 
-% ======================================================= quiz ==============
-\section*{Quiz}
-\addcontentsline{toc}{section}{Quiz}
-Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+\CommentTok{\# Mostra o resultado}
+\NormalTok{files}
+\end{Highlighting}
+\end{Shaded}
 
-{\bfseries 1. Qual formato de texto é o mais interoperável para programação?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Texto formatado (\textit{rich text})
-  \item Texto estruturado (\textit{structured text})
-  \item Texto simples (\textit{plain text}) \textcolor{tipc}{\textbf{(correta)}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[PosixPath(\textquotesingle{}data/WP\_1990{-}08{-}10{-}25A.txt\textquotesingle{}),}
+\NormalTok{ PosixPath(\textquotesingle{}data/NYT\_1991{-}01{-}16{-}A15.txt\textquotesingle{}),}
+\NormalTok{ PosixPath(\textquotesingle{}data/WP\_1991{-}01{-}17{-}A1B.txt\textquotesingle{})]}
+\end{Highlighting}
+\end{Shaded}
+
+Temos uma lista de três objetos \texttt{Path} apontando para três
+arquivos! Isso nos permite percorrê‑los com um laço \texttt{for} e
+manipular o texto de cada um. No bloco abaixo, iteramos sobre cada
+arquivo, lemos e modificamos seu conteúdo e o gravamos em um novo
+arquivo:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Percorre a lista de objetos Path em \textquotesingle{}files\textquotesingle{}. Refere{-}se a cada arquivo}
+\CommentTok{\# pela variavel \textquotesingle{}file\textquotesingle{}.}
+\ControlFlowTok{for} \BuiltInTok{file} \KeywordTok{in}\NormalTok{ files:}
+
+    \CommentTok{\# Usa o metodo read\_text() de um objeto Path para ler o conteudo do arquivo.}
+    \CommentTok{\# Passa o valor \textquotesingle{}utf{-}8\textquotesingle{} ao argumento \textquotesingle{}encoding\textquotesingle{} para declarar a codificacao.}
+    \CommentTok{\# Guarda o resultado na variavel \textquotesingle{}text\textquotesingle{}.}
+\NormalTok{    text }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read\_text(encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
+
+    \CommentTok{\# Aplica a expressao regular definida acima para remover a pontuacao}
+    \CommentTok{\# excessiva do texto. Guarda o resultado na variavel \textquotesingle{}mod\_text\textquotesingle{}.}
+\NormalTok{    mod\_text }\OperatorTok{=}\NormalTok{ punct.sub(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, text)}
+
+    \CommentTok{\# Define um novo nome de arquivo com o prefixo \textquotesingle{}mod\_\textquotesingle{} criando uma nova string.}
+    \CommentTok{\# O objeto Path guarda o nome do arquivo como string no atributo \textquotesingle{}name\textquotesingle{}.}
+    \CommentTok{\# Combina as duas strings com o operador \textquotesingle{}+\textquotesingle{}.}
+\NormalTok{    new\_filename }\OperatorTok{=} \StringTok{\textquotesingle{}mod\_\textquotesingle{}} \OperatorTok{+} \BuiltInTok{file}\NormalTok{.name}
+
+    \CommentTok{\# Define um novo objeto Path que aponta para o novo arquivo. O objeto Path}
+    \CommentTok{\# junta automaticamente o diretorio e o nome do arquivo para nos.}
+\NormalTok{    new\_path }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{, new\_filename)}
+
+    \CommentTok{\# Imprime uma mensagem de status usando formatacao de string. Ao adicionar}
+    \CommentTok{\# o prefixo \textquotesingle{}f\textquotesingle{} a uma string, podemos usar chaves \{\} para inserir uma}
+    \CommentTok{\# variavel dentro da string. Aqui inserimos o caminho atual do arquivo.}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f\textquotesingle{}Writing modified text to }\SpecialCharTok{\{}\NormalTok{new\_path}\SpecialCharTok{\}}\SpecialStringTok{\textquotesingle{}}\NormalTok{)}
+
+    \CommentTok{\# Usa o metodo write\_text() para escrever o texto modificado de \textquotesingle{}mod\_text\textquotesingle{}}
+    \CommentTok{\# no arquivo, com codificacao UTF{-}8.}
+\NormalTok{    new\_path.write\_text(mod\_text, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Writing modified text to data/mod\_WP\_1990{-}08{-}10{-}25A.txt}
+\NormalTok{Writing modified text to data/mod\_NYT\_1991{-}01{-}16{-}A15.txt}
+\NormalTok{Writing modified text to data/mod\_WP\_1991{-}01{-}17{-}A1B.txt}
+\end{Highlighting}
+\end{Shaded}
+
+Como se vê, os objetos \texttt{Path} oferecem dois métodos convenientes
+para trabalhar com arquivos de texto: \texttt{read\_text()} e
+\texttt{write\_text()}. Eles permitem ler e gravar texto \textbf{sem} a
+instrução \texttt{with} --- e, assim como o \texttt{with}, o arquivo
+apontado pelo \texttt{Path} é fechado automaticamente após a leitura.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Quiz}\label{quiz}
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+\textbf{1. Qual formato de texto é o mais interoperável para
+programação?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Texto formatado (\emph{rich text})
+\item
+  Texto estruturado (\emph{structured text})
+\item
+  Texto simples (\emph{plain text}) ✅
 \end{enumerate}
 
-{\bfseries 2. Num texto, a sequência de dois caracteres ``barra-n'' representa:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Um espaço em branco
-  \item Uma quebra de linha \textcolor{tipc}{\textbf{(correta)}}
-  \item Uma tabulação
+\textbf{2. Num texto, a sequência de dois caracteres ``barra‑n''
+representa:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Um espaço em branco
+\item
+  Uma quebra de linha ✅
+\item
+  Uma tabulação
 \end{enumerate}
 
-{\bfseries 3. O UTF-8 é retrocompatível com qual codificação?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item ASCII \textcolor{tipc}{\textbf{(correta)}}
-  \item Latin-1
-  \item UTF-16
+\textbf{3. O UTF‑8 é retrocompatível com qual codificação?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  ASCII ✅
+\item
+  Latin‑1
+\item
+  UTF‑16
 \end{enumerate}
 
-{\bfseries 4. Qual método de string divide o texto em uma lista?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @join()@
-  \item @split()@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @replace()@
+\textbf{4. Qual método de string divide o texto em uma lista?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{join()}
+\item
+  \texttt{split()} ✅
+\item
+  \texttt{replace()}
 \end{enumerate}
 
-{\bfseries 5. Numa expressão regular, o quantificador ``dois ou mais'' é escrito como:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @{2}@
-  \item @{2,}@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @{,2}@
+\textbf{5. Numa expressão regular, o quantificador ``dois ou mais'' é
+escrito como:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{\{2\}}
+\item
+  \texttt{\{2,\}} ✅
+\item
+  \texttt{\{,2\}}
 \end{enumerate}
 
-{\bfseries 6. Qual método da classe Path coleta arquivos por um padrão com curinga?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item @glob()@ \textcolor{tipc}{\textbf{(correta)}}
-  \item @read_text()@
-  \item @exists()@
+\textbf{6. Qual método da classe \texttt{Path} coleta arquivos por um
+padrão com curinga (ex.: todos os \texttt{.txt})?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{glob()} ✅
+\item
+  \texttt{read\_text()}
+\item
+  \texttt{exists()}
 \end{enumerate}
 
-% ======================================================= resumo ============
-\section*{Resumo da unidade}
-\addcontentsline{toc}{section}{Resumo da unidade}
-\begin{objbox}[Nesta unidade, você aprendeu a]
-\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
-  \item distinguir texto formatado, estruturado e simples;
-  \item compreender a codificação de caracteres (ASCII e Unicode/UTF-8);
-  \item carregar arquivos com @open()@ + @with@ + @read()@;
-  \item manipular \textit{strings} com @replace()@, @split()@, @pop()@ e @join()@;
-  \item definir padrões com expressões regulares (@re.compile()@, @sub()@);
-  \item processar vários arquivos com @pathlib.Path@, @glob()@, @read_text()@ e @write_text()@.
-\end{enumerate}
-\end{objbox}
+\subsection{Resumo da unidade}\label{resumo-da-unidade}
 
-\begin{notebox}[Exercícios sugeridos]
-\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
-  \item Carregue um arquivo do diretório @data@ e conte quantas quebras de linha (@\n@) ele contém antes de qualquer limpeza.
-  \item Escreva um \textit{pipeline} (lista de tuplas) que padronize travessões em um único caractere.
-  \item Crie uma expressão regular que substitua dois ou mais espaços em branco por um único espaço.
-  \item Adapte o laço da Seção 5.3 para gravar os arquivos modificados em um diretório @output@.
-\end{enumerate}
-\end{notebox}
+Nesta unidade, você aprendeu a:
 
-\vspace{6pt}
-\noindent\rule{\linewidth}{0.4pt}\\[4pt]
-{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Hill, M. J.; Hengchen, S. (2019). \textit{Quantifying the impact of dirty OCR on historical text analysis.} Digital Scholarship in the Humanities.\par
-Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{distinguir} texto formatado, estruturado e simples, e a
+  entender por que o texto simples é o formato preferido em programação;
+\item
+  \textbf{compreender} a codificação de caracteres (ASCII e
+  Unicode/UTF‑8) e por que ela causa problemas;
+\item
+  \textbf{carregar} arquivos com \texttt{open()} + \texttt{with} +
+  \texttt{read()}, lidando com marcas como \texttt{﻿} e
+  \texttt{\textbackslash{}n};
+\item
+  \textbf{manipular} \emph{strings} com \texttt{replace()},
+  \texttt{split()}, \texttt{pop()} e \texttt{join()}, e montar um
+  \emph{pipeline} de substituições com listas, tuplas e laços
+  \texttt{for};
+\item
+  \textbf{definir padrões flexíveis} com expressões regulares
+  (\texttt{re.compile()}, \texttt{sub()}, curingas, quantificadores e
+  alternativas);
+\item
+  \textbf{processar vários arquivos} de uma vez com
+  \texttt{pathlib.Path}, \texttt{glob()}, \texttt{read\_text()} e
+  \texttt{write\_text()}.
+\end{enumerate}
+
+\subsubsection{Exercícios sugeridos}\label{exercuxedcios-sugeridos}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Carregue um dos arquivos do diretório \texttt{data} e conte quantas
+  quebras de linha (\texttt{\textbackslash{}n}) ele contém antes de
+  qualquer limpeza.
+\item
+  Escreva um \emph{pipeline} (lista de tuplas) que padronize
+  \textbf{travessões} (\texttt{—}, \texttt{–}, \texttt{-}) em um único
+  caractere.
+\item
+  Crie uma expressão regular que remova sequências de dois ou mais
+  espaços em branco, substituindo‑as por um único espaço.
+\item
+  Adapte o laço da Seção 5.3 para gravar os arquivos modificados em um
+  novo diretório chamado \texttt{output} em vez de \texttt{data}.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Referências}\label{referuxeancias}
+
+\begin{itemize}
+\tightlist
+\item
+  Rögnvaldsson, E. et al.~\emph{Applied Language Technology} (MOOC).
+  Universidade de Helsinque.
+  \url{https://applied-language-technology.mooc.fi/}
+\item
+  Hill, M. J.; Hengchen, S. (2019). Quantifying the impact of dirty OCR
+  on historical text analysis. \emph{Digital Scholarship in the
+  Humanities}.
+\end{itemize}
 
 \end{document}

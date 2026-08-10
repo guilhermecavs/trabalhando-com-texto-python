@@ -1,584 +1,1010 @@
-% !TEX program = pdflatex
-% ============================================================================
-%  Unidade 4 - Avaliando modelos de linguagem
-%  Trabalhando com Texto em Python I  -  CiberExt 26-29 / FEELT38103 / UFU
-%
-%  COMPILAR COM:  pdflatex unidade4_avaliando_modelos.tex   (rodar 2x)
-%
-%  Pacotes necessarios (todos presentes no MacTeX / TeX Live completo):
-%    babel, inputenc, fontenc, lmodern, helvet, xcolor, geometry, listings,
-%    tcolorbox, titlesec, enumitem, hyperref, microtype, booktabs, colortbl
-% ============================================================================
-\documentclass[11pt,a4paper]{article}
-
-\usepackage[utf8]{inputenc}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  brazilian,
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{35,38,41}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.58,0.85,0.30}{\textbf{\colorbox[rgb]{0.30,0.12,0.14}{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.25,0.50,0.35}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.48,0.49,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.50,0.55,0.55}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{\textbf{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.99,0.74,0.29}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.64,0.20,0.25}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.60,1.00}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.96,0.45,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.56,0.27,0.68}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.77,0.36,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.81,0.76}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.15,0.68,0.38}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.16,0.50,0.73}{\colorbox[rgb]{0.08,0.19,0.26}{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.96,0.31,0.31}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% ==========================================================================
+%  Cabecalho LaTeX do curso "Trabalhando com Texto em Python I"
+%  Injetado pelo pandoc (-H) ao gerar o .tex de cada unidade.
+% ==========================================================================
 \usepackage[T1]{fontenc}
-\usepackage[brazilian]{babel}
 \usepackage{lmodern}
 \usepackage[scaled=0.92]{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{microtype}
-\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
 \usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{listings}
 \usepackage[most]{tcolorbox}
-\tcbuselibrary{listings,skins,breakable}
+\tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
-\usepackage{booktabs}
-\usepackage{colortbl}
-\usepackage{hyperref}
+\usepackage{enumitem}
 
-% -------------------------------------------------------------- paleta ------
+% -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
 \definecolor{cyan}{HTML}{00B4D8}
 \definecolor{subink}{HTML}{2B3242}
-\definecolor{codebg}{HTML}{1E2430}
-\definecolor{codetext}{HTML}{E6E9EF}
-\definecolor{ccomment}{HTML}{7FD18B}
-\definecolor{cstring}{HTML}{F0B866}
-\definecolor{ckw}{HTML}{C792EA}
-\definecolor{cbuiltin}{HTML}{82AAFF}
-\definecolor{outbg}{HTML}{F0F2F7}
-\definecolor{outtext}{HTML}{2F3646}
-\definecolor{outframe}{HTML}{9AA4B8}
 \definecolor{notec}{HTML}{3B82F6}
 \definecolor{tipc}{HTML}{10B981}
 \definecolor{warnc}{HTML}{F59E0B}
+
+% -------- emojis / simbolos unicode que podem aparecer no texto --------
+% simbolos com significado
+\newunicodechar{✅}{{\color{tipc}\checkmark}}
+\newunicodechar{✔}{{\color{tipc}\checkmark}}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↹}{\ensuremath{\hookrightarrow}}
+\newunicodechar{°}{\textdegree}
+\newunicodechar{·}{\textperiodcentered}
+\newunicodechar{´}{'}
+\newunicodechar{‑}{-}
+% emojis decorativos -> removidos no PDF
+\newunicodechar{💡}{}
+\newunicodechar{🚀}{}
+\newunicodechar{📝}{}
+\newunicodechar{⚠}{}
+\newunicodechar{🐍}{}
+\newunicodechar{🎉}{}
+\newunicodechar{🍕}{}
+\newunicodechar{👍}{}
+\newunicodechar{💋}{}
+\newunicodechar{😚}{}
+\newunicodechar{🚂}{}
+\newunicodechar{❤}{}
+
+% -------- caixas de callout (usadas pelo filtro callouts.lua) --------
+\newtcolorbox{notebox}{enhanced,breakable,colback=notec!6,colframe=notec,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}{enhanced,breakable,colback=warnc!8,colframe=warnc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}{enhanced,breakable,colback=accent!5,colframe=accent,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,
+  before skip=10pt,after skip=14pt}
+
+% -------- titulos coloridos --------
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{subink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{cyan}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.1ex}
+
+% codigo inline colorido
 \definecolor{inlink}{HTML}{5A34D6}
-\definecolor{headrow}{HTML}{EFE9FF}
-\definecolor{diagc}{HTML}{E7F9EE}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlink}\oldtexttt{#1}}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Avaliando modelos de linguagem},
+  pdfauthor={CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia},
+  pdflang={pt-BR},
+  colorlinks=true,
+  linkcolor={accent},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={cyan},
+  pdfcreator={LaTeX via pandoc}}
 
-\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=cyan,citecolor=accent,
-  pdftitle={Avaliando modelos de linguagem},pdfauthor={CiberExt 26-29 / FEELT38103 / UFU}}
-
-% --------------------------------------------------- estilo do codigo -------
-\lstset{
-  extendedchars=true,
-  breaklines=true,
-  breakatwhitespace=false,
-  keepspaces=true,
-  columns=fullflexible,
-  tabsize=4,
-  showstringspaces=false,
-  literate=%
-    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-    {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1
-    {ã}{{\~a}}1 {õ}{{\~o}}1 {à}{{\`a}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-    {ç}{{\c c}}1 {Ç}{{\c C}}1
-    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-    {Ã}{{\~A}}1 {Õ}{{\~O}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
-    {—}{{---}}1 {–}{{--}}1
-    {“}{{``}}1 {”}{{''}}1 {‘}{{`}}1 {’}{{'}}1 {´}{{'}}1
+\title{Avaliando modelos de linguagem}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
-
-\lstdefinestyle{pystyle}{
-  language=Python,
-  basicstyle=\ttfamily\small\color{codetext},
-  keywordstyle=\color{ckw}\bfseries,
-  keywordstyle=[2]\color{cbuiltin},
-  morekeywords=[2]{print,list,set,sorted,sum,len,dict,zip,metrics},
-  commentstyle=\color{ccomment}\itshape,
-  stringstyle=\color{cstring},
-}
-\lstdefinestyle{outstyle}{
-  basicstyle=\ttfamily\small\color{outtext},
-}
-
-% caixa de codigo Python (fundo escuro, barra lateral colorida + titulo)
-\newtcblisting{pybox}{
-  breakable, enhanced,
-  listing only, listing options={style=pystyle},
-  colback=codebg, colframe=codebg, boxrule=0pt, arc=3pt,
-  borderline west={3pt}{0pt}{accent},
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Python}, coltitle=white, colbacktitle=accent,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-% caixa de saida (fundo claro)
-\newtcblisting{outbox}{
-  breakable, enhanced,
-  listing only, listing options={style=outstyle},
-  colback=outbg, colframe=outframe, boxrule=0.4pt, arc=3pt,
-  left=10pt,right=10pt,top=6pt,bottom=6pt,
-  title=\textbf{Saída}, coltitle=white, colbacktitle=outframe,
-  fonttitle=\sffamily\bfseries\scriptsize,
-  before skip=10pt, after skip=12pt,
-}
-
-% ------------------------------------------------------ caixas de aviso -----
-\newtcolorbox{notebox}[1][Nota]{enhanced,breakable,
-  colback=notec!6,colframe=notec,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{tipbox}[1][Dica]{enhanced,breakable,
-  colback=tipc!7,colframe=tipc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{warnbox}[1][Atenção]{enhanced,breakable,
-  colback=warnc!8,colframe=warnc,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=7pt,before skip=10pt,after skip=12pt}
-\newtcolorbox{objbox}[1][Objetivos de aprendizagem]{enhanced,breakable,
-  colback=accent!5,colframe=accent,coltitle=white,title={#1},
-  fonttitle=\sffamily\bfseries\small,boxrule=0pt,leftrule=4pt,arc=3pt,
-  left=10pt,right=10pt,top=7pt,bottom=8pt,before skip=10pt,after skip=14pt}
-
-% ------------------------------------------------------ titulos de secao ----
-\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}
-  {\thesection.}{0.5em}{}
-\titleformat{\subsection}{\large\bfseries\sffamily\color{subink}}
-  {\thesubsection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{6pt}
-\titlespacing*{\subsection}{0pt}{12pt}{4pt}
-
-% codigo em linha (verbatim, colorido) via atalho @...@
-\lstMakeShortInline[basicstyle=\ttfamily\color{inlink}]{@}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
+\makeatother
+\subtitle{Trabalhando com Texto em Python I · Unidade 4}
+\author{CiberExt 26-29 · FEELT38103 · Universidade Federal de
+Uberlândia}
+\date{2026}
 
 \begin{document}
+\maketitle
 
-% --------------------------------------------------------------- capa -------
-\begin{tcolorbox}[enhanced, colback=accent, coltext=white,
-  boxrule=0pt, arc=8pt, left=20pt,right=20pt,top=16pt,bottom=18pt,
-  before skip=0pt, after skip=20pt]
-  {\footnotesize\bfseries CIBEREXT 26-29 \ \textbullet\ \ FEELT38103 \ \textbullet\ \ UNIVERSIDADE FEDERAL DE UBERLÂNDIA}\\[10pt]
-  {\Huge\bfseries Avaliando modelos de linguagem}\\[8pt]
-  {\large Trabalhando com Texto em Python I \ --- \ Unidade 4}\\[6pt]
-  {\normalsize Padrão-ouro, concordância entre anotadores, kappa de Cohen e métricas de desempenho (acurácia, precisão, revocação, F1).}\\[10pt]
-  {\footnotesize Adaptado de \textit{Applied Language Technology} (Universidade de Helsinque) --- applied-language-technology.mooc.fi}
-\end{tcolorbox}
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\subsubsection{Objetivos de
+aprendizagem}\label{objetivos-de-aprendizagem}
 
-\begin{objbox}
 Ao final desta unidade, você deverá:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=3pt]
-  \item entender o que é um \textbf{padrão-ouro} (\textit{gold standard});
-  \item saber avaliar a \textbf{concordância} entre anotadores humanos;
-  \item compreender \textbf{métricas simples} para avaliar o desempenho do PLN.
+
+\begin{itemize}
+\tightlist
+\item
+  entender o que é um \textbf{padrão‑ouro} (\emph{gold standard});
+\item
+  saber \textbf{avaliar a concordância} entre anotadores humanos;
+\item
+  compreender \textbf{métricas simples} para avaliar o desempenho do
+  processamento de linguagem natural.
 \end{itemize}
-\end{objbox}
 
-% =========================================================== 1 ==============
-\section{O que é um padrão-ouro \textnormal{\textit{(gold standard)}}?}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Um \textbf{padrão-ouro} (\textit{gold standard}) --- também chamado de \textit{ground truth} (``verdade fundamental'') --- refere-se a \textbf{dados verificados por humanos} usados como referência (\textit{benchmark}) para avaliar o desempenho de algoritmos. Em PLN, os padrões-ouro medem quão bem os \textbf{humanos} desempenham uma tarefa.
+\subsection{\texorpdfstring{1. O que é um padrão‑ouro (\emph{gold
+standard})?}{1. O que é um padrão‑ouro (gold standard)?}}\label{o-que-uxe9-um-padruxe3oouro-gold-standard}
 
-O objetivo do PLN é permitir que computadores \textbf{alcancem ou superem} o desempenho humano em uma tarefa pré-definida. Medir isso exige uma referência --- e é o padrão-ouro que a fornece: um \textbf{ponto de referência}.
+Um \textbf{padrão‑ouro} (\emph{gold standard}) --- também chamado de
+\emph{ground truth} (``verdade fundamental'') --- refere‑se a
+\textbf{dados verificados por humanos} que podem ser usados como
+referência (\emph{benchmark}) para avaliar o desempenho de algoritmos.
+Em processamento de linguagem natural, os padrões‑ouro medem quão bem os
+\textbf{humanos} desempenham uma tarefa.
 
-É importante entender que \textbf{padrões-ouro são abstrações do uso da língua}. As classes gramaticais, por exemplo, não são dadas pela natureza: representam uma abstração que impõe estrutura à língua. A língua é naturalmente \textbf{ambígua e subjetiva}, e as abstrações podem ser incompletas --- não temos certeza de que todos classificariam as palavras da mesma forma. Por isso precisamos \textbf{medir a confiabilidade} de um padrão-ouro: até que ponto os humanos \textbf{concordam} na tarefa.
+O objetivo do PLN é permitir que computadores \textbf{alcancem ou
+superem} o desempenho humano em uma tarefa pré‑definida. Medir se os
+algoritmos conseguem isso exige uma referência --- e é o padrão‑ouro que
+a fornece. Em termos simples, ele oferece um \textbf{ponto de
+referência}.
 
-% =========================================================== 2 ==============
-\section{Medindo a confiabilidade manualmente}
+É importante entender, porém, que \textbf{padrões‑ouro são abstrações do
+uso da língua}. Considere a tarefa de classificar palavras em classes
+gramaticais: as classes não são dadas pela natureza --- elas representam
+uma abstração que impõe estrutura à língua. A língua, entretanto, é
+naturalmente \textbf{ambígua e subjetiva}, e as abstrações usadas podem
+ser incompletas: não temos certeza de que todos os usuários
+classificariam as palavras da mesma forma.
 
-A \textbf{confiabilidade} --- geralmente entendida como a \textbf{concordância entre múltiplos anotadores} --- pode ser medida manualmente.
+Por isso precisamos \textbf{medir a confiabilidade} de qualquer
+padrão‑ouro, ou seja, até que ponto os humanos \textbf{concordam} na
+tarefa.
 
-\subsection{Passo 1 --- Anotar os dados}
-A \textbf{análise de sentimento} consiste em determinar o sentimento de um texto. Treinar um modelo assim exige dados de treino: exemplos de textos associados a sentimentos. Classifique os \textit{tweets} abaixo em \textbf{positivo}, \textbf{neutro} ou \textbf{negativo}. Anote sua decisão (uma por linha), sem discutir com o colega ao lado:
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\begin{enumerate}[leftmargin=1.6em,itemsep=1pt,topsep=3pt,font=\bfseries]
-  \item Updated: HSL GTFS (Helsinki, Finland) https://t.co/fWEpzmNQLz
-  \item current weather in Helsinki: broken clouds, -8 C, 100\% humidity, wind 4kmh, pressure 1061mb
-  \item CNN: ``WallStreetBets Redditors go ballistic over GameStop's sinking share price''
-  \item Baana bicycle counter. Today: 3 Same time last week: 1058 Trend: -99\% This year: 819\,518 Last year: 802\,079 \#Helsinki \#cycling
-  \item Elon Musk is now tweeting about \#bitcoin
-  \item A perfect Sunday walk in the woods just a few steps from home.
-  \item Went to Domino's today. It was so amazing and I think I got damn good dessert as well\ldots
-  \item Choo Choo. There's our train! \#holidayahead
-  \item Happy women's day, kisses to all you beautiful ladies. \#awesometobeawoman
-  \item Good morning \#Helsinki! Sun will rise in 30 minutes (local time 07:28)
+\subsection{2. Medindo a confiabilidade
+manualmente}\label{medindo-a-confiabilidade-manualmente}
+
+Esta seção mostra como a \textbf{confiabilidade} --- geralmente
+entendida como a \textbf{concordância entre múltiplos anotadores} ---
+pode ser medida manualmente.
+
+\subsubsection{Passo 1 --- Anotar os
+dados}\label{passo-1-anotar-os-dados}
+
+A \textbf{análise de sentimento} é uma tarefa que consiste em determinar
+o sentimento de um texto. Treinar um modelo de análise de sentimento
+exige coletar dados de treino, isto é, exemplos de textos associados a
+diferentes sentimentos.
+
+Classifique os \emph{tweets} a seguir em três categorias ---
+\textbf{positivo}, \textbf{neutro} ou \textbf{negativo} --- de acordo
+com o sentimento. Anote sua decisão (uma por linha), mas \textbf{não}
+discuta nem mostre ao colega ao lado:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Updated: HSL GTFS (Helsinki, Finland) https://t.co/fWEpzmNQLz
+\item
+  current weather in Helsinki: broken clouds, -8°C 100\% humidity, wind
+  4kmh, pressure 1061mb
+\item
+  CNN: ``WallStreetBets Redditors go ballistic over GameStop's sinking
+  share price''
+\item
+  Baana bicycle counter. Today: 3 Same time last week: 1058 Trend: ↓99\%
+  This year: 819 518 Last year: 802 079 \#Helsinki \#cycling
+\item
+  Elon Musk is now tweeting about \#bitcoin
+\item
+  A perfect Sunday walk in the woods just a few steps from home.
+\item
+  Went to Domino's today👍 It was so amazing and I think I got damn good
+  dessert as well\ldots{}
+\item
+  Choo Choo 🚂 There's our train! 🎉 \#holidayahead
+\item
+  Happy women's day ❤💋 kisses to all you beautiful ladies. 😚
+  \#awesometobeawoman
+\item
+  Good morning \#Helsinki! Sun will rise in 30 minutes (local time
+  07:28)
 \end{enumerate}
 
-{\footnotesize\itshape Observação: emojis e alguns símbolos (°, setas) foram simplificados nesta versão em PDF; consulte a versão HTML para os tweets originais --- lembrando que emojis costumam carregar boa parte do sentimento.}
+Anote suas classificações (uma por linha, de 1 a 10). O colega ao lado
+faz o mesmo, de forma independente --- assim teremos \textbf{dois
+anotadores} para comparar.
 
-Anote suas classificações (de 1 a 10). O colega faz o mesmo, de forma independente --- assim teremos \textbf{dois anotadores} para comparar.
+\subsubsection{Passo 2 --- Calcular a concordância
+percentual}\label{passo-2-calcular-a-concorduxe2ncia-percentual}
 
-\subsection{Passo 2 --- Calcular a concordância percentual}
-Queremos que os dados de treino sejam \textbf{confiáveis}, ou seja, que haja concordância sobre o que descrevemos. Uma forma de medir é a \textbf{concordância percentual}: quantas vezes, das 10, os dois anotadores concordaram, dividido pelo número de itens (10):
+Ao criar conjuntos de dados para treinar modelos, geralmente queremos
+que os dados sejam \textbf{confiáveis}, ou seja, que haja concordância
+sobre o que descrevemos (aqui, o sentimento dos \emph{tweets}).
 
-\begin{pybox}
-# Substitua o numero abaixo pelo numero de itens em que voces concordaram
-agreement = 0
+Uma forma de medir isso é a \textbf{concordância percentual} simples:
+quantas vezes, das 10, você e o colega concordaram. Basta dividir o
+número de concordâncias pelo número de itens (10):
 
-# Divide a contagem pelo numero de tweets
-agreement = agreement / 10
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Substitua o numero abaixo pelo numero de itens em que voces concordaram}
+\NormalTok{agreement }\OperatorTok{=} \DecValTok{0}
 
-# Imprime a variavel
-agreement
-\end{pybox}
-\begin{outbox}
-0.0
-\end{outbox}
+\CommentTok{\# Divide a contagem pelo numero de tweets}
+\NormalTok{agreement }\OperatorTok{=}\NormalTok{ agreement }\OperatorTok{/} \DecValTok{10}
 
-\subsection{Passo 3 --- Calcular as probabilidades de cada categoria}
-A concordância percentual é uma medida \textbf{muito ruim}: qualquer um pode ter \textbf{acertado por sorte} --- ou classificado tudo aleatoriamente. A concordância percentual \textbf{não detecta} isso! Felizmente, dá para estimar a \textbf{concordância por acaso}. Primeiro, conte quantas vezes \textbf{você} usou cada categoria e converta em \textbf{probabilidades}, dividindo pelo total:
+\CommentTok{\# Imprime a variavel}
+\NormalTok{agreement}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Conte quantos itens *voce* colocou em cada categoria
-positive = 0
-neutral = 0
-negative = 0
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.0}
+\end{Highlighting}
+\end{Shaded}
 
-# Converte as contagens em probabilidades
-positive = positive / 10
-neutral = neutral / 10
-negative = negative / 10
+\subsubsection{Passo 3 --- Calcular as probabilidades de cada
+categoria}\label{passo-3-calcular-as-probabilidades-de-cada-categoria}
 
-# Chama cada variavel para examinar a saida
-positive, neutral, negative
-\end{pybox}
-\begin{outbox}
-(0.0, 0.0, 0.0)
-\end{outbox}
+A concordância percentual é, na verdade, uma medida \textbf{muito ruim}:
+qualquer um dos dois pode ter \textbf{acertado por sorte} --- ou ter
+achado a tarefa tediosa e classificado tudo aleatoriamente. Se isso
+aconteceu, a concordância percentual \textbf{não tem como detectar},
+pois ela não distingue acerto real de acaso!
 
-Essas probabilidades representam a chance de \textbf{você} escolher aquela categoria. Peça ao colega as probabilidades dele e registre-as:
+Felizmente, dá para estimar a possibilidade de \textbf{concordância por
+acaso}. O primeiro passo é contar quantas vezes \textbf{você} usou cada
+categoria e converter essas contagens em \textbf{probabilidades},
+dividindo pelo total de \emph{tweets}:
 
-\begin{pybox}
-nb_positive = 0
-nb_neutral = 0
-nb_negative = 0
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Conte quantos itens *voce* colocou em cada categoria}
+\NormalTok{positive }\OperatorTok{=} \DecValTok{0}
+\NormalTok{neutral }\OperatorTok{=} \DecValTok{0}
+\NormalTok{negative }\OperatorTok{=} \DecValTok{0}
 
-Com as probabilidades dos \textbf{dois} anotadores, calculamos a probabilidade de ambos escolherem a mesma categoria \textbf{por acaso}: para cada categoria, multiplicamos a sua probabilidade pela do colega:
+\CommentTok{\# Converte as contagens em probabilidades}
+\NormalTok{positive }\OperatorTok{=}\NormalTok{ positive }\OperatorTok{/} \DecValTok{10}
+\NormalTok{neutral }\OperatorTok{=}\NormalTok{ neutral }\OperatorTok{/} \DecValTok{10}
+\NormalTok{negative }\OperatorTok{=}\NormalTok{ negative }\OperatorTok{/} \DecValTok{10}
 
-\begin{pybox}
-both_positive = positive * nb_positive
-both_neutral = neutral * nb_neutral
-both_negative = negative * nb_negative
-\end{pybox}
+\CommentTok{\# Chama cada variavel para examinar a saida}
+\NormalTok{positive, neutral, negative}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(0.0, 0.0, 0.0)}
+\end{Highlighting}
+\end{Shaded}
+
+Essas probabilidades representam a chance de \textbf{você} escolher
+aquela categoria. Agora pergunte ao colega as probabilidades dele e
+registre‑as:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nb\_positive }\OperatorTok{=} \DecValTok{0}
+\NormalTok{nb\_neutral }\OperatorTok{=} \DecValTok{0}
+\NormalTok{nb\_negative }\OperatorTok{=} \DecValTok{0}
+\end{Highlighting}
+\end{Shaded}
+
+Conhecendo as probabilidades de cada classe para os \textbf{dois}
+anotadores, podemos calcular a probabilidade de ambos escolherem a mesma
+categoria \textbf{por acaso}. Para cada categoria, basta multiplicar a
+sua probabilidade pela do colega:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{both\_positive }\OperatorTok{=}\NormalTok{ positive }\OperatorTok{*}\NormalTok{ nb\_positive}
+\NormalTok{both\_neutral }\OperatorTok{=}\NormalTok{ neutral }\OperatorTok{*}\NormalTok{ nb\_neutral}
+\NormalTok{both\_negative }\OperatorTok{=}\NormalTok{ negative }\OperatorTok{*}\NormalTok{ nb\_negative}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{notebox}
-Se um anotador não colocou nenhum \textit{tweet} em uma categoria (ex.: @negative@) e o outro colocou, isso \textbf{anula} a chance de concordância por acaso naquela categoria --- multiplicar por zero resulta em zero.
+
+\textbf{Nota:} se um anotador não colocou nenhum \emph{tweet} em uma
+categoria (por exemplo, \texttt{negative}) e o outro colocou, isso
+\textbf{anula} a chance de concordância por acaso naquela categoria ---
+multiplicar por zero resulta em zero.
+
 \end{notebox}
 
-\subsection{Passo 4 --- Estimar a concordância esperada (por acaso)}
-Agora calculamos quão provável é concordar \textbf{por acaso}: a \textbf{concordância esperada} (\textit{expected agreement}), somando as probabilidades combinadas de cada categoria:
+\subsubsection{Passo 4 --- Estimar a concordância esperada (por
+acaso)}\label{passo-4-estimar-a-concorduxe2ncia-esperada-por-acaso}
 
-\begin{pybox}
-expected_agreement = both_positive + both_neutral + both_negative
+Agora podemos calcular quão provável é concordar \textbf{por acaso}.
+Isso é a \textbf{concordância esperada} (\emph{expected agreement}),
+obtida somando as probabilidades combinadas de cada categoria:
 
-expected_agreement
-\end{pybox}
-\begin{outbox}
-0.0
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{expected\_agreement }\OperatorTok{=}\NormalTok{ both\_positive }\OperatorTok{+}\NormalTok{ both\_neutral }\OperatorTok{+}\NormalTok{ both\_negative}
 
-Com a \textbf{concordância observada} (@agreement@) e a \textbf{esperada por acaso} (@expected_agreement@), usamos uma medida mais confiável: o \textbf{kappa de Cohen} ($\kappa$), definido pela fórmula:
+\NormalTok{expected\_agreement}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{equation*}
-  \kappa = \frac{P_{observado} - P_{esperado}}{1 - P_{esperado}}
-\end{equation*}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.0}
+\end{Highlighting}
+\end{Shaded}
 
-Como a informação já está em @agreement@ e @expected_agreement@, calculamos $\kappa$ facilmente --- note os \textbf{parênteses} para executar as subtrações antes da divisão:
+Conhecendo tanto a \textbf{concordância observada} (\texttt{agreement})
+quanto a \textbf{esperada por acaso} (\texttt{expected\_agreement}),
+podemos usar uma medida mais confiável: o \textbf{kappa de Cohen} (κ),
+que estima a concordância a partir de ambas. A fórmula é:
 
-\begin{pybox}
-kappa = (agreement - expected_agreement) / (1 - expected_agreement)
+\[\kappa = \frac{P_{observado} - P_{esperado}}{1 - P_{esperado}}\]
 
-kappa
-\end{pybox}
-\begin{outbox}
-0.0
-\end{outbox}
+Como essa informação já está nas variáveis \texttt{agreement} e
+\texttt{expected\_agreement}, calculamos κ facilmente. Note que
+envolvemos as subtrações em \textbf{parênteses} para executá‑las antes
+da divisão:
 
-% =========================================================== 3 ==============
-\section{O kappa de Cohen como medida de concordância}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{kappa }\OperatorTok{=}\NormalTok{ (agreement }\OperatorTok{{-}}\NormalTok{ expected\_agreement) }\OperatorTok{/}\NormalTok{ (}\DecValTok{1} \OperatorTok{{-}}\NormalTok{ expected\_agreement)}
 
-O valor teórico do $\kappa$ vai de $-1$ (discordância perfeita) a $+1$ (concordância perfeita), com $0$ indicando concordância totalmente aleatória. O $\kappa$ costuma ser interpretado como a \textbf{força} da concordância. Landis e Koch (1977) propuseram os \textit{benchmarks} abaixo --- que devem ser levados \textbf{com cautela}, pois as divisões são arbitrárias:
+\NormalTok{kappa}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{center}
-\begin{tabular}{ll}
-\toprule
-\rowcolor{headrow}\textbf{Kappa de Cohen ($\kappa$)} & \textbf{Força da concordância} \\
-\midrule
-$\kappa < 0{,}00$ & Pobre \\
-$0{,}00$ -- $0{,}20$ & Ligeira \\
-$0{,}21$ -- $0{,}40$ & Razoável \\
-$0{,}41$ -- $0{,}60$ & Moderada \\
-$0{,}61$ -- $0{,}80$ & Substancial \\
-$0{,}81$ -- $1{,}00$ & Quase perfeita \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.0}
+\end{Highlighting}
+\end{Shaded}
 
-O $\kappa$ serve para \textbf{dois} anotadores, com categorias fixadas de antemão. Para mais de dois, usa-se o \textbf{$\kappa$ de Fleiss}. Na prática, ele já está implementado em bibliotecas --- a \textbf{scikit-learn} (@sklearn@) tem a função @cohen_kappa_score()@, que recebe \textbf{duas listas}:
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\begin{pybox}
-# Importa a funcao cohen_kappa_score do modulo 'metrics' da scikit-learn
-from sklearn.metrics import cohen_kappa_score
+\subsection{3. O kappa de Cohen como medida de
+concordância}\label{o-kappa-de-cohen-como-medida-de-concorduxe2ncia}
 
-# Define duas listas, 'a1' e 'a2', com anotacoes de classes gramaticais
-a1 = ['ADJ', 'AUX', 'NOUN', 'VERB', 'VERB']
-a2 = ['ADJ', 'VERB', 'NOUN', 'NOUN', 'VERB']
+O valor teórico do κ de Cohen vai de \textbf{−1} (discordância perfeita)
+a \textbf{+1} (concordância perfeita), com \textbf{0} indicando
+concordância totalmente aleatória. O κ costuma ser interpretado como uma
+medida da \textbf{força} da concordância.
 
-# Usa cohen_kappa_score() para calcular a concordancia entre as listas
-cohen_kappa_score(a1, a2)
-\end{pybox}
-\begin{outbox}
-0.44444444444444453
-\end{outbox}
+Landis e Koch (1977) propuseram os \emph{benchmarks} abaixo --- que
+devem ser levados \textbf{com cautela}, pois as divisões são
+arbitrárias:
 
-Segundo o \textit{benchmark} de Landis e Koch, esse valor indicaria concordância \textbf{moderada}.
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Kappa de Cohen (κ) & Força da concordância \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textless{} 0,00 & Pobre \\
+0,00 -- 0,20 & Ligeira \\
+0,21 -- 0,40 & Razoável \\
+0,41 -- 0,60 & Moderada \\
+0,61 -- 0,80 & Substancial \\
+0,81 -- 1,00 & Quase perfeita \\
+\end{longtable}
+}
+
+O κ de Cohen serve para medir a concordância entre \textbf{dois}
+anotadores, e as categorias disponíveis devem ser fixadas de antemão.
+Para mais de dois anotadores, usa‑se uma medida como o \textbf{κ de
+Fleiss}.
+
+Na prática, o κ de Cohen (e muitas outras medidas) já está implementado
+em bibliotecas Python --- raramente é preciso calcular à mão. A
+biblioteca \textbf{scikit‑learn} (\texttt{sklearn}), por exemplo, inclui
+a função \texttt{cohen\_kappa\_score()}, que recebe \textbf{duas listas}
+e calcula o κ entre elas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa a funcao cohen\_kappa\_score do modulo \textquotesingle{}metrics\textquotesingle{} da scikit{-}learn}
+\ImportTok{from}\NormalTok{ sklearn.metrics }\ImportTok{import}\NormalTok{ cohen\_kappa\_score}
+
+\CommentTok{\# Define duas listas, \textquotesingle{}a1\textquotesingle{} e \textquotesingle{}a2\textquotesingle{}, com anotacoes de classes gramaticais}
+\NormalTok{a1 }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{]}
+\NormalTok{a2 }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{]}
+
+\CommentTok{\# Usa cohen\_kappa\_score() para calcular a concordancia entre as listas}
+\NormalTok{cohen\_kappa\_score(a1, a2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.44444444444444453}
+\end{Highlighting}
+\end{Shaded}
+
+Segundo o \emph{benchmark} de Landis e Koch, esse valor indicaria
+concordância \textbf{moderada}.
 
 \begin{tipbox}
-Raramente é preciso anotar o conjunto inteiro --- uma \textbf{amostra aleatória} costuma bastar. Se o $\kappa$ sugere concordância, assumimos que as anotações são confiáveis (não aleatórias). Ainda assim, toda medida de concordância depende de suas próprias suposições --- nenhuma representa a verdade absoluta.
+
+\textbf{Dica:} raramente é preciso anotar o conjunto inteiro para medir
+a concordância --- uma \textbf{amostra aleatória} costuma bastar. Se o κ
+sugere que os anotadores concordam, assumimos que as anotações são
+confiáveis (não aleatórias). Ainda assim, toda medida de concordância
+entre anotadores depende de suas próprias suposições sobre o que é
+``concordar'' --- nenhuma representa a verdade absoluta.
+
 \end{tipbox}
 
-% =========================================================== 4 ==============
-\section{Avaliando o desempenho de modelos de linguagem}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-Com um padrão-ouro confiável, podemos medir o desempenho de modelos. Suponha um padrão-ouro com 10 tokens anotados por classe gramatical (@gold_standard@) e as previsões de um modelo (@predictions@):
+\subsection{4. Avaliando o desempenho de modelos de
+linguagem}\label{avaliando-o-desempenho-de-modelos-de-linguagem}
 
-\begin{pybox}
-# Define a lista 'gold_standard' (padrao-ouro anotado por humanos)
-gold_standard = ['ADJ', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'NOUN', 'ADJ', 'DET', 'PRON']
+Com um padrão‑ouro suficientemente confiável, podemos usá‑lo para medir
+o desempenho de modelos de linguagem. Suponha um padrão‑ouro com 10
+tokens anotados por classe gramatical, na lista \texttt{gold\_standard},
+e as previsões de um modelo na lista \texttt{predictions}:
 
-# Define a lista 'predictions' (previsoes do modelo de linguagem)
-predictions = ['NOUN', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'VERB', 'ADJ', 'DET', 'PROPN']
-\end{pybox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define a lista \textquotesingle{}gold\_standard\textquotesingle{} (padrao{-}ouro anotado por humanos)}
+\NormalTok{gold\_standard }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}DET\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}PRON\textquotesingle{}}\NormalTok{]}
 
-\subsection{Acurácia}
-A função @accuracy_score()@ calcula a \textbf{acurácia}, que é exatamente a concordância observada calculada manualmente:
+\CommentTok{\# Define a lista \textquotesingle{}predictions\textquotesingle{} (previsoes do modelo de linguagem)}
+\NormalTok{predictions }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}DET\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}PROPN\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Importa o modulo 'metrics' da biblioteca scikit-learn (sklearn)
-from sklearn import metrics
+\subsubsection{4.1 Acurácia}\label{acuruxe1cia}
 
-# Usa a funcao accuracy_score() do modulo 'metrics'
-metrics.accuracy_score(gold_standard, predictions)
-\end{pybox}
-\begin{outbox}
-0.7
-\end{outbox}
+Vamos importar o módulo \texttt{metrics} inteiro da scikit‑learn. A
+função \texttt{accuracy\_score()} calcula a \textbf{acurácia}, que é
+exatamente a mesma coisa que a concordância observada calculada
+manualmente:
 
-A acurácia sofre do mesmo problema --- pode ser resultado de \textbf{palpites de sorte}. Como é um exemplo pequeno, dá para verificar que \textbf{7 de 10} classes coincidem: acurácia de 0,7 (70\%).
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importa o modulo \textquotesingle{}metrics\textquotesingle{} da biblioteca scikit{-}learn (sklearn)}
+\ImportTok{from}\NormalTok{ sklearn }\ImportTok{import}\NormalTok{ metrics}
 
-\subsection{Matriz de confusão}
-Para avaliar melhor, organizamos os resultados em uma \textbf{matriz de confusão}. Precisamos das classes únicas de ambas as listas, coletadas com @set()@ --- um \textbf{conjunto} (\textit{set}) tem itens únicos, útil para remover duplicatas:
+\CommentTok{\# Usa a funcao accuracy\_score() do modulo \textquotesingle{}metrics\textquotesingle{}}
+\NormalTok{metrics.accuracy\_score(gold\_standard, predictions)}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas
-pos_tags = set(gold_standard + predictions)
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.7}
+\end{Highlighting}
+\end{Shaded}
 
-# Ordena o conjunto alfabeticamente e converte o resultado em lista
-pos_tags = list(sorted(pos_tags))
+A acurácia sofre do mesmo problema da concordância observada --- pode
+ser resultado de \textbf{palpites de sorte}. Como é um exemplo pequeno,
+dá para verificar que \textbf{7 de 10} classes gramaticais coincidem,
+resultando em acurácia de 0,7 (70\%).
 
-# Imprime a lista resultante
-pos_tags
-\end{pybox}
-\begin{outbox}
-['ADJ', 'AUX', 'DET', 'NOUN', 'PRON', 'PROPN', 'VERB']
-\end{outbox}
+\subsubsection{4.2 Matriz de confusão}\label{matriz-de-confusuxe3o}
 
-Montamos uma tabela em que as \textbf{linhas} são o padrão-ouro e as \textbf{colunas} as previsões, somando @+1@ na célula de cada par. O primeiro item de @gold_standard@ é @ADJ@ e o de @predictions@ é @NOUN@:
+Para avaliar melhor o modelo, organizamos os resultados em uma
+\textbf{matriz de confusão}. Precisamos de todas as classes gramaticais
+que aparecem em \texttt{gold\_standard} e \texttt{predictions}.
+Coletamos as categorias únicas com a função \texttt{set()} --- um
+\textbf{conjunto} (\emph{set}) é uma estrutura do Python com itens
+únicos, útil aqui para remover duplicatas:
 
-\begin{pybox}
-# Imprime o primeiro item de cada lista
-gold_standard[0], predictions[0]
-\end{pybox}
-\begin{outbox}
-('ADJ', 'NOUN')
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas}
+\NormalTok{pos\_tags }\OperatorTok{=} \BuiltInTok{set}\NormalTok{(gold\_standard }\OperatorTok{+}\NormalTok{ predictions)}
 
-Somamos 1 na linha @ADJ@, coluna @NOUN@. A \textbf{matriz de confusão} completa (diagonal = acertos, em verde):
+\CommentTok{\# Ordena o conjunto alfabeticamente e converte o resultado em lista}
+\NormalTok{pos\_tags }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(}\BuiltInTok{sorted}\NormalTok{(pos\_tags))}
 
-\begin{center}
-\begin{tabular}{l ccccccc}
-\toprule
-\rowcolor{headrow}\textbf{} & \textbf{ADJ} & \textbf{AUX} & \textbf{DET} & \textbf{NOUN} & \textbf{PRON} & \textbf{PROPN} & \textbf{VERB} \\
-\midrule
-\textbf{ADJ}   & \cellcolor{diagc}2 & 0 & 0 & 1 & 0 & 0 & 0 \\
-\textbf{AUX}   & 0 & \cellcolor{diagc}2 & 0 & 0 & 0 & 0 & 0 \\
-\textbf{DET}   & 0 & 0 & \cellcolor{diagc}1 & 0 & 0 & 0 & 0 \\
-\textbf{NOUN}  & 0 & 0 & 0 & \cellcolor{diagc}1 & 0 & 0 & 1 \\
-\textbf{PRON}  & 0 & 0 & 0 & 0 & \cellcolor{diagc}0 & 1 & 0 \\
-\textbf{PROPN} & 0 & 0 & 0 & 0 & 0 & \cellcolor{diagc}0 & 0 \\
-\textbf{VERB}  & 0 & 0 & 0 & 0 & 0 & 0 & \cellcolor{diagc}1 \\
-\bottomrule
-\end{tabular}
-\end{center}
+\CommentTok{\# Imprime a lista resultante}
+\NormalTok{pos\_tags}
+\end{Highlighting}
+\end{Shaded}
 
-As previsões corretas formam uma \textbf{diagonal} aproximada. Dela derivamos duas métricas por classe:
-\begin{itemize}[leftmargin=1.3em,itemsep=3pt,topsep=3pt]
-  \item \textbf{Precisão} (\textit{precision}): proporção de previsões corretas \textbf{por classe}. A coluna @VERB@ soma @2@, mas só @1@ está certa (na linha @VERB@): precisão de @VERB@ $= 1/2 = 0{,}5$. Idem para @NOUN@.
-  \item \textbf{Revocação} (\textit{recall}): proporção de acertos dentre \textbf{todos os exemplos reais} da classe. A linha @ADJ@ soma @3@, mas só @2@ estão na coluna @ADJ@: revocação de @ADJ@ $= 2/3 \approx 0{,}66$. Para @NOUN@, $1/2 = 0{,}5$.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[\textquotesingle{}ADJ\textquotesingle{}, \textquotesingle{}AUX\textquotesingle{}, \textquotesingle{}DET\textquotesingle{}, \textquotesingle{}NOUN\textquotesingle{}, \textquotesingle{}PRON\textquotesingle{}, \textquotesingle{}PROPN\textquotesingle{}, \textquotesingle{}VERB\textquotesingle{}]}
+\end{Highlighting}
+\end{Shaded}
+
+Usamos essas categorias para montar uma tabela em que as \textbf{linhas}
+representam o padrão‑ouro e as \textbf{colunas} as previsões do modelo.
+Percorremos cada par de itens (padrão‑ouro, previsão) e somamos
+\texttt{+1} na célula correspondente. Por exemplo, o primeiro item de
+\texttt{gold\_standard} é \texttt{ADJ} e o primeiro de
+\texttt{predictions} é \texttt{NOUN}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime o primeiro item de cada lista}
+\NormalTok{gold\_standard[}\DecValTok{0}\NormalTok{], predictions[}\DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(\textquotesingle{}ADJ\textquotesingle{}, \textquotesingle{}NOUN\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
+
+Encontramos a linha \texttt{ADJ} e a coluna \texttt{NOUN} e somamos 1
+àquela célula. A tabela completa (a \textbf{matriz de confusão}) fica
+assim:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lccccccc@{}}
+\toprule\noalign{}
+& ADJ & AUX & DET & NOUN & PRON & PROPN & VERB \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ADJ} & 2 & 0 & 0 & 1 & 0 & 0 & 0 \\
+\textbf{AUX} & 0 & 2 & 0 & 0 & 0 & 0 & 0 \\
+\textbf{DET} & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+\textbf{NOUN} & 0 & 0 & 0 & 1 & 0 & 0 & 1 \\
+\textbf{PRON} & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+\textbf{PROPN} & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\textbf{VERB} & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\end{longtable}
+}
+
+As previsões corretas formam uma \textbf{linha aproximadamente diagonal}
+na tabela. A partir dela, derivamos duas métricas por classe:
+\textbf{precisão} (\emph{precision}) e \textbf{revocação}
+(\emph{recall}).
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Precisão} é a proporção de previsões corretas \textbf{por
+  classe} --- quantas das previsões daquela classe estavam certas. Por
+  exemplo, a coluna \texttt{VERB} soma \texttt{2}, mas só \texttt{1}
+  previsão está correta (na linha \texttt{VERB}); logo, a precisão de
+  \texttt{VERB} é 1/2 = \textbf{0,5}. O mesmo vale para \texttt{NOUN}.
+\item
+  \textbf{Revocação} é a proporção de previsões corretas dentre
+  \textbf{todos os exemplos reais} daquela classe --- quantas instâncias
+  reais o modelo conseguiu ``encontrar''. Por exemplo, a linha
+  \texttt{ADJ} soma \texttt{3} (há três adjetivos no padrão‑ouro), mas
+  só \texttt{2} estão na coluna \texttt{ADJ}; logo, a revocação de
+  \texttt{ADJ} é 2/3 ≈ \textbf{0,66}. Para \texttt{NOUN}, a revocação é
+  1/2 = 0,5.
 \end{itemize}
 
-A scikit-learn gera a matriz automaticamente com @confusion_matrix()@:
+A scikit‑learn gera matrizes de confusão automaticamente com
+\texttt{confusion\_matrix()}:
 
-\begin{pybox}
-# Calcula a matriz de confusao para as duas listas e imprime o resultado
-print(metrics.confusion_matrix(gold_standard, predictions))
-\end{pybox}
-\begin{outbox}
-[[2 0 0 1 0 0 0]
- [0 2 0 0 0 0 0]
- [0 0 1 0 0 0 0]
- [0 0 0 1 0 0 1]
- [0 0 0 0 0 1 0]
- [0 0 0 0 0 0 0]
- [0 0 0 0 0 0 1]]
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calcula a matriz de confusao para as duas listas e imprime o resultado}
+\BuiltInTok{print}\NormalTok{(metrics.confusion\_matrix(gold\_standard, predictions))}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Precisão e revocação com a scikit-learn}
-A \textbf{precisão} é implementada em @precision_score()@. Como há \textbf{mais de duas} classes, definimos como combinar os resultados pelo argumento @average@. Com @average=None@, calcula a precisão \textbf{de cada classe}. O @zero_division=0@ evita erro quando uma classe de @predictions@ não existe em @gold_standard@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[[2 0 0 1 0 0 0]}
+\NormalTok{ [0 2 0 0 0 0 0]}
+\NormalTok{ [0 0 1 0 0 0 0]}
+\NormalTok{ [0 0 0 1 0 0 1]}
+\NormalTok{ [0 0 0 0 0 1 0]}
+\NormalTok{ [0 0 0 0 0 0 0]}
+\NormalTok{ [0 0 0 0 0 0 1]]}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Calcula a precisao entre as duas listas, para cada classe (classe gramatical)
-precision = metrics.precision_score(gold_standard, predictions, average=None, zero_division=0)
+\subsubsection{4.3 Precisão e revocação com a
+scikit‑learn}\label{precisuxe3o-e-revocauxe7uxe3o-com-a-scikitlearn}
 
-# Chama a variavel para examinar o resultado
-precision
-\end{pybox}
-\begin{outbox}
-array([1. , 1. , 1. , 0.5, 0. , 0. , 0.5])
-\end{outbox}
+A \textbf{precisão} é implementada na função
+\texttt{precision\_score()}. Como temos \textbf{mais de duas} classes,
+precisamos definir como os resultados de cada classe são combinados,
+pelo argumento \texttt{average}. Com \texttt{average=None}, a função
+calcula a precisão \textbf{de cada classe}. Também definimos
+\texttt{zero\_division=0} para evitar erro quando uma classe de
+\texttt{predictions} não existe em \texttt{gold\_standard} (nesses
+casos, a precisão é 0):
 
-A saída é um \textbf{array NumPy}. Para combinar os rótulos de @pos_tags@ com as pontuações, usamos @zip()@ e convertemos com @dict()@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calcula a precisao entre as duas listas, para cada classe (classe gramatical)}
+\NormalTok{precision }\OperatorTok{=}\NormalTok{ metrics.precision\_score(gold\_standard, predictions, average}\OperatorTok{=}\VariableTok{None}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-\begin{pybox}
-# Combina o conjunto 'pos_tags' com o array 'precision' usando zip();
-# converte o resultado em um dicionario
-dict(zip(pos_tags, precision))
-\end{pybox}
-\begin{outbox}
-{'ADJ': 1.0, 'AUX': 1.0, 'DET': 1.0, 'NOUN': 0.5, 'PRON': 0.0, 'PROPN': 0.0, 'VERB': 0.5}
-\end{outbox}
+\CommentTok{\# Chama a variavel para examinar o resultado}
+\NormalTok{precision}
+\end{Highlighting}
+\end{Shaded}
 
-Para uma \textbf{única} precisão de todas as classes, usamos @average='macro'@, que trata cada classe como igualmente importante:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{array([1. , 1. , 1. , 0.5, 0. , 0. , 0.5])}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Calcula a precisao entre as duas listas e tira a media (macro)
-macro_precision = metrics.precision_score(gold_standard, predictions, average='macro', zero_division=0)
+A saída é um \textbf{array NumPy}. Para combinar os rótulos de
+\texttt{pos\_tags} com as pontuações de \texttt{precision}, usamos a
+função \texttt{zip()}, que une listas/arrays do mesmo tamanho; para
+visualizar, convertemos com \texttt{dict()}:
 
-# Chama a variavel para examinar o resultado
-macro_precision
-\end{pybox}
-\begin{outbox}
-0.5714285714285714
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Combina o conjunto \textquotesingle{}pos\_tags\textquotesingle{} com o array \textquotesingle{}precision\textquotesingle{} usando zip();}
+\CommentTok{\# converte o resultado em um dicionario}
+\BuiltInTok{dict}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(pos\_tags, precision))}
+\end{Highlighting}
+\end{Shaded}
 
-A precisão \textbf{macro} é a soma das precisões dividida pelo número de classes --- dá para verificar manualmente:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\{\textquotesingle{}ADJ\textquotesingle{}: 1.0, \textquotesingle{}AUX\textquotesingle{}: 1.0, \textquotesingle{}DET\textquotesingle{}: 1.0, \textquotesingle{}NOUN\textquotesingle{}: 0.5, \textquotesingle{}PRON\textquotesingle{}: 0.0, \textquotesingle{}PROPN\textquotesingle{}: 0.0, \textquotesingle{}VERB\textquotesingle{}: 0.5\}}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{pybox}
-# Calcula a media macro manualmente: soma as precisoes e divide
-# pelo numero de classes em 'precision'
-sum(precision) / len(precision)
-\end{pybox}
-\begin{outbox}
-0.5714285714285714
-\end{outbox}
+Para uma \textbf{única} pontuação de precisão para todas as classes,
+usamos \texttt{average=\textquotesingle{}macro\textquotesingle{}}, que
+trata cada classe como igualmente importante, independentemente de
+quantas instâncias ela tem:
 
-A \textbf{revocação} é calculada do mesmo modo, com @recall_score()@:
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calcula a precisao entre as duas listas e tira a media (macro)}
+\NormalTok{macro\_precision }\OperatorTok{=}\NormalTok{ metrics.precision\_score(gold\_standard, predictions, average}\OperatorTok{=}\StringTok{\textquotesingle{}macro\textquotesingle{}}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-\begin{pybox}
-# Calcula a revocacao entre as duas listas, para cada classe
-recall = metrics.recall_score(gold_standard, predictions, average=None, zero_division=0)
+\CommentTok{\# Chama a variavel para examinar o resultado}
+\NormalTok{macro\_precision}
+\end{Highlighting}
+\end{Shaded}
 
-# Combina 'pos_tags' com o array 'recall' e converte em dicionario
-dict(zip(pos_tags, recall))
-\end{pybox}
-\begin{outbox}
-{'ADJ': 0.6666666666666666, 'AUX': 1.0, 'DET': 1.0, 'NOUN': 0.5, 'PRON': 0.0, 'PROPN': 0.0, 'VERB': 1.0}
-\end{outbox}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.5714285714285714}
+\end{Highlighting}
+\end{Shaded}
 
-\subsection{Relatório de classificação}
-A função @classification_report()@ dá precisão e revocação de cada classe, com o \textbf{F1-score} --- média equilibrada entre precisão e revocação (ambas contribuem igualmente), de 0 a 1:
+A precisão \textbf{macro} é a soma das precisões dividida pelo número de
+classes --- dá para verificar manualmente:
 
-\begin{pybox}
-# Imprime um relatorio de classificacao
-print(metrics.classification_report(gold_standard, predictions, zero_division=0))
-\end{pybox}
-\begin{outbox}
-              precision    recall  f1-score   support
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calcula a media macro manualmente: soma as precisoes e divide}
+\CommentTok{\# pelo numero de classes em \textquotesingle{}precision\textquotesingle{}}
+\BuiltInTok{sum}\NormalTok{(precision) }\OperatorTok{/} \BuiltInTok{len}\NormalTok{(precision)}
+\end{Highlighting}
+\end{Shaded}
 
-         ADJ       1.00      0.67      0.80         3
-         AUX       1.00      1.00      1.00         2
-         DET       1.00      1.00      1.00         1
-        NOUN       0.50      0.50      0.50         2
-        PRON       0.00      0.00      0.00         1
-       PROPN       0.00      0.00      0.00         0
-        VERB       0.50      1.00      0.67         1
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{0.5714285714285714}
+\end{Highlighting}
+\end{Shaded}
 
-    accuracy                           0.70        10
-   macro avg       0.57      0.60      0.57        10
-weighted avg       0.75      0.70      0.71        10
-\end{outbox}
+A \textbf{revocação} é calculada do mesmo modo, com
+\texttt{recall\_score()}:
 
-As pontuações da linha @macro avg@ correspondem às que calculamos acima. A linha @weighted avg@ (média \textbf{ponderada}) leva em conta o número de instâncias de cada classe; a coluna @support@ conta quantas instâncias foram observadas em cada classe.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calcula a revocacao entre as duas listas, para cada classe}
+\NormalTok{recall }\OperatorTok{=}\NormalTok{ metrics.recall\_score(gold\_standard, predictions, average}\OperatorTok{=}\VariableTok{None}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-% ======================================================= quiz ==============
-\section*{Quiz}
-\addcontentsline{toc}{section}{Quiz}
-Marque a alternativa correta (a certa está marcada com \textcolor{tipc}{\textbf{(correta)}}).
+\CommentTok{\# Combina \textquotesingle{}pos\_tags\textquotesingle{} com o array \textquotesingle{}recall\textquotesingle{} e converte em dicionario}
+\BuiltInTok{dict}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(pos\_tags, recall))}
+\end{Highlighting}
+\end{Shaded}
 
-{\bfseries 1. Um padrão-ouro (\textit{gold standard}) é:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Dados verificados por humanos, usados como referência \textcolor{tipc}{\textbf{(correta)}}
-  \item A saída bruta do modelo
-  \item Um dicionário do Python
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\{\textquotesingle{}ADJ\textquotesingle{}: 0.6666666666666666, \textquotesingle{}AUX\textquotesingle{}: 1.0, \textquotesingle{}DET\textquotesingle{}: 1.0, \textquotesingle{}NOUN\textquotesingle{}: 0.5, \textquotesingle{}PRON\textquotesingle{}: 0.0, \textquotesingle{}PROPN\textquotesingle{}: 0.0, \textquotesingle{}VERB\textquotesingle{}: 1.0\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{4.4 Relatório de
+classificação}\label{relatuxf3rio-de-classificauxe7uxe3o}
+
+A scikit‑learn oferece a função \texttt{classification\_report()}, que
+dá precisão e revocação de cada classe, junto com o \textbf{F1‑score}
+--- uma média equilibrada entre precisão e revocação (ambas contribuem
+igualmente), variando de 0 a 1:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Imprime um relatorio de classificacao}
+\BuiltInTok{print}\NormalTok{(metrics.classification\_report(gold\_standard, predictions, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{              precision    recall  f1{-}score   support}
+
+\NormalTok{         ADJ       1.00      0.67      0.80         3}
+\NormalTok{         AUX       1.00      1.00      1.00         2}
+\NormalTok{         DET       1.00      1.00      1.00         1}
+\NormalTok{        NOUN       0.50      0.50      0.50         2}
+\NormalTok{        PRON       0.00      0.00      0.00         1}
+\NormalTok{       PROPN       0.00      0.00      0.00         0}
+\NormalTok{        VERB       0.50      1.00      0.67         1}
+
+\NormalTok{    accuracy                           0.70        10}
+\NormalTok{   macro avg       0.57      0.60      0.57        10}
+\NormalTok{weighted avg       0.75      0.70      0.71        10}
+\end{Highlighting}
+\end{Shaded}
+
+As pontuações da linha \texttt{macro\ avg} correspondem às que
+calculamos acima. A linha \texttt{weighted\ avg} (média
+\textbf{ponderada}) leva em conta o número de instâncias de cada classe;
+a coluna \texttt{support} conta quantas instâncias foram observadas em
+cada classe.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Quiz}\label{quiz}
+
+Marque a alternativa correta (a resposta certa está destacada com ✅).
+
+\textbf{1. Um padrão‑ouro (\emph{gold standard}) é:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Dados verificados por humanos, usados como referência ✅
+\item
+  A saída bruta do modelo
+\item
+  Um dicionário do Python
 \end{enumerate}
 
-{\bfseries 2. Por que a concordância percentual é uma medida fraca?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Não distingue acerto real de acerto por acaso \textcolor{tipc}{\textbf{(correta)}}
-  \item É difícil de calcular
-  \item Só funciona com duas classes
+\textbf{2. Por que a concordância percentual é uma medida fraca?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Não distingue acerto real de acerto por acaso ✅
+\item
+  É difícil de calcular
+\item
+  Só funciona com duas classes
 \end{enumerate}
 
-{\bfseries 3. O kappa de Cohen mede a concordância entre quantos anotadores?}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item Dois \textcolor{tipc}{\textbf{(correta)}}
-  \item Três
-  \item Qualquer número
+\textbf{3. O kappa de Cohen mede a concordância entre quantos
+anotadores?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Dois ✅
+\item
+  Três
+\item
+  Qualquer número
 \end{enumerate}
 
-{\bfseries 4. A precisão de uma classe responde: das vezes em que o modelo previu essa classe,}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item quantas estavam certas \textcolor{tipc}{\textbf{(correta)}}
-  \item quantas existiam no total
-  \item quantas ele deixou de encontrar
+\textbf{4. A precisão de uma classe responde: das vezes em que o modelo
+\emph{previu} essa classe,}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  quantas estavam certas ✅
+\item
+  quantas existiam no total
+\item
+  quantas ele deixou de encontrar
 \end{enumerate}
 
-{\bfseries 5. A revocação de uma classe responde: dos exemplos que realmente são dessa classe,}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item quantos o modelo encontrou \textcolor{tipc}{\textbf{(correta)}}
-  \item quantos ele previu a mais
-  \item quantos estavam errados
+\textbf{5. A revocação de uma classe responde: dos exemplos que
+\emph{realmente} são dessa classe,}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  quantos o modelo encontrou ✅
+\item
+  quantos ele previu a mais
+\item
+  quantos estavam errados
 \end{enumerate}
 
-{\bfseries 6. O F1-score é:}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0pt,topsep=2pt,label=\arabic*.]
-  \item A média equilibrada entre precisão e revocação \textcolor{tipc}{\textbf{(correta)}}
-  \item A soma da precisão com a revocação
-  \item O maior valor entre os dois
+\textbf{6. O F1‑score é:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A média equilibrada entre precisão e revocação ✅
+\item
+  A soma da precisão com a revocação
+\item
+  O maior valor entre os dois
 \end{enumerate}
 
-% ======================================================= resumo ============
-\section*{Resumo da unidade}
-\addcontentsline{toc}{section}{Resumo da unidade}
-\begin{objbox}[Nesta unidade, você aprendeu a]
-\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=3pt]
-  \item entender o que é um \textbf{padrão-ouro} e por que ele é uma \textbf{abstração} do uso da língua;
-  \item medir a \textbf{confiabilidade} entre anotadores: concordância percentual, probabilidades por categoria e concordância esperada por acaso;
-  \item calcular e interpretar o \textbf{kappa de Cohen} (manualmente e com @cohen_kappa_score()@), com os \textit{benchmarks} de Landis \& Koch;
-  \item avaliar modelos com \textbf{acurácia}, \textbf{matriz de confusão}, \textbf{precisão}, \textbf{revocação} e \textbf{F1-score} (@accuracy_score@, @confusion_matrix@, @precision_score@, @recall_score@, @classification_report@).
-\end{enumerate}
-\end{objbox}
+\subsection{Resumo da unidade}\label{resumo-da-unidade}
 
-\begin{notebox}[Exercícios sugeridos]
-\begin{enumerate}[leftmargin=1.4em,itemsep=3pt,topsep=3pt]
-  \item Anote você mesmo os 10 \textit{tweets} e peça a um colega que faça o mesmo; calcule a concordância percentual e o $\kappa$ de Cohen com @cohen_kappa_score()@.
-  \item Monte suas próprias listas @gold_standard@ e @predictions@ (com pelo menos 8 itens) e gere a matriz com @confusion_matrix()@.
-  \item A partir do relatório, explique por que a classe @PROPN@ tem @support@ igual a 0 e o que isso significa.
-  \item Calcule o F1-score de @VERB@ \textbf{manualmente} ($F1 = 2 \cdot (P \cdot R) / (P + R)$) e compare com o relatório.
-\end{enumerate}
-\end{notebox}
+Nesta unidade, você aprendeu a:
 
-\vspace{6pt}
-\noindent\rule{\linewidth}{0.4pt}\\[4pt]
-{\footnotesize\textbf{Referências.} \textit{Applied Language Technology} (MOOC), Universidade de Helsinque --- \href{https://applied-language-technology.mooc.fi/}{applied-language-technology.mooc.fi}. Landis, J. R.; Koch, G. G. (1977). \textit{The measurement of observer agreement for categorical data.} Biometrics. Pedregosa, F. et al. (2011). \textit{Scikit-learn: Machine Learning in Python.} JMLR --- \href{https://scikit-learn.org/}{scikit-learn.org}.\par
-Material produzido para o Programa CiberExt 26-29 / FEELT38103 --- Universidade Federal de Uberlândia.}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  entender o que é um \textbf{padrão‑ouro} e por que ele é uma
+  \textbf{abstração} do uso da língua;
+\item
+  medir a \textbf{confiabilidade} entre anotadores: concordância
+  percentual, probabilidades por categoria e concordância esperada por
+  acaso;
+\item
+  calcular e interpretar o \textbf{kappa de Cohen} (manualmente e com
+  \texttt{cohen\_kappa\_score()}), usando os \emph{benchmarks} de Landis
+  \& Koch;
+\item
+  avaliar o desempenho de modelos com \textbf{acurácia}, \textbf{matriz
+  de confusão}, \textbf{precisão}, \textbf{revocação} e
+  \textbf{F1‑score}, usando a \texttt{scikit‑learn}
+  (\texttt{accuracy\_score}, \texttt{confusion\_matrix},
+  \texttt{precision\_score}, \texttt{recall\_score},
+  \texttt{classification\_report}).
+\end{enumerate}
+
+\subsubsection{Exercícios sugeridos}\label{exercuxedcios-sugeridos}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Anote você mesmo os 10 \emph{tweets} e peça a um colega que faça o
+  mesmo; calcule a concordância percentual e o κ de Cohen com
+  \texttt{cohen\_kappa\_score()}.
+\item
+  Monte suas próprias listas \texttt{gold\_standard} e
+  \texttt{predictions} (com pelo menos 8 itens) e gere a matriz de
+  confusão com \texttt{confusion\_matrix()}.
+\item
+  A partir do relatório de classificação, explique por que a classe
+  \texttt{PROPN} tem \texttt{support} igual a 0 e o que isso significa.
+\item
+  Calcule o F1‑score de \texttt{VERB} \textbf{manualmente} a partir da
+  precisão e da revocação (fórmula: F1 = 2 · (P · R) / (P + R)) e
+  compare com o relatório.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Referências}\label{referuxeancias}
+
+\begin{itemize}
+\tightlist
+\item
+  Rögnvaldsson, E. et al.~\emph{Applied Language Technology} (MOOC).
+  Universidade de Helsinque.
+  \url{https://applied-language-technology.mooc.fi/}
+\item
+  Landis, J. R.; Koch, G. G. (1977). The measurement of observer
+  agreement for categorical data. \emph{Biometrics}.
+\item
+  Pedregosa, F. et al.~(2011). Scikit‑learn: Machine Learning in Python.
+  \emph{JMLR}. \url{https://scikit-learn.org/}
+\end{itemize}
 
 \end{document}

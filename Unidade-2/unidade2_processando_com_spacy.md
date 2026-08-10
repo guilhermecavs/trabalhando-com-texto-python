@@ -1,9 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 2 — Processando textos com spaCy
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-> Material adaptado e traduzido a partir do curso *Applied Language Technology* (Universidade de Helsinque), disponível em <https://applied-language-technology.mooc.fi/>.
-
+---
+title: "Processando textos com spaCy"
+subtitle: "Trabalhando com Texto em Python I · Unidade 2"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos de aprendizagem
@@ -24,7 +24,9 @@ Para começar, importamos o **spaCy**, uma das muitas bibliotecas disponíveis p
 import spacy
 ```
 
-> 💡 **Dica prática:** a primeira importação do spaCy pode demorar alguns segundos, porque a biblioteca carrega dependências pesadas (redes neurais, tokenizadores etc.). Isso é normal.
+::: dica
+**Dica prática:** a primeira importação do spaCy pode demorar alguns segundos, porque a biblioteca carrega dependências pesadas (redes neurais, tokenizadores etc.). Isso é normal.
+:::
 
 Para realizar tarefas de processamento de linguagem natural em um idioma específico, precisamos carregar um **modelo de linguagem** treinado para executar essas tarefas naquele idioma.
 
@@ -250,7 +252,9 @@ print(doc[0], doc[0].dep, doc[0].dep_)
 
 Como se vê, o valor de hash `415` está reservado para a etiqueta correspondente a um determinante (`det`).
 
-> ⚠️ **Atenção:** se você quiser uma saída legível para humanos na análise de dependências e o spaCy devolver sequências de números, provavelmente você esqueceu de adicionar o sublinhado ao nome do atributo (por exemplo, usou `dep` em vez de `dep_`).
+::: atencao
+**Atenção:** se você quiser uma saída legível para humanos na análise de dependências e o spaCy devolver sequências de números, provavelmente você esqueceu de adicionar o sublinhado ao nome do atributo (por exemplo, usou `dep` em vez de `dep_`).
+:::
 
 ### 2.5 Segmentação de sentenças
 

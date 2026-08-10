@@ -1,0 +1,79 @@
+% ==========================================================================
+%  Cabecalho LaTeX do curso "Trabalhando com Texto em Python I"
+%  Injetado pelo pandoc (-H) ao gerar o .tex de cada unidade.
+% ==========================================================================
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% -------- paleta --------
+\definecolor{accent}{HTML}{6C4CF1}
+\definecolor{cyan}{HTML}{00B4D8}
+\definecolor{subink}{HTML}{2B3242}
+\definecolor{notec}{HTML}{3B82F6}
+\definecolor{tipc}{HTML}{10B981}
+\definecolor{warnc}{HTML}{F59E0B}
+
+% -------- emojis / simbolos unicode que podem aparecer no texto --------
+% simbolos com significado
+\newunicodechar{✅}{{\color{tipc}\checkmark}}
+\newunicodechar{✔}{{\color{tipc}\checkmark}}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↹}{\ensuremath{\hookrightarrow}}
+\newunicodechar{°}{\textdegree}
+\newunicodechar{·}{\textperiodcentered}
+\newunicodechar{´}{'}
+\newunicodechar{‑}{-}
+% emojis decorativos -> removidos no PDF
+\newunicodechar{💡}{}
+\newunicodechar{🚀}{}
+\newunicodechar{📝}{}
+\newunicodechar{⚠}{}
+\newunicodechar{🐍}{}
+\newunicodechar{🎉}{}
+\newunicodechar{🍕}{}
+\newunicodechar{👍}{}
+\newunicodechar{💋}{}
+\newunicodechar{😚}{}
+\newunicodechar{🚂}{}
+\newunicodechar{❤}{}
+
+% -------- caixas de callout (usadas pelo filtro callouts.lua) --------
+\newtcolorbox{notebox}{enhanced,breakable,colback=notec!6,colframe=notec,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipc!7,colframe=tipc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{warnbox}{enhanced,breakable,colback=warnc!8,colframe=warnc,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  before skip=10pt,after skip=12pt}
+\newtcolorbox{objbox}{enhanced,breakable,colback=accent!5,colframe=accent,
+  boxrule=0pt,leftrule=4pt,arc=3pt,left=10pt,right=10pt,top=7pt,bottom=8pt,
+  before skip=10pt,after skip=14pt}
+
+% -------- titulos coloridos --------
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{subink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{cyan}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.1ex}
+
+% codigo inline colorido
+\definecolor{inlink}{HTML}{5A34D6}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlink}\oldtexttt{#1}}}

@@ -1,9 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 3 — Customizando o pipeline do spaCy
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-> Material adaptado e traduzido a partir do curso *Applied Language Technology* (Universidade de Helsinque), disponível em <https://applied-language-technology.mooc.fi/>.
-
+---
+title: "Customizando o pipeline do spaCy"
+subtitle: "Trabalhando com Texto em Python I · Unidade 3"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos de aprendizagem
@@ -65,7 +65,9 @@ Componentes como `tagger`, `parser`, `ner` e `lemmatizer` já devem ser familiar
 - **`tok2vec`** mapeia os tokens para suas representações numéricas (veremos essas representações na Parte III).
 - **`attribute_ruler`** aplica regras definidas pelo usuário aos tokens — por exemplo, correspondências a um dado padrão linguístico — e adiciona essa informação ao token como um atributo, se solicitado.
 
-> 📝 **Nota:** a lista de componentes em `nlp.pipeline` **não** inclui o `Tokenizer`, porque todo texto precisa ser tokenizado para que qualquer processamento ocorra. Por isso, o `Tokenizer` fica no atributo `tokenizer` do objeto `Language`, e não no atributo `pipeline`.
+::: nota
+**Nota:** a lista de componentes em `nlp.pipeline` **não** inclui o `Tokenizer`, porque todo texto precisa ser tokenizado para que qualquer processamento ocorra. Por isso, o `Tokenizer` fica no atributo `tokenizer` do objeto `Language`, e não no atributo `pipeline`.
+:::
 
 ### 1.1 Excluindo componentes para ganhar desempenho
 
@@ -207,7 +209,9 @@ Doc.set_extension("location", default=None)
 
 Usamos o argumento `default` para definir um valor padrão para ambos, com a palavra‑chave `None` do Python.
 
-> 📝 **Nota:** diferentemente de atributos como `sents` ou `heads`, os atributos personalizados ficam sob um atributo que consiste no caractere sublinhado `_` — por exemplo, `Doc._.age`.
+::: nota
+**Nota:** diferentemente de atributos como `sents` ou `heads`, os atributos personalizados ficam sob um atributo que consiste no caractere sublinhado `_` — por exemplo, `Doc._.age`.
+:::
 
 Para exemplificar, vamos definir um dicionário Python. O dicionário `sents_dict` tem três chaves (`0`, `1` e `2`), cujos valores são, por sua vez, dicionários com três chaves: `age`, `location` e `text`. Isso mostra como as estruturas de dados do Python costumam ser **aninhadas**:
 
@@ -311,7 +315,9 @@ from spacy.tokens import DocBin
 docbin = DocBin(docs=docs)
 ```
 
-> ⚠️ **Atenção:** se você adicionou **atributos personalizados** a `Doc`s, `Span`s ou `Token`s, também é preciso definir o argumento `store_user_data` como `True` — por exemplo, `DocBin(docs=docs, store_user_data=True)`.
+::: atencao
+**Atenção:** se você adicionou **atributos personalizados** a `Doc`s, `Span`s ou `Token`s, também é preciso definir o argumento `store_user_data` como `True` — por exemplo, `DocBin(docs=docs, store_user_data=True)`.
+:::
 
 Podemos verificar que os três `Doc`s entraram no `DocBin` examinando a saída do método `__len__()`:
 
@@ -382,7 +388,9 @@ docs_loaded
 
 Isso retorna uma lista com os quatro `Doc`s adicionados ao `DocBin`.
 
-> 💡 **Resumindo:** o ideal é processar os textos **uma vez**, gravá‑los em disco e carregá‑los para as análises seguintes.
+::: dica
+**Resumindo:** o ideal é processar os textos **uma vez**, gravá‑los em disco e carregá‑los para as análises seguintes.
+:::
 
 ---
 
@@ -420,7 +428,9 @@ Para **mesclar** os sintagmas nominais em um único token, o spaCy oferece a fun
 nlp.add_pipe('merge_noun_chunks')
 ```
 
-> 📝 **Nota:** não é preciso reatribuir o objeto `Language` à mesma variável para atualizá‑lo — o método `add_pipe` adiciona o componente automaticamente.
+::: nota
+**Nota:** não é preciso reatribuir o objeto `Language` à mesma variável para atualizá‑lo — o método `add_pipe` adiciona o componente automaticamente.
+:::
 
 Processando novamente as três frases com `pipe()`, tudo **parece** igual (uma lista com três `Doc`s). Mas, ao percorrer os tokens do primeiro `Doc` (`[0]`), vemos que os sintagmas nominais agora estão **mesclados** e rotulados como `NOUN`:
 

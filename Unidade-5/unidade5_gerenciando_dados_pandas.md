@@ -1,9 +1,9 @@
-# Trabalhando com Texto em Python I
-## Unidade 5 — Gerenciando dados textuais com pandas
-
-> Curso vinculado ao Programa **CiberExt 26‑29** / Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de Uberlândia.
-> Material adaptado e traduzido a partir do curso *Applied Language Technology* (Universidade de Helsinque), disponível em <https://applied-language-technology.mooc.fi/>.
-
+---
+title: "Gerenciando dados textuais com pandas"
+subtitle: "Trabalhando com Texto em Python I · Unidade 5"
+author: "CiberExt 26-29 · FEELT38103 · Universidade Federal de Uberlândia"
+date: "2026"
+lang: pt-BR
 ---
 
 ### Objetivos de aprendizagem
@@ -184,7 +184,9 @@ type(socc), type(socc['author'])
 (pandas.core.frame.DataFrame, pandas.core.series.Series)
 ```
 
-> 📝 **Nota:** ao imprimir um `DataFrame` ou `Series`, o pandas **omite** tudo entre as cinco primeiras e as cinco últimas linhas por padrão — conveniente ao trabalhar com milhares de linhas.
+::: nota
+**Nota:** ao imprimir um `DataFrame` ou `Series`, o pandas **omite** tudo entre as cinco primeiras e as cinco últimas linhas por padrão — conveniente ao trabalhar com milhares de linhas.
+:::
 
 O método `value_counts()` conta os valores únicos de uma `Series`:
 
@@ -214,7 +216,9 @@ Sem surpresa, a equipe editorial do *The Globe and Mail* assina a maioria dos ed
 socc['author'].value_counts()[:10].plot(kind='bar')
 ```
 
-> 💡 **Dica:** o `.plot()` gera uma **imagem** (gráfico de barras) exibida no notebook; a saída de texto é apenas `<AxesSubplot: >`. Para outros tipos de gráfico, mude o argumento `kind` (ex.: `'line'`, `'hist'`, `'pie'`).
+::: dica
+**Dica:** o `.plot()` gera uma **imagem** (gráfico de barras) exibida no notebook; a saída de texto é apenas `<AxesSubplot: >`. Para outros tipos de gráfico, mude o argumento `kind` (ex.: `'line'`, `'hist'`, `'pie'`).
+:::
 
 Para colunas **numéricas**, o método `describe()` dá estatísticas descritivas básicas:
 
@@ -409,7 +413,9 @@ Uma amostra dos títulos processados e seus substantivos:
 | 5 | Fifty years in Canada, and now I feel like a s… | [class, citizen] |
 | 8 | A nation of $100,000 firefighters | [nation] |
 
-> 📝 **Nota:** não é necessário criar uma coluna vazia antes — o pandas cria a coluna nova automaticamente na atribuição, como em `talk['nouns']`.
+::: nota
+**Nota:** não é necessário criar uma coluna vazia antes — o pandas cria a coluna nova automaticamente na atribuição, como em `talk['nouns']`.
+:::
 
 ### 3.3 Extraindo dados para estruturas nativas do Python
 
@@ -468,7 +474,9 @@ pd.Series(final_list).value_counts()[:10].plot(kind='bar')
 df.to_pickle('data/pickled_df.pkl')
 ```
 
-> ⚠️ **Segurança (importante no CiberExt):** o formato *pickle* serializa objetos Python arbitrários e, ao ser **carregado**, pode **executar código arbitrário**. **Nunca** faça `read_pickle()` (nem `pickle.load`, `joblib.load`, `numpy` com `allow_pickle=True` etc.) em arquivos de **fontes não confiáveis** — um `.pkl` malicioso compromete a máquina. Use *pickle* apenas com dados que **você mesmo** gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não executam código, como **CSV**, **JSON** ou **Parquet** (`to_csv`/`read_csv`, `to_json`/`read_json`, `to_parquet`/`read_parquet`).
+::: atencao
+**Segurança (importante no CiberExt):** o formato *pickle* serializa objetos Python arbitrários e, ao ser **carregado**, pode **executar código arbitrário**. **Nunca** faça `read_pickle()` (nem `pickle.load`, `joblib.load`, `numpy` com `allow_pickle=True` etc.) em arquivos de **fontes não confiáveis** — um `.pkl` malicioso compromete a máquina. Use *pickle* apenas com dados que **você mesmo** gerou; para intercâmbio entre pessoas/sistemas, prefira formatos que não executam código, como **CSV**, **JSON** ou **Parquet** (`to_csv`/`read_csv`, `to_json`/`read_json`, `to_parquet`/`read_parquet`).
+:::
 
 Verificamos lendo de volta com `read_pickle()`:
 
