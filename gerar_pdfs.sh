@@ -64,7 +64,7 @@ LOG_CLEAN=""
 # shellcheck disable=SC2086
 find Unidade-* -type f \( -name '*.aux' -o -name '*.out' \
   -o -name '*.toc' -o -name '*.fls' -o -name '*.fdb_latexmk' \
-  -o -name '*.synctex.gz' $LOG_CLEAN \) -delete 2>/dev/null
+  -o -name '*.synctex.gz' -o -name '*.listing' $LOG_CLEAN \) -delete 2>/dev/null
 
 echo
 echo "======================================"
