@@ -287,7 +287,7 @@ recebe uma \emph{string} com o \textbf{caminho} do arquivo:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Le o arquivo CSV e atribui a saida a variavel \textquotesingle{}socc\textquotesingle{}}
+\CommentTok{\# Lê o arquivo CSV e atribui a saída a variável \textquotesingle{}socc\textquotesingle{}}
 \NormalTok{socc }\OperatorTok{=}\NormalTok{ pd.read\_csv(}\StringTok{\textquotesingle{}data/socc\_gnm\_articles.csv\textquotesingle{}}\NormalTok{)}
 
 \CommentTok{\# Examina o tipo do objeto guardado em \textquotesingle{}socc\textquotesingle{}}
@@ -381,10 +381,10 @@ carregar. Primeiro, coletamos os arquivos com a classe \texttt{Path}
 \CommentTok{\# Importa a classe Path}
 \ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
 
-\CommentTok{\# Cria um objeto Path que aponta para o diretorio com os dados}
+\CommentTok{\# Cria um objeto Path que aponta para o diretório com os dados}
 \NormalTok{corpus\_dir }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{)}
 
-\CommentTok{\# Coleta todos os arquivos .txt no diretorio do corpus}
+\CommentTok{\# Coleta todos os arquivos .txt no diretório do corpus}
 \NormalTok{corpus\_files }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(corpus\_dir.glob(}\StringTok{\textquotesingle{}*.txt\textquotesingle{}}\NormalTok{))}
 
 \CommentTok{\# Verifica os arquivos do corpus}
@@ -409,10 +409,10 @@ com a função \texttt{range()}, entre 0 e a quantidade de arquivos
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Cria um DataFrame e atribui o resultado a variavel \textquotesingle{}df\textquotesingle{}}
+\CommentTok{\# Cria um DataFrame e atribui o resultado a variável \textquotesingle{}df\textquotesingle{}}
 \NormalTok{df }\OperatorTok{=}\NormalTok{ pd.DataFrame(index}\OperatorTok{=}\BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{, }\BuiltInTok{len}\NormalTok{(corpus\_files)), columns}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}filename\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{])}
 
-\CommentTok{\# Chama a variavel para inspecionar a saida}
+\CommentTok{\# Chama a variável para inspecionar a saída}
 \NormalTok{df}
 \end{Highlighting}
 \end{Shaded}
@@ -440,15 +440,15 @@ lemos o conteúdo e o adicionamos ao \texttt{DataFrame} com o acessador
 \CommentTok{\# Percorre os arquivos do corpus e conta cada volta com enumerate()}
 \ControlFlowTok{for}\NormalTok{ i, f }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(corpus\_files):}
 
-    \CommentTok{\# Le o conteudo do arquivo}
+    \CommentTok{\# Lê o conteúdo do arquivo}
 \NormalTok{    text }\OperatorTok{=}\NormalTok{ f.read\_text(encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
 
     \CommentTok{\# Pega o nome do arquivo do objeto Path}
 \NormalTok{    filename }\OperatorTok{=}\NormalTok{ f.name}
 
-    \CommentTok{\# Atribui o texto do arquivo ao indice \textquotesingle{}i\textquotesingle{} na coluna \textquotesingle{}text\textquotesingle{} usando}
+    \CommentTok{\# Atribui o texto do arquivo ao índice \textquotesingle{}i\textquotesingle{} na coluna \textquotesingle{}text\textquotesingle{} usando}
     \CommentTok{\# o acessador .at {-}{-} isso modifica o DataFrame "no lugar" (in place);}
-    \CommentTok{\# nao e preciso atribuir o resultado a uma variavel}
+    \CommentTok{\# não e preciso atribuir o resultado a uma variável}
 \NormalTok{    df.at[i, }\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ text}
 
     \CommentTok{\# Faz o mesmo com o nome do arquivo}
@@ -512,7 +512,7 @@ Vamos recuperar a coluna \texttt{author}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Recupera o conteudo da coluna \textquotesingle{}author\textquotesingle{} no DataFrame \textquotesingle{}socc\textquotesingle{}}
+\CommentTok{\# Recupera o conteúdo da coluna \textquotesingle{}author\textquotesingle{} no DataFrame \textquotesingle{}socc\textquotesingle{}}
 \NormalTok{socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{]}
 \end{Highlighting}
 \end{Shaded}
@@ -570,7 +570,7 @@ O método \texttt{value\_counts()} conta os valores únicos de uma
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Conta os valores unicos na coluna \textquotesingle{}author\textquotesingle{}}
+\CommentTok{\# Conta os valores únicos na coluna \textquotesingle{}author\textquotesingle{}}
 \NormalTok{socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{].value\_counts()}
 \end{Highlighting}
 \end{Shaded}
@@ -659,7 +659,7 @@ usa \textbf{dois} sinais (\texttt{==}):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Pega as linhas sem comentarios de nivel superior}
+\CommentTok{\# Pega as linhas sem comentários de nível superior}
 \NormalTok{socc.loc[socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{]}
 \end{Highlighting}
 \end{Shaded}
@@ -678,7 +678,7 @@ resultado (Hayden King) escreveu outros artigos com zero comentários:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Numero de comentarios de nivel superior para o autor Hayden King}
+\CommentTok{\# Número de comentários de nível superior para o autor Hayden King}
 \NormalTok{socc.loc[(socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (socc[}\StringTok{\textquotesingle{}author\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \StringTok{\textquotesingle{}Hayden King\textquotesingle{}}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
@@ -708,8 +708,8 @@ comentários --- basta dividir uma coluna pela outra:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Preenche a coluna \textquotesingle{}comments\_ratio\textquotesingle{} com a razao entre comentarios de}
-\CommentTok{\# nivel superior e o total de comentarios}
+\CommentTok{\# Preenche a coluna \textquotesingle{}comments\_ratio\textquotesingle{} com a razao entre comentários de}
+\CommentTok{\# nível superior e o total de comentários}
 \NormalTok{socc[}\StringTok{\textquotesingle{}comments\_ratio\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{/}\NormalTok{ socc[}\StringTok{\textquotesingle{}ncomments\textquotesingle{}}\NormalTok{]}
 \end{Highlighting}
 \end{Shaded}
@@ -736,7 +736,7 @@ teríamos dividido zero por zero:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Imprime os cinco primeiros artigos sem comentarios de nivel superior}
+\CommentTok{\# Imprime os cinco primeiros artigos sem comentários de nível superior}
 \NormalTok{socc.loc[socc[}\StringTok{\textquotesingle{}ntop\_level\_comments\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \DecValTok{0}\NormalTok{].head(}\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -822,7 +822,7 @@ aos títulos (que são \emph{strings}) da coluna \texttt{title}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Aplica o modelo de linguagem \textquotesingle{}nlp\textquotesingle{} ao conteudo da coluna \textquotesingle{}title\textquotesingle{}}
+\CommentTok{\# Aplica o modelo de linguagem \textquotesingle{}nlp\textquotesingle{} ao conteúdo da coluna \textquotesingle{}title\textquotesingle{}}
 \NormalTok{talk[}\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ talk[}\StringTok{\textquotesingle{}title\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(nlp)}
 \end{Highlighting}
 \end{Shaded}
@@ -832,7 +832,7 @@ Cada célula da coluna \texttt{processed\_title} agora contém um objeto
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Pega o valor da coluna \textquotesingle{}processed\_title\textquotesingle{} na linha de indice 2}
+\CommentTok{\# Pega o valor da coluna \textquotesingle{}processed\_title\textquotesingle{} na linha de índice 2}
 \NormalTok{talk.at[}\DecValTok{2}\NormalTok{, }\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{]}
 
 \CommentTok{\# Verifica o tipo do objeto contido}
@@ -857,8 +857,8 @@ substantivo} do título. Funções em Python são definidas com
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Define uma funcao \textquotesingle{}get\_nouns\textquotesingle{} que recebe um unico objeto como entrada.}
-\CommentTok{\# Referimo{-}nos a essa entrada pela variavel \textquotesingle{}nlp\_text\textquotesingle{}.}
+\CommentTok{\# Define uma função \textquotesingle{}get\_nouns\textquotesingle{} que recebe um único objeto como entrada.}
+\CommentTok{\# Referimo{-}nos a essa entrada pela variável \textquotesingle{}nlp\_text\textquotesingle{}.}
 \KeywordTok{def}\NormalTok{ get\_nouns(nlp\_text):}
 
     \CommentTok{\# Primeiro garantimos que a entrada e do tipo correto,}
@@ -887,7 +887,7 @@ automaticamente pela atribuição:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Aplica a funcao \textquotesingle{}get\_nouns\textquotesingle{} a coluna \textquotesingle{}processed\_title\textquotesingle{}}
+\CommentTok{\# Aplica a função \textquotesingle{}get\_nouns\textquotesingle{} a coluna \textquotesingle{}processed\_title\textquotesingle{}}
 \NormalTok{talk[}\StringTok{\textquotesingle{}nouns\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ talk[}\StringTok{\textquotesingle{}processed\_title\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(get\_nouns)}
 \end{Highlighting}
 \end{Shaded}
@@ -983,7 +983,7 @@ Para plotar os 10 substantivos mais frequentes, convertemos
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Converte a lista em uma pandas Series, conta os substantivos unicos com}
+\CommentTok{\# Converte a lista em uma pandas Series, conta os substantivos únicos com}
 \CommentTok{\# value\_counts(), pega os 10 mais frequentes [:10] e plota em barras.}
 \NormalTok{pd.Series(final\_list).value\_counts()[:}\DecValTok{10}\NormalTok{].plot(kind}\OperatorTok{=}\StringTok{\textquotesingle{}bar\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
@@ -1025,7 +1025,7 @@ Verificamos lendo de volta com \texttt{read\_pickle()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Le o DataFrame serializado e atribui o resultado a \textquotesingle{}df\_2\textquotesingle{}}
+\CommentTok{\# Lê o DataFrame serializado e atribui o resultado a \textquotesingle{}df\_2\textquotesingle{}}
 \NormalTok{df\_2 }\OperatorTok{=}\NormalTok{ pd.read\_pickle(}\StringTok{\textquotesingle{}data/pickled\_df.pkl\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}

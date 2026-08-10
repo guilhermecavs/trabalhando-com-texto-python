@@ -278,10 +278,10 @@ spaCy, que recebe o \textbf{nome do modelo} como entrada:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Carrega o modelo pequeno de lingua inglesa e o atribui a variavel \textquotesingle{}nlp\textquotesingle{}}
+\CommentTok{\# Carrega o modelo pequeno de língua inglesa e o atribui a variável \textquotesingle{}nlp\textquotesingle{}}
 \NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{)}
 
-\CommentTok{\# Chama a variavel para examinar o objeto}
+\CommentTok{\# Chama a variável para examinar o objeto}
 \NormalTok{nlp}
 \end{Highlighting}
 \end{Shaded}
@@ -363,10 +363,10 @@ Python, guardado na variável \texttt{text}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Atribui uma frase de exemplo a variavel \textquotesingle{}text\textquotesingle{}}
+\CommentTok{\# Atribui uma frase de exemplo a variável \textquotesingle{}text\textquotesingle{}}
 \NormalTok{text }\OperatorTok{=} \StringTok{"The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday."}
 
-\CommentTok{\# Chama a variavel para examinar o resultado}
+\CommentTok{\# Chama a variável para examinar o resultado}
 \NormalTok{text}
 \end{Highlighting}
 \end{Shaded}
@@ -384,7 +384,7 @@ spaCy.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Alimenta a string em \textquotesingle{}text\textquotesingle{} ao objeto Language em \textquotesingle{}nlp\textquotesingle{}}
-\CommentTok{\# Guarda o resultado na variavel \textquotesingle{}doc\textquotesingle{}}
+\CommentTok{\# Guarda o resultado na variável \textquotesingle{}doc\textquotesingle{}}
 \NormalTok{doc }\OperatorTok{=}\NormalTok{ nlp(text)}
 \end{Highlighting}
 \end{Shaded}
@@ -393,7 +393,7 @@ O objeto \texttt{Doc} agora está guardado na variável \texttt{doc}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Chama a variavel para examinar o objeto}
+\CommentTok{\# Chama a variável para examinar o objeto}
 \NormalTok{doc}
 \end{Highlighting}
 \end{Shaded}
@@ -432,7 +432,7 @@ Vamos imprimir cada objeto \texttt{Token} guardado em \texttt{doc}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
     \CommentTok{\# Imprime cada token}
@@ -469,10 +469,10 @@ Python inserindo o atributo após o objeto, separados por um ponto final
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
-    \CommentTok{\# Imprime o token e as anotacoes morfossintaticas genericas e detalhadas}
+    \CommentTok{\# Imprime o token e as anotações morfossintaticas genéricas e detalhadas}
     \BuiltInTok{print}\NormalTok{(token, token.pos\_, token.tag\_)}
 \end{Highlighting}
 \end{Shaded}
@@ -502,10 +502,10 @@ resultado no atributo \texttt{morph} de um objeto \texttt{Token}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
-    \CommentTok{\# Imprime o token e o resultado da analise morfologica}
+    \CommentTok{\# Imprime o token e o resultado da análise morfológica}
     \BuiltInTok{print}\NormalTok{(token, token.morph)}
 \end{Highlighting}
 \end{Shaded}
@@ -520,7 +520,7 @@ token do \texttt{Doc} (índice 22):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Recupera informacao morfologica sobre aspecto para o Token no indice 22 do objeto Doc}
+\CommentTok{\# Recupera informação morfológica sobre aspecto para o Token no índice 22 do objeto Doc}
 \NormalTok{doc[}\DecValTok{22}\NormalTok{].morph.get(}\StringTok{\textquotesingle{}Aspect\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -534,7 +534,7 @@ aspecto para o 22º token (índice 21):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Recupera informacao morfologica sobre aspecto para o Token no indice 21 do objeto Doc}
+\CommentTok{\# Recupera informação morfológica sobre aspecto para o Token no índice 21 do objeto Doc}
 \NormalTok{doc[}\DecValTok{21}\NormalTok{].morph.get(}\StringTok{\textquotesingle{}Aspect\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -550,8 +550,8 @@ de chave e valor:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Recupera informacao morfologica para o Token no indice 21 do objeto Doc}
-\CommentTok{\# Usa o metodo to\_dict() para converter o resultado em um dicionario}
+\CommentTok{\# Recupera informação morfológica para o Token no índice 21 do objeto Doc}
+\CommentTok{\# Usa o método to\_dict() para converter o resultado em um dicionário}
 \NormalTok{doc[}\DecValTok{21}\NormalTok{].morph.to\_dict()}
 \end{Highlighting}
 \end{Shaded}
@@ -564,7 +564,7 @@ uma chave pode ser acessado colocando o nome da chave entre colchetes
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Atribui a informacao morfologica ao dicionario \textquotesingle{}morph\_dict\textquotesingle{}}
+\CommentTok{\# Atribui a informação morfológica ao dicionário \textquotesingle{}morph\_dict\textquotesingle{}}
 \NormalTok{morph\_dict }\OperatorTok{=}\NormalTok{ doc[}\DecValTok{21}\NormalTok{].morph.to\_dict()}
 
 \CommentTok{\# Recupera o valor correspondente a chave \textquotesingle{}Mood\textquotesingle{}}
@@ -585,10 +585,10 @@ objeto \texttt{Token}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
-    \CommentTok{\# Imprime o token e sua etiqueta de dependencia}
+    \CommentTok{\# Imprime o token e sua etiqueta de dependência}
     \BuiltInTok{print}\NormalTok{(token, token.dep\_)}
 \end{Highlighting}
 \end{Shaded}
@@ -619,10 +619,10 @@ informação com \texttt{.head.i}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
-    \CommentTok{\# Imprime o indice do token atual, o token, a dependencia, o governante e seu indice}
+    \CommentTok{\# Imprime o índice do token atual, o token, a dependência, o governante e seu índice}
     \BuiltInTok{print}\NormalTok{(token.i, token, token.dep\_, token.head.i, token.head)}
 \end{Highlighting}
 \end{Shaded}
@@ -720,10 +720,10 @@ cada item do laço:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre as sentencas no objeto Doc e as conta usando enumerate()}
+\CommentTok{\# Percorre as sentenças no objeto Doc e as conta usando enumerate()}
 \ControlFlowTok{for}\NormalTok{ number, sent }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(doc.sents):}
 
-    \CommentTok{\# Imprime o numero e a sentenca}
+    \CommentTok{\# Imprime o número e a sentença}
     \BuiltInTok{print}\NormalTok{(number, sent)}
 \end{Highlighting}
 \end{Shaded}
@@ -746,7 +746,7 @@ cada \texttt{Token} no atributo \texttt{lemma\_}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens no objeto Doc, usando a variavel \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
+\CommentTok{\# Percorre os itens no objeto Doc, usando a variável \textquotesingle{}token\textquotesingle{} para se referir aos itens da lista}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
 
     \CommentTok{\# Imprime o token e seu lema}
@@ -812,7 +812,7 @@ entidade nomeada:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Imprime a entidade nomeada e os indices de seus tokens de inicio e fim}
+\CommentTok{\# Imprime a entidade nomeada e os índices de seus tokens de início e fim}
 \BuiltInTok{print}\NormalTok{(doc.ents[}\DecValTok{0}\NormalTok{], doc.ents[}\DecValTok{0}\NormalTok{].start, doc.ents[}\DecValTok{0}\NormalTok{].end)}
 \end{Highlighting}
 \end{Shaded}
@@ -839,7 +839,7 @@ do \texttt{Doc} correspondente à primeira entidade nomeada:
 \CommentTok{\# Percorre um recorte do objeto Doc que cobre a primeira entidade nomeada}
 \ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc[doc.ents[}\DecValTok{0}\NormalTok{].start: doc.ents[}\DecValTok{0}\NormalTok{].end]:}
 
-    \CommentTok{\# Imprime o token e seu indice}
+    \CommentTok{\# Imprime o token e seu índice}
     \BuiltInTok{print}\NormalTok{(token, token.i)}
 \end{Highlighting}
 \end{Shaded}

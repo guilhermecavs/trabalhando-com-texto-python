@@ -1,0 +1,51 @@
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+============================================================================
+
+Este material — o curso "Trabalhando com Texto em Python I" — é uma ADAPTAÇÃO e
+TRADUÇÃO para o português do curso "Applied Language Technology", de Tuomo
+Hiippala (em colaboração com o mooc.fi), que é licenciado sob a licença
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
+
+Por ser um trabalho derivado, este material é distribuído sob a MESMA licença:
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
+
+Você tem a liberdade de:
+  • Compartilhar — copiar e redistribuir o material em qualquer meio ou formato;
+  • Adaptar — remixar, transformar e criar a partir do material.
+
+Sob os seguintes termos:
+  • Atribuição (BY) — você deve dar o crédito apropriado, fornecer um link para
+    a licença e indicar se foram feitas alterações.
+  • NãoComercial (NC) — você não pode usar o material para fins comerciais.
+
+Sem restrições adicionais — você não pode aplicar termos jurídicos ou medidas de
+caráter tecnológico que restrinjam legalmente outros de fazer algo que a licença
+permita.
+
+Texto legal completo da licença:
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode.pt
+Resumo legível por humanos:
+  https://creativecommons.org/licenses/by-nc/4.0/deed.pt_BR
+
+----------------------------------------------------------------------------
+ATRIBUIÇÃO
+----------------------------------------------------------------------------
+
+Obra original:
+  Hiippala, Tuomo (2021). Applied Language Technology: NLP for the Humanities.
+  https://applied-language-technology.mooc.fi/
+  © 2020– Tuomo Hiippala, em colaboração com o mooc.fi. Licença: CC BY-NC 4.0.
+
+Adaptação e tradução para o português:
+  Guilherme Carvalho Santos, Gabriel Alves Fagundes e Jean Lineker de Paula Gomes.
+  Programa CiberExt 26-29 / Atividade Curricular de Extensão FEELT38103,
+  Faculdade de Engenharia Elétrica — Universidade Federal de Uberlândia (UFU), 2026.
+
+----------------------------------------------------------------------------
+NOTA SOBRE O CÓDIGO
+----------------------------------------------------------------------------
+
+Os arquivos de código auxiliares criados pela equipe (scripts em `assets/`,
+exercícios e testes em `exercicios/` e soluções em `respostas/`) também podem
+ser reutilizados livremente para fins educacionais não comerciais, nos termos
+acima.

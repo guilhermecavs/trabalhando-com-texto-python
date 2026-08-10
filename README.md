@@ -1,5 +1,11 @@
 # Trabalhando com Texto em Python I
 
+<p align="center">
+  <a href="https://guilhermecavs.github.io/trabalhando-com-texto-python/"><img src="https://img.shields.io/badge/Acesse%20o%20curso-online-6c4cf1?style=for-the-badge&logo=firefox&logoColor=white" alt="Acesse o curso online"></a>
+  <a href="Curso-Trabalhando-com-Texto-em-Python-I.pdf"><img src="https://img.shields.io/badge/PDF%20completo-60%20p%C3%A1ginas-00b4d8?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="PDF completo"></a>
+  <img src="https://img.shields.io/badge/licen%C3%A7a-CC%20BY--NC%204.0-10b981?style=for-the-badge" alt="Licença CC BY-NC 4.0">
+</p>
+
 Material do curso massivo aberto (MOOC) **"Trabalhando com Texto em Python I"**,
 produzido pela equipe discente no âmbito do **Programa CiberExt 26‑29** /
 Atividade Curricular de Extensão **FEELT38103** — Universidade Federal de
@@ -11,6 +17,18 @@ O conteúdo é uma adaptação e tradução para o português do curso
 in Python**. O curso ensina a processar texto em Python: da manipulação de texto
 simples e expressões regulares ao **spaCy** (processamento de linguagem natural),
 à **avaliação de modelos** e ao **pandas**.
+
+## O que você aprende
+
+Ao final do curso, você será capaz de:
+
+- **manipular textos** com Python (métodos de *string*, substituições, expressões regulares);
+- **trabalhar com arquivos e codificações** (texto simples, ASCII/UTF‑8, ler e gravar arquivos);
+- **realizar processamento linguístico** com o spaCy (tokenização, classes gramaticais, análise sintática, lematização e entidades nomeadas);
+- **customizar e otimizar** um *pipeline* de PLN e salvar resultados em disco;
+- **avaliar modelos de linguagem** (concordância entre anotadores, kappa de Cohen, precisão, revocação e F1);
+- **extrair características de textos** e organizá‑las em tabelas com o pandas;
+- **aplicar técnicas básicas de análise de dados textuais** (filtragem, estatísticas descritivas e visualização).
 
 ## Acesso rápido
 
@@ -58,6 +76,17 @@ a resposta destacada) e um **resumo**. Além do conteúdo, o material inclui:
 
 ---
 
+## Como utilizar este curso
+
+1. **Comece pela [Unidade 0](Unidade-0/unidade0_preparando_ambiente.html)** para preparar o ambiente (Python, bibliotecas, modelo do spaCy e dados).
+2. **Estude as unidades em ordem** (1 → 5): leia o conteúdo, experimente os exemplos de código no Jupyter ou num arquivo `.py` e responda ao **quiz** ao final de cada unidade.
+3. **Faça os exercícios** da unidade em [`exercicios/`](exercicios/): edite o arquivo `unidadeN_exercicios.py`, substituindo cada `todo(...)` pela sua solução, e rode os testes até aparecer `OK` (veja "Como resolver os exercícios", abaixo).
+4. **Só depois** confira as soluções em [`respostas/`](respostas/), se precisar.
+
+Você pode ler o conteúdo de três formas: **online** (o [site](https://guilhermecavs.github.io/trabalhando-com-texto-python/)), pelos **arquivos `.html`** de cada unidade ou pelo **PDF**.
+
+---
+
 ## O que cada arquivo/pasta significa
 
 ```
@@ -98,6 +127,23 @@ a resposta destacada) e um **resumo**. Além do conteúdo, o material inclui:
 único que se edita à mão. O `.html`, o `.tex` e o `.pdf` são **gerados** a partir
 dele. Na pasta `exercicios/`, o aluno edita o `unidadeN_exercicios.py`; o
 `unidadeN_test.py` corrige. Na pasta `respostas/` está o gabarito.
+
+---
+
+## Tecnologias utilizadas
+
+| Tecnologia | Para quê |
+|---|---|
+| **Python 3** | linguagem usada em todo o curso e nos exercícios |
+| **spaCy** | processamento de linguagem natural (Unidades 2 e 3) |
+| **pandas** | dados tabulares / textuais (Unidade 5) |
+| **scikit‑learn** | métricas de avaliação (Unidade 4) |
+| **matplotlib** | visualização de dados (Unidade 5) |
+| **unittest** (biblioteca padrão) | correção automática dos exercícios |
+| **Markdown + pandoc** | fonte única que gera HTML, LaTeX e PDF |
+| **LaTeX (pdfLaTeX)** | geração dos PDFs |
+| **SVG + librsvg** | diagramas (vetoriais no HTML, convertidos para PDF no LaTeX) |
+| **Git + GitHub Pages** | versionamento e publicação do site |
 
 ---
 
@@ -142,6 +188,17 @@ Enquanto houver `todo(...)` no arquivo, os testes falham de propósito. Quando
 aparecer `OK`, os exercícios daquela unidade estão corretos. Os testes **não
 precisam** de spaCy/pandas — usam só a biblioteca padrão do Python. Detalhes em
 [`exercicios/README.md`](exercicios/README.md).
+
+---
+
+## Licença
+
+Este material é uma **adaptação** do curso *Applied Language Technology* (Tuomo
+Hiippala / mooc.fi), que é licenciado sob **Creative Commons
+Attribution‑NonCommercial 4.0 International (CC BY‑NC 4.0)**. Por ser um trabalho
+derivado, este curso é distribuído sob a **mesma licença** — você pode
+compartilhá‑lo e adaptá‑lo para **fins não comerciais**, desde que dê o devido
+crédito. Detalhes e atribuição completa em [`LICENSE`](LICENSE).
 
 ---
 

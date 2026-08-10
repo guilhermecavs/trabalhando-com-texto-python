@@ -19,14 +19,14 @@ Ao final desta unidade, você deverá saber:
 Vamos começar importando a biblioteca spaCy e o módulo `displacy`, usado para desenhar árvores de dependência, e carregando um modelo de linguagem para o inglês:
 
 ```python
-# Importa a biblioteca spaCy e o modulo displacy
+# Importa a biblioteca spaCy e o módulo displacy
 from spacy import displacy
 import spacy
 
-# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+# Carrega um modelo pequeno de língua inglesa e o atribui a variável 'nlp'
 nlp = spacy.load('en_core_web_sm')
 
-# Chama a variavel para examinar o objeto
+# Chama a variável para examinar o objeto
 nlp
 ```
 
@@ -76,8 +76,8 @@ Componentes como `tagger`, `parser`, `ner` e `lemmatizer` já devem ser familiar
 Para excluir um componente, forneça o argumento `exclude` com uma *string* (ou uma lista) contendo os nomes dos componentes a excluir, ao inicializar o objeto `Language` com a função `load()`:
 
 ```python
-# Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de
-# entidades nomeadas ('ner') e a analise de dependencias sintaticas ('parser').
+# Carrega um modelo pequeno de língua inglesa, mas exclui o reconhecimento de
+# entidades nomeadas ('ner') e a análise de dependências sintáticas ('parser').
 nlp = spacy.load('en_core_web_sm', exclude=['ner', 'parser'])
 
 # Examina os componentes ativos no objeto Language 'nlp'
@@ -98,7 +98,7 @@ Como mostra a saída, os componentes `ner` e `parser` **não** estão mais no pi
 O objeto `Language` também fornece o método `analyze_pipes()`, que dá uma visão geral dos componentes e de suas interações. Definindo o atributo `pretty` como `True`, o spaCy imprime uma tabela com os componentes e as anotações que produzem:
 
 ```python
-# Analisa o pipeline e guarda a analise na variavel 'pipe_analysis'
+# Analisa o pipeline e guarda a análise na variável 'pipe_analysis'
 pipe_analysis = nlp.analyze_pipes(pretty=True)
 ```
 
@@ -131,11 +131,11 @@ Isso retorna um dicionário com os nomes dos componentes como chaves, cujos valo
 Podemos escrever facilmente um trecho de código que **verifica** se isso é realmente verdade. Para isso, percorremos o dicionário `pipe_analysis` usando o método `items()` para obter os pares chave/valor, e usamos a instrução `assert` com a função `len()` e o operador de comparação `==` para checar que a lista tem tamanho `0`. Se essa afirmação **não** for verdadeira (ou seja, se houver algum problema), o Python levanta um `AssertionError` e para:
 
 ```python
-# Percorre os pares chave/valor do dicionario. Atribui a chave e o valor
-# as variaveis 'component_name' e 'problem_list'.
+# Percorre os pares chave/valor do dicionário. Atribui a chave e o valor
+# as variáveis 'component_name' e 'problem_list'.
 for component_name, problem_list in pipe_analysis['problems'].items():
 
-    # Usa 'assert' para checar a lista de problemas; levanta Error se necessario.
+    # Usa 'assert' para checar a lista de problemas; levanta Error se necessário.
     assert len(problem_list) == 0, f"There is a problem with {component_name}: {problem_list}!"
 ```
 
@@ -148,8 +148,8 @@ Aqui também imprimimos uma mensagem de erro usando uma *f‑string*: o `f` ante
 Ao trabalhar com grandes volumes de dados, é altamente desejável processá‑los da forma mais eficiente possível. Para ilustrar as boas práticas, vamos definir um exemplo com uma **lista** de três frases da Wikipédia em inglês:
 
 ```python
-# Reinicializa o modelo de linguagem, pois precisamos da analise de
-# dependencias nas proximas secoes.
+# Reinicializa o modelo de linguagem, pois precisamos da análise de
+# dependências nas próximas seções.
 nlp = spacy.load('en_core_web_sm')
 
 # Define uma lista de frases de exemplo
@@ -157,7 +157,7 @@ sents = ["On October 1, 2009, the Obama administration went ahead with a Bush ad
          "The 'Complex Modernization' initiative expanded two existing nuclear sites to produce new bomb parts.",
          "The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee."]
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 sents
 ```
 
@@ -166,10 +166,10 @@ Os objetos `Language` do spaCy têm um método específico, `pipe()`, para proce
 O método `pipe()` recebe uma lista como entrada e retorna um **gerador** (*generator*) do Python:
 
 ```python
-# Alimenta a lista de frases ao metodo pipe()
+# Alimenta a lista de frases ao método pipe()
 docs = nlp.pipe(sents)
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 docs
 ```
 
@@ -183,7 +183,7 @@ Geradores são objetos do Python que contêm outros objetos. Quando chamado, um 
 # Converte o gerador pipe em uma lista
 docs = list(docs)
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 docs
 ```
 
@@ -198,11 +198,11 @@ A unidade anterior mostrou como acessar as anotações linguísticas do spaCy po
 Atributos personalizados são adicionados ao objeto `Doc` com o método `set_extension()`. Como esses atributos são adicionados a **todos** os objetos `Doc` (e não a um `Doc` individual), primeiro importamos o objeto `Doc` genérico do módulo `tokens` do spaCy:
 
 ```python
-# Importa o objeto Doc do modulo 'tokens' do spaCy
+# Importa o objeto Doc do módulo 'tokens' do spaCy
 from spacy.tokens import Doc
 
 # Adiciona dois atributos personalizados ao objeto Doc, 'age' e 'location',
-# usando o metodo set_extension().
+# usando o método set_extension().
 Doc.set_extension("age", default=None)
 Doc.set_extension("location", default=None)
 ```
@@ -216,8 +216,8 @@ Usamos o argumento `default` para definir um valor padrão para ambos, com a pal
 Para exemplificar, vamos definir um dicionário Python. O dicionário `sents_dict` tem três chaves (`0`, `1` e `2`), cujos valores são, por sua vez, dicionários com três chaves: `age`, `location` e `text`. Isso mostra como as estruturas de dados do Python costumam ser **aninhadas**:
 
 ```python
-# Cria um dicionario cujos valores sao outros dicionarios
-# com tres chaves: 'age', 'location' e 'text'.
+# Cria um dicionário cujos valores são outros dicionários
+# com três chaves: 'age', 'location' e 'text'.
 sents_dict = {0: {"age": 23,
                   "location": "Helsinki",
                   "text": "The Senate Square is by far the most important landmark in Helsinki."
@@ -239,17 +239,17 @@ Vamos percorrer o dicionário `sents_dict` para processar os exemplos e adiciona
 # Prepara uma lista vazia para guardar os textos processados
 docs = []
 
-# Percorre os pares de chave e valor do dicionario 'sents_dict'.
-# Os pares chave/valor ficam disponiveis pelo metodo items().
+# Percorre os pares de chave e valor do dicionário 'sents_dict'.
+# Os pares chave/valor ficam disponiveis pelo método items().
 # Chamamos essas chaves e valores de 'key' e 'data'; ou seja, usamos
-# a variavel 'data' para se referir ao dicionario aninhado.
+# a variável 'data' para se referir ao dicionário aninhado.
 for key, data in sents_dict.items():
 
-    # Recupera o valor da chave 'text' do dicionario aninhado.
+    # Recupera o valor da chave 'text' do dicionário aninhado.
     # Alimenta esse texto ao modelo em 'nlp' e guarda o resultado em 'doc'.
     doc = nlp(data['text'])
 
-    # Recupera os valores de 'age' e 'location' do dicionario aninhado.
+    # Recupera os valores de 'age' e 'location' do dicionário aninhado.
     # Atribui esses valores aos atributos personalizados do objeto Doc.
     # Lembre-se: atributos personalizados ficam sob o pseudo-atributo '_'!
     doc._.age = data['age']
@@ -288,7 +288,7 @@ Os atributos personalizados podem ser usados, por exemplo, para **filtrar** os d
 # 'age' tenha valor abaixo de 40.
 under_forty = [doc for doc in docs if doc._.get('age') < 40]
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 under_forty
 ```
 
@@ -308,7 +308,7 @@ Ao trabalhar com grandes volumes de textos, primeiro garanta que o pipeline prod
 O spaCy oferece um tipo de objeto especial, o `DocBin`, para armazenar objetos `Doc` com suas anotações linguísticas:
 
 ```python
-# Importa o objeto DocBin do modulo 'tokens' do spaCy
+# Importa o objeto DocBin do módulo 'tokens' do spaCy
 from spacy.tokens import DocBin
 
 # Inicializa um objeto DocBin e adiciona os Docs de 'docs'
@@ -322,7 +322,7 @@ docbin = DocBin(docs=docs)
 Podemos verificar que os três `Doc`s entraram no `DocBin` examinando a saída do método `__len__()`:
 
 ```python
-# Obtem o numero de Docs no DocBin
+# Obtem o número de Docs no DocBin
 docbin.__len__()
 ```
 
@@ -356,10 +356,10 @@ Para **carregar** um `DocBin` do disco, primeiro inicialize um `DocBin` vazio co
 
 ```python
 # Inicializa um novo DocBin e usa 'from_disk' para carregar os dados do disco.
-# Atribui o resultado a variavel 'docbin_loaded'.
+# Atribui o resultado a variável 'docbin_loaded'.
 docbin_loaded = DocBin().from_disk(path='data/docbin.spacy')
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 docbin_loaded
 ```
 
@@ -375,7 +375,7 @@ Por fim, para acessar os objetos `Doc` guardados no `DocBin`, use o método `get
 # Converte o gerador resultante em uma lista para exame.
 docs_loaded = list(docbin_loaded.get_docs(nlp.vocab))
 
-# Chama a variavel para examinar a saida
+# Chama a variável para examinar a saída
 docs_loaded
 ```
 
@@ -424,7 +424,7 @@ Södermalm
 Para **mesclar** os sintagmas nominais em um único token, o spaCy oferece a função `merge_noun_chunks`, que pode ser adicionada ao pipeline com o método `add_pipe`:
 
 ```python
-# Adiciona o componente que mescla sintagmas nominais em Tokens unicos
+# Adiciona o componente que mescla sintagmas nominais em Tokens únicos
 nlp.add_pipe('merge_noun_chunks')
 ```
 
@@ -475,7 +475,7 @@ Embora os sintagmas nominais estejam agora representados por tokens únicos, ele
 # Percorre os sintagmas nominais do primeiro Doc [0] na lista 'docs'
 for noun_chunk in docs[0].noun_chunks:
 
-    # Imprime o sintagma, seu tipo, e os indices onde comeca e termina
+    # Imprime o sintagma, seu tipo, e os índices onde começa e termina
     print(noun_chunk, type(noun_chunk), noun_chunk.start, noun_chunk.end)
 ```
 
@@ -491,7 +491,7 @@ nuclear weapons production <class 'spacy.tokens.span.Span'> 13 14
 Entidades nomeadas podem ser mescladas do mesmo modo, fornecendo `merge_entities` ao método `add_pipe()`. Primeiro, removemos a função `merge_noun_chunks` do pipeline com o método `remove_pipe()`:
 
 ```python
-# Remove a funcao 'merge_noun_chunks' do pipeline em 'nlp'
+# Remove a função 'merge_noun_chunks' do pipeline em 'nlp'
 nlp.remove_pipe('merge_noun_chunks')
 
 # Processa as frases originais novamente
@@ -501,7 +501,7 @@ docs = list(nlp.pipe(sents))
 O método retorna uma tupla com o nome do componente removido e o próprio componente. Em seguida, adicionamos o componente `merge_entities`:
 
 ```python
-# Adiciona a funcao 'merge_entities' ao pipeline
+# Adiciona a função 'merge_entities' ao pipeline
 nlp.add_pipe('merge_entities')
 
 # Processa os dados novamente

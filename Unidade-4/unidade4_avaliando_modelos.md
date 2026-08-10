@@ -58,13 +58,13 @@ Ao criar conjuntos de dados para treinar modelos, geralmente queremos que os dad
 Uma forma de medir isso é a **concordância percentual** simples: quantas vezes, das 10, você e o colega concordaram. Basta dividir o número de concordâncias pelo número de itens (10):
 
 ```python
-# Substitua o numero abaixo pelo numero de itens em que voces concordaram
+# Substitua o número abaixo pelo número de itens em que voces concordaram
 agreement = 0
 
-# Divide a contagem pelo numero de tweets
+# Divide a contagem pelo número de tweets
 agreement = agreement / 10
 
-# Imprime a variavel
+# Imprime a variável
 agreement
 ```
 
@@ -89,7 +89,7 @@ positive = positive / 10
 neutral = neutral / 10
 negative = negative / 10
 
-# Chama cada variavel para examinar a saida
+# Chama cada variável para examinar a saída
 positive, neutral, negative
 ```
 
@@ -169,10 +169,10 @@ O κ de Cohen serve para medir a concordância entre **dois** anotadores, e as c
 Na prática, o κ de Cohen (e muitas outras medidas) já está implementado em bibliotecas Python — raramente é preciso calcular à mão. A biblioteca **scikit‑learn** (`sklearn`), por exemplo, inclui a função `cohen_kappa_score()`, que recebe **duas listas** e calcula o κ entre elas:
 
 ```python
-# Importa a funcao cohen_kappa_score do modulo 'metrics' da scikit-learn
+# Importa a função cohen_kappa_score do módulo 'metrics' da scikit-learn
 from sklearn.metrics import cohen_kappa_score
 
-# Define duas listas, 'a1' e 'a2', com anotacoes de classes gramaticais
+# Define duas listas, 'a1' e 'a2', com anotações de classes gramaticais
 a1 = ['ADJ', 'AUX', 'NOUN', 'VERB', 'VERB']
 a2 = ['ADJ', 'VERB', 'NOUN', 'NOUN', 'VERB']
 
@@ -197,7 +197,7 @@ Segundo o *benchmark* de Landis e Koch, esse valor indicaria concordância **mod
 Com um padrão‑ouro suficientemente confiável, podemos usá‑lo para medir o desempenho de modelos de linguagem. Suponha um padrão‑ouro com 10 tokens anotados por classe gramatical, na lista `gold_standard`, e as previsões de um modelo na lista `predictions`:
 
 ```python
-# Define a lista 'gold_standard' (padrao-ouro anotado por humanos)
+# Define a lista 'gold_standard' (padrão-ouro anotado por humanos)
 gold_standard = ['ADJ', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'NOUN', 'ADJ', 'DET', 'PRON']
 
 # Define a lista 'predictions' (previsoes do modelo de linguagem)
@@ -209,10 +209,10 @@ predictions = ['NOUN', 'ADJ', 'AUX', 'VERB', 'AUX', 'NOUN', 'VERB', 'ADJ', 'DET'
 Vamos importar o módulo `metrics` inteiro da scikit‑learn. A função `accuracy_score()` calcula a **acurácia**, que é exatamente a mesma coisa que a concordância observada calculada manualmente:
 
 ```python
-# Importa o modulo 'metrics' da biblioteca scikit-learn (sklearn)
+# Importa o módulo 'metrics' da biblioteca scikit-learn (sklearn)
 from sklearn import metrics
 
-# Usa a funcao accuracy_score() do modulo 'metrics'
+# Usa a função accuracy_score() do módulo 'metrics'
 metrics.accuracy_score(gold_standard, predictions)
 ```
 
@@ -227,7 +227,7 @@ A acurácia sofre do mesmo problema da concordância observada — pode ser resu
 Para avaliar melhor o modelo, organizamos os resultados em uma **matriz de confusão**. Precisamos de todas as classes gramaticais que aparecem em `gold_standard` e `predictions`. Coletamos as categorias únicas com a função `set()` — um **conjunto** (*set*) é uma estrutura do Python com itens únicos, útil aqui para remover duplicatas:
 
 ```python
-# Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas
+# Coleta as classes gramaticais únicas em um conjunto, combinando as duas listas
 pos_tags = set(gold_standard + predictions)
 
 # Ordena o conjunto alfabeticamente e converte o resultado em lista
@@ -274,7 +274,7 @@ As previsões corretas formam uma **linha aproximadamente diagonal** na tabela. 
 A scikit‑learn gera matrizes de confusão automaticamente com `confusion_matrix()`:
 
 ```python
-# Calcula a matriz de confusao para as duas listas e imprime o resultado
+# Calcula a matriz de confusão para as duas listas e imprime o resultado
 print(metrics.confusion_matrix(gold_standard, predictions))
 ```
 
@@ -293,10 +293,10 @@ print(metrics.confusion_matrix(gold_standard, predictions))
 A **precisão** é implementada na função `precision_score()`. Como temos **mais de duas** classes, precisamos definir como os resultados de cada classe são combinados, pelo argumento `average`. Com `average=None`, a função calcula a precisão **de cada classe**. Também definimos `zero_division=0` para evitar erro quando uma classe de `predictions` não existe em `gold_standard` (nesses casos, a precisão é 0):
 
 ```python
-# Calcula a precisao entre as duas listas, para cada classe (classe gramatical)
+# Calcula a precisão entre as duas listas, para cada classe (classe gramatical)
 precision = metrics.precision_score(gold_standard, predictions, average=None, zero_division=0)
 
-# Chama a variavel para examinar o resultado
+# Chama a variável para examinar o resultado
 precision
 ```
 
@@ -308,7 +308,7 @@ A saída é um **array NumPy**. Para combinar os rótulos de `pos_tags` com as p
 
 ```python
 # Combina o conjunto 'pos_tags' com o array 'precision' usando zip();
-# converte o resultado em um dicionario
+# converte o resultado em um dicionário
 dict(zip(pos_tags, precision))
 ```
 
@@ -319,10 +319,10 @@ dict(zip(pos_tags, precision))
 Para uma **única** pontuação de precisão para todas as classes, usamos `average='macro'`, que trata cada classe como igualmente importante, independentemente de quantas instâncias ela tem:
 
 ```python
-# Calcula a precisao entre as duas listas e tira a media (macro)
+# Calcula a precisão entre as duas listas e tira a média (macro)
 macro_precision = metrics.precision_score(gold_standard, predictions, average='macro', zero_division=0)
 
-# Chama a variavel para examinar o resultado
+# Chama a variável para examinar o resultado
 macro_precision
 ```
 
@@ -333,8 +333,8 @@ macro_precision
 A precisão **macro** é a soma das precisões dividida pelo número de classes — dá para verificar manualmente:
 
 ```python
-# Calcula a media macro manualmente: soma as precisoes e divide
-# pelo numero de classes em 'precision'
+# Calcula a média macro manualmente: soma as precisões e divide
+# pelo número de classes em 'precision'
 sum(precision) / len(precision)
 ```
 
@@ -348,7 +348,7 @@ A **revocação** é calculada do mesmo modo, com `recall_score()`:
 # Calcula a revocacao entre as duas listas, para cada classe
 recall = metrics.recall_score(gold_standard, predictions, average=None, zero_division=0)
 
-# Combina 'pos_tags' com o array 'recall' e converte em dicionario
+# Combina 'pos_tags' com o array 'recall' e converte em dicionário
 dict(zip(pos_tags, recall))
 ```
 

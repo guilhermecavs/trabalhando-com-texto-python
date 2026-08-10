@@ -35,10 +35,10 @@ O spaCy oferece suporte a muitos idiomas, mas disponibiliza **modelos pré‑tre
 Os modelos de linguagem são carregados com a função `load()` do spaCy, que recebe o **nome do modelo** como entrada:
 
 ```python
-# Carrega o modelo pequeno de lingua inglesa e o atribui a variavel 'nlp'
+# Carrega o modelo pequeno de língua inglesa e o atribui a variável 'nlp'
 nlp = spacy.load('en_core_web_sm')
 
-# Chama a variavel para examinar o objeto
+# Chama a variável para examinar o objeto
 nlp
 ```
 
@@ -76,10 +76,10 @@ Para processar um texto usando o objeto `Language` que contém o modelo de lingu
 Vamos definir uma frase de teste simples — um objeto *string* do Python, guardado na variável `text`:
 
 ```python
-# Atribui uma frase de exemplo a variavel 'text'
+# Atribui uma frase de exemplo a variável 'text'
 text = "The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday."
 
-# Chama a variavel para examinar o resultado
+# Chama a variável para examinar o resultado
 text
 ```
 
@@ -89,14 +89,14 @@ Esse objeto contém tanto o texto de entrada (`text`) quanto os **resultados** d
 
 ```python
 # Alimenta a string em 'text' ao objeto Language em 'nlp'
-# Guarda o resultado na variavel 'doc'
+# Guarda o resultado na variável 'doc'
 doc = nlp(text)
 ```
 
 O objeto `Doc` agora está guardado na variável `doc`:
 
 ```python
-# Chama a variavel para examinar o objeto
+# Chama a variável para examinar o objeto
 doc
 ```
 
@@ -113,7 +113,7 @@ Na maioria dos casos, um **token** corresponde a uma palavra separada por espaç
 Um objeto `Doc` do spaCy é composto por uma sequência de objetos `Token`, que armazenam os resultados das diversas tarefas de PLN. Vamos imprimir cada objeto `Token` guardado em `doc`:
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
     # Imprime cada token
@@ -131,10 +131,10 @@ Considere o exemplo em inglês: *"The sailor **dogs** the hatch."* (algo como "O
 O spaCy fornece dois tipos de anotação morfossintática, uma **genérica** (*coarse*) e uma **detalhada** (*fine‑grained*), guardadas respectivamente nos atributos `pos_` e `tag_`. Acessamos os atributos de um objeto Python inserindo o atributo após o objeto, separados por um ponto final — por exemplo, `token.pos_`.
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
-    # Imprime o token e as anotacoes morfossintaticas genericas e detalhadas
+    # Imprime o token e as anotações morfossintaticas genéricas e detalhadas
     print(token, token.pos_, token.tag_)
 ```
 
@@ -149,17 +149,17 @@ Em outras palavras, os morfemas moldam a forma externa de uma palavra, e essas f
 O spaCy realiza a análise morfológica automaticamente, guardando o resultado no atributo `morph` de um objeto `Token`:
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
-    # Imprime o token e o resultado da analise morfologica
+    # Imprime o token e o resultado da análise morfológica
     print(token, token.morph)
 ```
 
 Como mostra a saída, **nem todos os tokens** têm informação morfológica — alguns consistem em morfemas livres, sem flexão. Para recuperar informação morfológica de um `Token`, usamos o método `get()` do atributo `morph`. Podemos usar colchetes `[]` para acessar itens no objeto `Doc`. A linha a seguir recupera a informação morfológica de **aspecto** para o 23º token do `Doc` (índice 22):
 
 ```python
-# Recupera informacao morfologica sobre aspecto para o Token no indice 22 do objeto Doc
+# Recupera informação morfológica sobre aspecto para o Token no índice 22 do objeto Doc
 doc[22].morph.get('Aspect')
 ```
 
@@ -168,7 +168,7 @@ Isso retorna uma lista com um único item, a *string* `Perf`, que se refere ao *
 O que acontece se tentarmos recuperar uma característica morfológica que o token **não possui**? Vamos tentar recuperar a informação de aspecto para o 22º token (índice 21):
 
 ```python
-# Recupera informacao morfologica sobre aspecto para o Token no indice 21 do objeto Doc
+# Recupera informação morfológica sobre aspecto para o Token no índice 21 do objeto Doc
 doc[21].morph.get('Aspect')
 ```
 
@@ -177,15 +177,15 @@ Isso retorna uma **lista vazia**, indicada pelos colchetes `[ ]` sem nada entre 
 Para recuperar **toda** a informação morfológica disponível para um dado `Token`, a melhor solução é usar o método `to_dict()` do atributo `morph`. Isso retorna um **dicionário**, uma estrutura de dados do Python composta por pares de chave e valor:
 
 ```python
-# Recupera informacao morfologica para o Token no indice 21 do objeto Doc
-# Usa o metodo to_dict() para converter o resultado em um dicionario
+# Recupera informação morfológica para o Token no índice 21 do objeto Doc
+# Usa o método to_dict() para converter o resultado em um dicionário
 doc[21].morph.to_dict()
 ```
 
 Um dicionário Python é delimitado por chaves `{ }`. Cada par chave/valor é separado por dois‑pontos `:`. Nesse caso, tanto as chaves quanto os valores são objetos *string*. O valor guardado em uma chave pode ser acessado colocando o nome da chave entre colchetes `[ ]` logo após o nome do dicionário:
 
 ```python
-# Atribui a informacao morfologica ao dicionario 'morph_dict'
+# Atribui a informação morfológica ao dicionário 'morph_dict'
 morph_dict = doc[21].morph.to_dict()
 
 # Recupera o valor correspondente a chave 'Mood'
@@ -199,10 +199,10 @@ Dicionários são uma estrutura de dados poderosa em Python, que usaremos com fr
 A **análise sintática** (ou *parsing* de dependências) é a tarefa de definir as **dependências sintáticas** entre tokens. Essas dependências ficam disponíveis no atributo `dep_` de um objeto `Token`:
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
-    # Imprime o token e sua etiqueta de dependencia
+    # Imprime o token e sua etiqueta de dependência
     print(token, token.dep_)
 ```
 
@@ -216,10 +216,10 @@ Diferentemente das anotações morfossintáticas, associadas a um único `Token`
 Isso ilustra como os atributos do Python podem ser combinados de forma flexível: o atributo `head` aponta para outro `Token`, que por sua vez tem o atributo `i` com seu próprio índice no `Doc`. Podemos combinar os dois atributos e acessar essa informação com `.head.i`:
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
-    # Imprime o indice do token atual, o token, a dependencia, o governante e seu indice
+    # Imprime o índice do token atual, o token, a dependência, o governante e seu índice
     print(token.i, token, token.dep_, token.head.i, token.head)
 ```
 
@@ -265,10 +265,10 @@ O spaCy também segmenta objetos `Doc` em **sentenças** — tarefa conhecida co
 O spaCy disponibiliza o resultado da segmentação de sentenças no atributo `sents` de um objeto `Doc`. Vamos percorrer as sentenças contidas em `doc` e contá‑las usando a função `enumerate()` do Python, que retorna uma contagem crescente a cada item do laço:
 
 ```python
-# Percorre as sentencas no objeto Doc e as conta usando enumerate()
+# Percorre as sentenças no objeto Doc e as conta usando enumerate()
 for number, sent in enumerate(doc.sents):
 
-    # Imprime o numero e a sentenca
+    # Imprime o número e a sentença
     print(number, sent)
 ```
 
@@ -281,7 +281,7 @@ Um **lema** é a forma base de uma palavra. Tenha em mente que, a menos que inst
 Se quisermos contar a **ocorrência de palavras**, por exemplo, é necessário um processo chamado **lematização**, que agrupa as diferentes formas de um mesmo token. Os lemas ficam disponíveis para cada `Token` no atributo `lemma_`:
 
 ```python
-# Percorre os itens no objeto Doc, usando a variavel 'token' para se referir aos itens da lista
+# Percorre os itens no objeto Doc, usando a variável 'token' para se referir aos itens da lista
 for token in doc:
 
     # Imprime o token e seu lema
@@ -318,7 +318,7 @@ type(doc.ents[0])
 Objetos `Span` do spaCy têm vários argumentos úteis. Mais importante: os atributos `start` e `end` retornam os **índices dos tokens** que determinam onde o `Span` começa e termina no `Doc`. Vamos examinar isso com mais detalhe, imprimindo os atributos `start` e `end` da primeira entidade nomeada:
 
 ```python
-# Imprime a entidade nomeada e os indices de seus tokens de inicio e fim
+# Imprime a entidade nomeada e os índices de seus tokens de início e fim
 print(doc.ents[0], doc.ents[0].start, doc.ents[0].end)
 ```
 
@@ -334,7 +334,7 @@ Isso mostra que o índice retornado por `end` **não** corresponde ao último to
 # Percorre um recorte do objeto Doc que cobre a primeira entidade nomeada
 for token in doc[doc.ents[0].start: doc.ents[0].end]:
 
-    # Imprime o token e seu indice
+    # Imprime o token e seu índice
     print(token, token.i)
 ```
 

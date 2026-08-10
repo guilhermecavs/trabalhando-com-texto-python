@@ -277,13 +277,13 @@ concordância sobre o que descrevemos (aqui, o sentimento dos
 <p>Uma forma de medir isso é a <strong>concordância percentual</strong>
 simples: quantas vezes, das 10, você e o colega concordaram. Basta
 dividir o número de concordâncias pelo número de itens (10):</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Substitua o numero abaixo pelo numero de itens em que voces concordaram</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Substitua o número abaixo pelo número de itens em que voces concordaram</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide a contagem pelo numero de tweets</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide a contagem pelo número de tweets</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> agreement <span class="op">/</span> <span class="dv">10</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a variavel</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a variável</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>agreement</span></code></pre></div>
 <pre class="text"><code>0.0</code></pre>
 <h3 id="passo-3-calcular-as-probabilidades-de-cada-categoria">Passo 3 —
@@ -309,7 +309,7 @@ por acaso</strong>. O primeiro passo é contar quantas vezes
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>neutral <span class="op">=</span> neutral <span class="op">/</span> <span class="dv">10</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>negative <span class="op">=</span> negative <span class="op">/</span> <span class="dv">10</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama cada variavel para examinar a saida</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama cada variável para examinar a saída</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>positive, neutral, negative</span></code></pre></div>
 <pre class="text"><code>(0.0, 0.0, 0.0)</code></pre>
 <p>Essas probabilidades representam a chance de <strong>você</strong>
@@ -409,10 +409,10 @@ implementado em bibliotecas Python — raramente é preciso calcular à mão.
 A biblioteca <strong>scikit‑learn</strong> (<code>sklearn</code>), por
 exemplo, inclui a função <code>cohen_kappa_score()</code>, que recebe
 <strong>duas listas</strong> e calcula o κ entre elas:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a funcao cohen_kappa_score do modulo &#39;metrics&#39; da scikit-learn</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a função cohen_kappa_score do módulo &#39;metrics&#39; da scikit-learn</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> cohen_kappa_score</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define duas listas, &#39;a1&#39; e &#39;a2&#39;, com anotacoes de classes gramaticais</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define duas listas, &#39;a1&#39; e &#39;a2&#39;, com anotações de classes gramaticais</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>a1 <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;VERB&#39;</span>]</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>a2 <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;VERB&#39;</span>]</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -437,7 +437,7 @@ medir o desempenho de modelos de linguagem. Suponha um padrão‑ouro com
 10 tokens anotados por classe gramatical, na lista
 <code>gold_standard</code>, e as previsões de um modelo na lista
 <code>predictions</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a lista &#39;gold_standard&#39; (padrao-ouro anotado por humanos)</span></span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a lista &#39;gold_standard&#39; (padrão-ouro anotado por humanos)</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>gold_standard <span class="op">=</span> [<span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;VERB&#39;</span>, <span class="st">&#39;AUX&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;NOUN&#39;</span>, <span class="st">&#39;ADJ&#39;</span>, <span class="st">&#39;DET&#39;</span>, <span class="st">&#39;PRON&#39;</span>]</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a lista &#39;predictions&#39; (previsoes do modelo de linguagem)</span></span>
@@ -447,10 +447,10 @@ medir o desempenho de modelos de linguagem. Suponha um padrão‑ouro com
 A função <code>accuracy_score()</code> calcula a
 <strong>acurácia</strong>, que é exatamente a mesma coisa que a
 concordância observada calculada manualmente:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o modulo &#39;metrics&#39; da biblioteca scikit-learn (sklearn)</span></span>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o módulo &#39;metrics&#39; da biblioteca scikit-learn (sklearn)</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> metrics</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa a funcao accuracy_score() do modulo &#39;metrics&#39;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa a função accuracy_score() do módulo &#39;metrics&#39;</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>metrics.accuracy_score(gold_standard, predictions)</span></code></pre></div>
 <pre class="text"><code>0.7</code></pre>
 <p>A acurácia sofre do mesmo problema da concordância observada — pode
@@ -465,7 +465,7 @@ gramaticais que aparecem em <code>gold_standard</code> e
 <code>set()</code> — um <strong>conjunto</strong> (<em>set</em>) é uma
 estrutura do Python com itens únicos, útil aqui para remover
 duplicatas:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas</span></span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta as classes gramaticais únicas em um conjunto, combinando as duas listas</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pos_tags <span class="op">=</span> <span class="bu">set</span>(gold_standard <span class="op">+</span> predictions)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordena o conjunto alfabeticamente e converte o resultado em lista</span></span>
@@ -603,7 +603,7 @@ revocação de <code>ADJ</code> é 2/3 ≈ <strong>0,66</strong>. Para
 </ul>
 <p>A scikit‑learn gera matrizes de confusão automaticamente com
 <code>confusion_matrix()</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a matriz de confusao para as duas listas e imprime o resultado</span></span>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a matriz de confusão para as duas listas e imprime o resultado</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics.confusion_matrix(gold_standard, predictions))</span></code></pre></div>
 <pre class="text"><code>[[2 0 0 1 0 0 0]
  [0 2 0 0 0 0 0]
@@ -622,10 +622,10 @@ combinados, pelo argumento <code>average</code>. Com
 classe</strong>. Também definimos <code>zero_division=0</code> para
 evitar erro quando uma classe de <code>predictions</code> não existe em
 <code>gold_standard</code> (nesses casos, a precisão é 0):</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisao entre as duas listas, para cada classe (classe gramatical)</span></span>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisão entre as duas listas, para cada classe (classe gramatical)</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>precision <span class="op">=</span> metrics.precision_score(gold_standard, predictions, average<span class="op">=</span><span class="va">None</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o resultado</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o resultado</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>precision</span></code></pre></div>
 <pre class="text"><code>array([1. , 1. , 1. , 0.5, 0. , 0. , 0.5])</code></pre>
 <p>A saída é um <strong>array NumPy</strong>. Para combinar os rótulos
@@ -633,23 +633,23 @@ de <code>pos_tags</code> com as pontuações de <code>precision</code>,
 usamos a função <code>zip()</code>, que une listas/arrays do mesmo
 tamanho; para visualizar, convertemos com <code>dict()</code>:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina o conjunto &#39;pos_tags&#39; com o array &#39;precision&#39; usando zip();</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># converte o resultado em um dicionario</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># converte o resultado em um dicionário</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(<span class="bu">zip</span>(pos_tags, precision))</span></code></pre></div>
 <pre class="text"><code>{&#39;ADJ&#39;: 1.0, &#39;AUX&#39;: 1.0, &#39;DET&#39;: 1.0, &#39;NOUN&#39;: 0.5, &#39;PRON&#39;: 0.0, &#39;PROPN&#39;: 0.0, &#39;VERB&#39;: 0.5}</code></pre>
 <p>Para uma <strong>única</strong> pontuação de precisão para todas as
 classes, usamos <code>average=&#39;macro&#39;</code>, que trata cada classe como
 igualmente importante, independentemente de quantas instâncias ela
 tem:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisao entre as duas listas e tira a media (macro)</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a precisão entre as duas listas e tira a média (macro)</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>macro_precision <span class="op">=</span> metrics.precision_score(gold_standard, predictions, average<span class="op">=</span><span class="st">&#39;macro&#39;</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o resultado</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o resultado</span></span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>macro_precision</span></code></pre></div>
 <pre class="text"><code>0.5714285714285714</code></pre>
 <p>A precisão <strong>macro</strong> é a soma das precisões dividida
 pelo número de classes — dá para verificar manualmente:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a media macro manualmente: soma as precisoes e divide</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pelo numero de classes em &#39;precision&#39;</span></span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a média macro manualmente: soma as precisões e divide</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pelo número de classes em &#39;precision&#39;</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">sum</span>(precision) <span class="op">/</span> <span class="bu">len</span>(precision)</span></code></pre></div>
 <pre class="text"><code>0.5714285714285714</code></pre>
 <p>A <strong>revocação</strong> é calculada do mesmo modo, com
@@ -657,7 +657,7 @@ pelo número de classes — dá para verificar manualmente:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula a revocacao entre as duas listas, para cada classe</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>recall <span class="op">=</span> metrics.recall_score(gold_standard, predictions, average<span class="op">=</span><span class="va">None</span>, zero_division<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina &#39;pos_tags&#39; com o array &#39;recall&#39; e converte em dicionario</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina &#39;pos_tags&#39; com o array &#39;recall&#39; e converte em dicionário</span></span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(<span class="bu">zip</span>(pos_tags, recall))</span></code></pre></div>
 <pre class="text"><code>{&#39;ADJ&#39;: 0.6666666666666666, &#39;AUX&#39;: 1.0, &#39;DET&#39;: 1.0, &#39;NOUN&#39;: 0.5, &#39;PRON&#39;: 0.0, &#39;PROPN&#39;: 0.0, &#39;VERB&#39;: 1.0}</code></pre>
 <h3 id="relatório-de-classificação">4.4 Relatório de classificação</h3>

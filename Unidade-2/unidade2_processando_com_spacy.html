@@ -226,10 +226,10 @@ tarefas básicas de PLN, começaremos com um modelo pequeno para o
 <p>Os modelos de linguagem são carregados com a função
 <code>load()</code> do spaCy, que recebe o <strong>nome do
 modelo</strong> como entrada:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega o modelo pequeno de lingua inglesa e o atribui a variavel &#39;nlp&#39;</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega o modelo pequeno de língua inglesa e o atribui a variável &#39;nlp&#39;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o objeto</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o objeto</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>nlp</span></code></pre></div>
 <p>Chamar a variável <code>nlp</code> retorna um objeto
 <code>Language</code> do spaCy, que contém o modelo de linguagem para o
@@ -290,10 +290,10 @@ contém o modelo de linguagem para o inglês, basta
 <strong>chamar</strong> o objeto <code>nlp</code> sobre algum texto.</p>
 <p>Vamos definir uma frase de teste simples — um objeto <em>string</em>
 do Python, guardado na variável <code>text</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui uma frase de exemplo a variavel &#39;text&#39;</span></span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui uma frase de exemplo a variável &#39;text&#39;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">&quot;The Federal Bureau of Investigation has been ordered to track down as many as 3,000 Iraqis in this country whose visas have expired, the Justice Department said yesterday.&quot;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o resultado</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o resultado</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>text</span></code></pre></div>
 <p>Passar a variável <code>text</code> para o objeto
 <code>Language</code> <code>nlp</code> retorna um objeto
@@ -305,11 +305,11 @@ nosso documento consista em uma única frase.</p>
 quanto os <strong>resultados</strong> do processamento de linguagem
 natural feito pelo spaCy.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alimenta a string em &#39;text&#39; ao objeto Language em &#39;nlp&#39;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Guarda o resultado na variavel &#39;doc&#39;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Guarda o resultado na variável &#39;doc&#39;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> nlp(text)</span></code></pre></div>
 <p>O objeto <code>Doc</code> agora está guardado na variável
 <code>doc</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o objeto</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o objeto</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>doc</span></code></pre></div>
 <p>Embora a saída se pareça com uma <em>string</em> comum do Python, o
 objeto <code>Doc</code> contém uma <strong>riqueza de
@@ -338,7 +338,7 @@ que a precedem.</p>
 objetos <code>Token</code>, que armazenam os resultados das diversas
 tarefas de PLN. Vamos imprimir cada objeto <code>Token</code> guardado
 em <code>doc</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime cada token</span></span>
@@ -365,10 +365,10 @@ respectivamente nos atributos <code>pos_</code> e <code>tag_</code>.
 Acessamos os atributos de um objeto Python inserindo o atributo após o
 objeto, separados por um ponto final — por exemplo,
 <code>token.pos_</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e as anotacoes morfossintaticas genericas e detalhadas</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e as anotações morfossintaticas genéricas e detalhadas</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.pos_, token.tag_)</span></code></pre></div>
 <p>As anotações genéricas disponíveis em <code>pos_</code> são baseadas
 no conjunto de rótulos do projeto <strong>Universal
@@ -391,10 +391,10 @@ específicas.</p>
 <p>O spaCy realiza a análise morfológica automaticamente, guardando o
 resultado no atributo <code>morph</code> de um objeto
 <code>Token</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e o resultado da analise morfologica</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e o resultado da análise morfológica</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.morph)</span></code></pre></div>
 <p>Como mostra a saída, <strong>nem todos os tokens</strong> têm
 informação morfológica — alguns consistem em morfemas livres, sem
@@ -404,7 +404,7 @@ Podemos usar colchetes <code>[]</code> para acessar itens no objeto
 <code>Doc</code>. A linha a seguir recupera a informação morfológica de
 <strong>aspecto</strong> para o 23º token do <code>Doc</code> (índice
 22):</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informacao morfologica sobre aspecto para o Token no indice 22 do objeto Doc</span></span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informação morfológica sobre aspecto para o Token no índice 22 do objeto Doc</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>doc[<span class="dv">22</span>].morph.get(<span class="st">&#39;Aspect&#39;</span>)</span></code></pre></div>
 <p>Isso retorna uma lista com um único item, a <em>string</em>
 <code>Perf</code>, que se refere ao <strong>aspecto
@@ -412,7 +412,7 @@ perfectivo</strong>.</p>
 <p>O que acontece se tentarmos recuperar uma característica morfológica
 que o token <strong>não possui</strong>? Vamos tentar recuperar a
 informação de aspecto para o 22º token (índice 21):</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informacao morfologica sobre aspecto para o Token no indice 21 do objeto Doc</span></span>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informação morfológica sobre aspecto para o Token no índice 21 do objeto Doc</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>doc[<span class="dv">21</span>].morph.get(<span class="st">&#39;Aspect&#39;</span>)</span></code></pre></div>
 <p>Isso retorna uma <strong>lista vazia</strong>, indicada pelos
 colchetes <code>[ ]</code> sem nada entre eles.</p>
@@ -421,15 +421,15 @@ disponível para um dado <code>Token</code>, a melhor solução é usar o
 método <code>to_dict()</code> do atributo <code>morph</code>. Isso
 retorna um <strong>dicionário</strong>, uma estrutura de dados do Python
 composta por pares de chave e valor:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informacao morfologica para o Token no indice 21 do objeto Doc</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o metodo to_dict() para converter o resultado em um dicionario</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera informação morfológica para o Token no índice 21 do objeto Doc</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o método to_dict() para converter o resultado em um dicionário</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>doc[<span class="dv">21</span>].morph.to_dict()</span></code></pre></div>
 <p>Um dicionário Python é delimitado por chaves <code>{ }</code>. Cada
 par chave/valor é separado por dois‑pontos <code>:</code>. Nesse caso,
 tanto as chaves quanto os valores são objetos <em>string</em>. O valor
 guardado em uma chave pode ser acessado colocando o nome da chave entre
 colchetes <code>[ ]</code> logo após o nome do dicionário:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui a informacao morfologica ao dicionario &#39;morph_dict&#39;</span></span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui a informação morfológica ao dicionário &#39;morph_dict&#39;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>morph_dict <span class="op">=</span> doc[<span class="dv">21</span>].morph.to_dict()</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera o valor correspondente a chave &#39;Mood&#39;</span></span>
@@ -442,10 +442,10 @@ usaremos com frequência para guardar informações.</p>
 dependências) é a tarefa de definir as <strong>dependências
 sintáticas</strong> entre tokens. Essas dependências ficam disponíveis
 no atributo <code>dep_</code> de um objeto <code>Token</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e sua etiqueta de dependencia</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e sua etiqueta de dependência</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.dep_)</span></code></pre></div>
 <p>Diferentemente das anotações morfossintáticas, associadas a um único
 <code>Token</code>, as etiquetas de dependência indicam uma
@@ -465,10 +465,10 @@ forma flexível: o atributo <code>head</code> aponta para outro
 <code>Token</code>, que por sua vez tem o atributo <code>i</code> com
 seu próprio índice no <code>Doc</code>. Podemos combinar os dois
 atributos e acessar essa informação com <code>.head.i</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o indice do token atual, o token, a dependencia, o governante e seu indice</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o índice do token atual, o token, a dependência, o governante e seu índice</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token.i, token, token.dep_, token.head.i, token.head)</span></code></pre></div>
 <p>Embora a saída acima ajude a esclarecer as dependências sintáticas
 entre os tokens, elas costumam ser <strong>muito mais fáceis de
@@ -529,10 +529,10 @@ atributo <code>sents</code> de um objeto <code>Doc</code>. Vamos
 percorrer as sentenças contidas em <code>doc</code> e contá‑las usando a
 função <code>enumerate()</code> do Python, que retorna uma contagem
 crescente a cada item do laço:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre as sentencas no objeto Doc e as conta usando enumerate()</span></span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre as sentenças no objeto Doc e as conta usando enumerate()</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> number, sent <span class="kw">in</span> <span class="bu">enumerate</span>(doc.sents):</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o numero e a sentenca</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o número e a sentença</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(number, sent)</span></code></pre></div>
 <p>Isso retorna apenas <strong>uma sentença</strong>, mas o objeto
 <code>Doc</code> poderia facilmente conter um texto mais longo com
@@ -547,7 +547,7 @@ exemplo, é necessário um processo chamado <strong>lematização</strong>,
 que agrupa as diferentes formas de um mesmo token. Os lemas ficam
 disponíveis para cada <code>Token</code> no atributo
 <code>lemma_</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variavel &#39;token&#39; para se referir aos itens da lista</span></span>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens no objeto Doc, usando a variável &#39;token&#39; para se referir aos itens da lista</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e seu lema</span></span>
@@ -588,7 +588,7 @@ os <strong>índices dos tokens</strong> que determinam onde o
 <code>Span</code> começa e termina no <code>Doc</code>. Vamos examinar
 isso com mais detalhe, imprimindo os atributos <code>start</code> e
 <code>end</code> da primeira entidade nomeada:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a entidade nomeada e os indices de seus tokens de inicio e fim</span></span>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime a entidade nomeada e os índices de seus tokens de início e fim</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(doc.ents[<span class="dv">0</span>], doc.ents[<span class="dv">0</span>].start, doc.ents[<span class="dv">0</span>].end)</span></code></pre></div>
 <p>A entidade nomeada começa no índice <code>0</code> e termina no
 índice <code>5</code> do <code>Doc</code>. Se recuperarmos o sexto token
@@ -604,7 +604,7 @@ correspondente à primeira entidade nomeada:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre um recorte do objeto Doc que cobre a primeira entidade nomeada</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc[doc.ents[<span class="dv">0</span>].start: doc.ents[<span class="dv">0</span>].end]:</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e seu indice</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o token e seu índice</span></span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(token, token.i)</span></code></pre></div>
 <p>Como se vê, o atributo <code>start</code> indica onde o
 <code>Span</code> <strong>começa</strong>, enquanto <code>end</code>

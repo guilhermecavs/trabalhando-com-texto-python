@@ -160,7 +160,7 @@ text[:500]
 
 A maior parte do texto está legível, mas há sequências estranhas, como `﻿` bem no início e vários `\n` ao longo do texto:
 
-- A sequência `﻿` é apenas uma declaração explícita (uma "assinatura") de que o arquivo foi codificado em UTF‑8. Nem todo arquivo UTF‑8 contém essa sequência.
+- A sequência `﻿` (código `U+FEFF`) é o **BOM** (*byte order mark*, "marca de ordem de bytes"). Ele foi criado para indicar a ordem dos bytes em codificações como UTF‑16; **em UTF‑8 não há ordem de bytes**, então o BOM é **desnecessário** e seu uso é **desaconselhado** pelo próprio padrão Unicode. Ainda assim, alguns programas e editores (especialmente no Windows) o adicionam no início do arquivo como uma espécie de "assinatura" de UTF‑8. É por isso que ele aparece aqui como um caractere fantasma no começo do texto — e, se não for removido, pode causar bugs (por exemplo, a primeira palavra deixa de casar em comparações). Nem todo arquivo UTF‑8 contém essa marca.
 - As sequências `\n` indicam **quebra de linha**.
 
 Isso fica evidente se usarmos a função `print()` para imprimir os primeiros 1000 caracteres:
@@ -283,7 +283,7 @@ Começamos definindo uma lista chamada `pipeline`. Criamos e preenchemos uma lis
 
 ```python
 # Define uma lista com quatro tuplas, cada uma com duas strings: o caractere
-# a ser substituido e o seu substituto.
+# a ser substituído e o seu substituto.
 pipeline = [('“', '"'), ('´´', '"'), ('”', '"'), ('’’', '"')]
 ```
 
@@ -293,11 +293,11 @@ Agora podemos percorrer cada item da lista com um laço `for`, que itera pelos i
 
 ```python
 # Percorre as tuplas da lista 'pipeline'. Cada tupla tem dois valores, que
-# atribuimos as variaveis 'old' e 'new' automaticamente!
+# atribuímos as variáveis 'old' e 'new' automaticamente!
 for old, new in pipeline:
 
-    # Usa o metodo replace() para substituir a string da variavel 'old'
-    # pela string da variavel 'new'
+    # Usa o método replace() para substituir a string da variável 'old'
+    # pela string da variável 'new'
     processed_text = processed_text.replace(old, new)
 ```
 
@@ -315,7 +315,7 @@ Conseguimos realizar uma série de substituições percorrendo a lista de tuplas
 Para entender melhor, vejamos o que acontece se definirmos **apenas uma** variável, `our_tuple`, para os itens obtidos:
 
 ```python
-# Percorre os itens da variavel 'pipeline'
+# Percorre os itens da variável 'pipeline'
 for our_tuple in pipeline:
 
     # Imprime o objeto retornado
@@ -350,13 +350,13 @@ import re
 Vamos carregar um arquivo, ler seu conteúdo, atribuir os **últimos** 2000 caracteres à variável `extract` e imprimir o resultado:
 
 ```python
-# Define o caminho do arquivo e o abre para leitura (r) com codificacao utf-8
+# Define o caminho do arquivo e o abre para leitura (r) com codificação utf-8
 with open(file='data/WP_1990-08-10-25A.txt', mode='r', encoding='utf-8') as file:
 
-    # Le o conteudo do arquivo com o metodo .read()
+    # Lê o conteúdo do arquivo com o método .read()
     text = file.read()
 
-# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero
+# Pega os *últimos* 2000 caracteres — note o sinal de menos antes do número
 extract = text[-2000:]
 
 # Imprime o resultado
@@ -368,10 +368,10 @@ O texto tem muitos erros de OCR, principalmente sequências como `....` e `,,,,`
 Vamos **compilar** nossa primeira expressão regular, que busca sequências de dois ou mais pontos finais, com a função `compile()` do módulo `re`. Ela recebe uma *string* como entrada. Note o prefixo `r` antes da *string*: ele diz ao Python para guardar a *string* em formato "bruto" (*raw*), ou seja, exatamente como aparece.
 
 ```python
-# Compila uma expressao regular e a atribui a variavel 'stops'
+# Compila uma expressão regular e a atribui a variável 'stops'
 stops = re.compile(r'\.{2,}')
 
-# Vamos verificar o tipo da expressao regular!
+# Vamos verificar o tipo da expressão regular!
 type(stops)
 ```
 
@@ -395,8 +395,8 @@ Para aplicar a expressão a algum texto, usamos o método `sub()` do objeto rec�
 O método retorna a *string* modificada:
 
 ```python
-# Aplica a expressao regular ao texto em 'extract' e salva a saida
-# na mesma variavel, essencialmente sobrescrevendo o texto antigo.
+# Aplica a expressão regular ao texto em 'extract' e salva a saída
+# na mesma variável, essencialmente sobrescrevendo o texto antigo.
 extract = stops.sub(repl='', string=extract)
 
 # Imprime o texto para examinar o resultado
@@ -410,7 +410,7 @@ As sequências de pontos finais desapareceram.
 Podemos tornar a expressão mais poderosa acrescentando **alternativas**. Vamos compilar outra e guardá‑la em `punct`:
 
 ```python
-# Compila uma expressao regular e a atribui a variavel 'punct'
+# Compila uma expressão regular e a atribui a variável 'punct'
 punct = re.compile(r'(\.|,){2,}')
 ```
 
@@ -419,10 +419,10 @@ A novidade são os **parênteses** `( )` e a **barra vertical** `|` entre eles, 
 Para garantir que o padrão funcione como esperado, recuperamos o texto original de `text` e o reatribuímos a `extract`, sobrescrevendo as edições anteriores:
 
 ```python
-# "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original
+# "Reinicia" a variável extract pegando os últimos 2000 caracteres da string original
 extract = text[-2000:]
 
-# Aplica a expressao regular
+# Aplica a expressão regular
 extract = punct.sub(repl='', string=extract)
 
 # Imprime o resultado
@@ -454,15 +454,15 @@ A classe `Path` codifica informações sobre caminhos em uma estrutura de diret�
 Nosso repositório contém um diretório chamado `data`, com os arquivos de texto que viemos usando. Vamos inicializar um objeto `Path` apontando para esse diretório e atribuí‑lo à variável `corpus_dir`:
 
 ```python
-# Cria um objeto Path que aponta para o diretorio 'data' e o atribui
-# a variavel 'corpus_dir'
+# Cria um objeto Path que aponta para o diretório 'data' e o atribui
+# a variável 'corpus_dir'
 corpus_dir = Path('data')
 ```
 
 O objeto `Path` tem vários métodos e atributos úteis. Podemos, por exemplo, verificar se o caminho é válido com `exists()`, que retorna um valor **booleano** (`True` ou `False`):
 
 ```python
-# Usa o metodo exists() para verificar se o caminho e valido
+# Usa o método exists() para verificar se o caminho é válido
 corpus_dir.exists()
 ```
 
@@ -473,7 +473,7 @@ True
 Também podemos checar se o caminho é um diretório com `is_dir()`, e garantir que ele **não** aponta para um arquivo com `is_file()`:
 
 ```python
-# Usa o metodo is_dir() para verificar se o caminho aponta para um diretorio
+# Usa o método is_dir() para verificar se o caminho aponta para um diretório
 corpus_dir.is_dir()
 ```
 
@@ -482,7 +482,7 @@ True
 ```
 
 ```python
-# Usa o metodo is_file() para verificar se o caminho aponta para um arquivo
+# Usa o método is_file() para verificar se o caminho aponta para um arquivo
 corpus_dir.is_file()
 ```
 
@@ -493,7 +493,7 @@ False
 Sabendo que o caminho aponta para um diretório, usamos o método `glob()` para coletar todos os arquivos de texto. O nome `glob` vem de *global* e foi implementado originalmente como um programa para casar nomes de arquivos e caminhos usando curingas. O `glob()` exige o argumento `pattern`, que recebe uma *string*: o `*` (asterisco) atua como **curinga**, representando qualquer sequência de caracteres antes de `.txt` (sufixo comum de arquivos de texto simples). Convertendo o resultado em lista com `list()`, podemos percorrê‑lo facilmente:
 
 ```python
-# Coleta todos os arquivos com sufixo .txt no diretorio 'corpus_dir' e converte o resultado em uma lista
+# Coleta todos os arquivos com sufixo .txt no diretório 'corpus_dir' e converte o resultado em uma lista
 files = list(corpus_dir.glob(pattern='*.txt'))
 
 # Mostra o resultado
@@ -510,16 +510,16 @@ Temos uma lista de três objetos `Path` apontando para três arquivos! Isso nos 
 
 ```python
 # Percorre a lista de objetos Path em 'files'. Refere-se a cada arquivo
-# pela variavel 'file'.
+# pela variável 'file'.
 for file in files:
 
-    # Usa o metodo read_text() de um objeto Path para ler o conteudo do arquivo.
-    # Passa o valor 'utf-8' ao argumento 'encoding' para declarar a codificacao.
-    # Guarda o resultado na variavel 'text'.
+    # Usa o método read_text() de um objeto Path para ler o conteúdo do arquivo.
+    # Passa o valor 'utf-8' ao argumento 'encoding' para declarar a codificação.
+    # Guarda o resultado na variável 'text'.
     text = file.read_text(encoding='utf-8')
 
-    # Aplica a expressao regular definida acima para remover a pontuacao
-    # excessiva do texto. Guarda o resultado na variavel 'mod_text'.
+    # Aplica a expressão regular definida acima para remover a pontuacao
+    # excessiva do texto. Guarda o resultado na variável 'mod_text'.
     mod_text = punct.sub('', text)
 
     # Define um novo nome de arquivo com o prefixo 'mod_' criando uma nova string.
@@ -528,16 +528,16 @@ for file in files:
     new_filename = 'mod_' + file.name
 
     # Define um novo objeto Path que aponta para o novo arquivo. O objeto Path
-    # junta automaticamente o diretorio e o nome do arquivo para nos.
+    # junta automaticamente o diretório e o nome do arquivo para nos.
     new_path = Path('data', new_filename)
 
     # Imprime uma mensagem de status usando formatacao de string. Ao adicionar
     # o prefixo 'f' a uma string, podemos usar chaves {} para inserir uma
-    # variavel dentro da string. Aqui inserimos o caminho atual do arquivo.
+    # variável dentro da string. Aqui inserimos o caminho atual do arquivo.
     print(f'Writing modified text to {new_path}')
 
-    # Usa o metodo write_text() para escrever o texto modificado de 'mod_text'
-    # no arquivo, com codificacao UTF-8.
+    # Usa o método write_text() para escrever o texto modificado de 'mod_text'
+    # no arquivo, com codificação UTF-8.
     new_path.write_text(mod_text, encoding='utf-8')
 ```
 

@@ -32,7 +32,7 @@ Formatos típicos para distribuir corpora incluem arquivos **CSV** (*Comma‑sep
 O exemplo a seguir carrega um recorte do *SFU Opinion and Comments Corpus* (SOCC), que reúne artigos de opinião do jornal canadense *The Globe and Mail*. Usamos a função `read_csv()`, que recebe uma *string* com o **caminho** do arquivo:
 
 ```python
-# Le o arquivo CSV e atribui a saida a variavel 'socc'
+# Lê o arquivo CSV e atribui a saída a variável 'socc'
 socc = pd.read_csv('data/socc_gnm_articles.csv')
 
 # Examina o tipo do objeto guardado em 'socc'
@@ -78,10 +78,10 @@ Outro cenário comum é ter **vários arquivos** de texto para carregar. Primeir
 # Importa a classe Path
 from pathlib import Path
 
-# Cria um objeto Path que aponta para o diretorio com os dados
+# Cria um objeto Path que aponta para o diretório com os dados
 corpus_dir = Path('data')
 
-# Coleta todos os arquivos .txt no diretorio do corpus
+# Coleta todos os arquivos .txt no diretório do corpus
 corpus_files = list(corpus_dir.glob('*.txt'))
 
 # Verifica os arquivos do corpus
@@ -97,10 +97,10 @@ corpus_files
 Para acomodar os dados, criamos um `DataFrame` **vazio** e definimos sua forma de antemão: o número de linhas (`index`) e os nomes das colunas (`columns`). Determinamos o número de linhas com a função `range()`, entre 0 e a quantidade de arquivos (obtida com `len()`). Para as colunas, passamos uma lista de *strings* ao argumento `columns`:
 
 ```python
-# Cria um DataFrame e atribui o resultado a variavel 'df'
+# Cria um DataFrame e atribui o resultado a variável 'df'
 df = pd.DataFrame(index=range(0, len(corpus_files)), columns=['filename', 'text'])
 
-# Chama a variavel para inspecionar a saida
+# Chama a variável para inspecionar a saída
 df
 ```
 
@@ -116,15 +116,15 @@ Agora percorremos os objetos `Path` em `corpus_files`, lemos o conteúdo e o adi
 # Percorre os arquivos do corpus e conta cada volta com enumerate()
 for i, f in enumerate(corpus_files):
 
-    # Le o conteudo do arquivo
+    # Lê o conteúdo do arquivo
     text = f.read_text(encoding='utf-8')
 
     # Pega o nome do arquivo do objeto Path
     filename = f.name
 
-    # Atribui o texto do arquivo ao indice 'i' na coluna 'text' usando
+    # Atribui o texto do arquivo ao índice 'i' na coluna 'text' usando
     # o acessador .at -- isso modifica o DataFrame "no lugar" (in place);
-    # nao e preciso atribuir o resultado a uma variavel
+    # não e preciso atribuir o resultado a uma variável
     df.at[i, 'text'] = text
 
     # Faz o mesmo com o nome do arquivo
@@ -159,7 +159,7 @@ Index(['article_id', 'title', 'article_url', 'author', 'published_date',
 Uma coluna inteira é acessada com colchetes `[]`, colocando o nome da coluna como *string* — como as chaves de um dicionário. Vamos recuperar a coluna `author`:
 
 ```python
-# Recupera o conteudo da coluna 'author' no DataFrame 'socc'
+# Recupera o conteúdo da coluna 'author' no DataFrame 'socc'
 socc['author']
 ```
 
@@ -193,7 +193,7 @@ type(socc), type(socc['author'])
 O método `value_counts()` conta os valores únicos de uma `Series`:
 
 ```python
-# Conta os valores unicos na coluna 'author'
+# Conta os valores únicos na coluna 'author'
 socc['author'].value_counts()
 ```
 
@@ -248,7 +248,7 @@ Lendo a saída: há 10 339 linhas; a média (`mean`) de comentários por editori
 Como encontrar os artigos com **zero** comentários? Usamos o acessador `.loc` para selecionar linhas com base em seus valores. Como `=` é reservado para atribuição, a comparação "é igual a" usa **dois** sinais (`==`):
 
 ```python
-# Pega as linhas sem comentarios de nivel superior
+# Pega as linhas sem comentários de nível superior
 socc.loc[socc['ntop_level_comments'] == 0]
 ```
 
@@ -259,7 +259,7 @@ socc.loc[socc['ntop_level_comments'] == 0]
 Isso retorna 2 542 linhas em que `ntop_level_comments` é zero. Para visões mais complexas, combinamos critérios com o operador **`&`** ("E" lógico) — cada critério deve ficar entre **parênteses** `()`. Vamos verificar se o primeiro autor do resultado (Hayden King) escreveu outros artigos com zero comentários:
 
 ```python
-# Numero de comentarios de nivel superior para o autor Hayden King
+# Número de comentários de nível superior para o autor Hayden King
 socc.loc[(socc['ntop_level_comments'] == 0) & (socc['author'] == 'Hayden King')]
 ```
 
@@ -279,8 +279,8 @@ socc['comments_ratio'] = None
 Vamos **preencher** a coluna calculando a proporção de comentários de nível superior (comentários sobre o artigo) em relação a todos os comentários — basta dividir uma coluna pela outra:
 
 ```python
-# Preenche a coluna 'comments_ratio' com a razao entre comentarios de
-# nivel superior e o total de comentarios
+# Preenche a coluna 'comments_ratio' com a razao entre comentários de
+# nível superior e o total de comentários
 socc['comments_ratio'] = socc['ntop_level_comments'] / socc['ncomments']
 ```
 
@@ -295,7 +295,7 @@ Os acessadores de coluna podem ser usados de forma muito flexível para acessar 
 Mas alguns artigos **não** receberam comentários — nesses casos, teríamos dividido zero por zero:
 
 ```python
-# Imprime os cinco primeiros artigos sem comentarios de nivel superior
+# Imprime os cinco primeiros artigos sem comentários de nível superior
 socc.loc[socc['ntop_level_comments'] == 0].head(5)
 ```
 
@@ -352,14 +352,14 @@ talk['processed_title'] = None
 Para processar os títulos, usamos o método `apply()` de um `DataFrame`, que **aplica** o que recebe a cada linha da coluna. Passamos o modelo `nlp` — ou seja, aplicamos o modelo aos títulos (que são *strings*) da coluna `title`:
 
 ```python
-# Aplica o modelo de linguagem 'nlp' ao conteudo da coluna 'title'
+# Aplica o modelo de linguagem 'nlp' ao conteúdo da coluna 'title'
 talk['processed_title'] = talk['title'].apply(nlp)
 ```
 
 Cada célula da coluna `processed_title` agora contém um objeto **`Doc`** do spaCy:
 
 ```python
-# Pega o valor da coluna 'processed_title' na linha de indice 2
+# Pega o valor da coluna 'processed_title' na linha de índice 2
 talk.at[2, 'processed_title']
 
 # Verifica o tipo do objeto contido
@@ -376,8 +376,8 @@ spacy.tokens.doc.Doc
 Vamos definir nossa própria função para buscar os **lemas de cada substantivo** do título. Funções em Python são definidas com `def`, seguido do nome e dos parâmetros entre parênteses:
 
 ```python
-# Define uma funcao 'get_nouns' que recebe um unico objeto como entrada.
-# Referimo-nos a essa entrada pela variavel 'nlp_text'.
+# Define uma função 'get_nouns' que recebe um único objeto como entrada.
+# Referimo-nos a essa entrada pela variável 'nlp_text'.
 def get_nouns(nlp_text):
 
     # Primeiro garantimos que a entrada e do tipo correto,
@@ -403,7 +403,7 @@ def get_nouns(nlp_text):
 Aplicamos a função com `apply()`, criando a coluna `nouns` automaticamente pela atribuição:
 
 ```python
-# Aplica a funcao 'get_nouns' a coluna 'processed_title'
+# Aplica a função 'get_nouns' a coluna 'processed_title'
 talk['nouns'] = talk['processed_title'].apply(get_nouns)
 ```
 
@@ -460,7 +460,7 @@ len(final_list)
 Para plotar os 10 substantivos mais frequentes, convertemos `final_list` em uma `Series`, contamos com `value_counts()` e plotamos:
 
 ```python
-# Converte a lista em uma pandas Series, conta os substantivos unicos com
+# Converte a lista em uma pandas Series, conta os substantivos únicos com
 # value_counts(), pega os 10 mais frequentes [:10] e plota em barras.
 pd.Series(final_list).value_counts()[:10].plot(kind='bar')
 ```
@@ -483,7 +483,7 @@ df.to_pickle('data/pickled_df.pkl')
 Verificamos lendo de volta com `read_pickle()`:
 
 ```python
-# Le o DataFrame serializado e atribui o resultado a 'df_2'
+# Lê o DataFrame serializado e atribui o resultado a 'df_2'
 df_2 = pd.read_pickle('data/pickled_df.pkl')
 ```
 

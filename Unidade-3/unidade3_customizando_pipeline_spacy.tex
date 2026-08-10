@@ -236,14 +236,14 @@ carregando um modelo de linguagem para o inglês:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Importa a biblioteca spaCy e o modulo displacy}
+\CommentTok{\# Importa a biblioteca spaCy e o módulo displacy}
 \ImportTok{from}\NormalTok{ spacy }\ImportTok{import}\NormalTok{ displacy}
 \ImportTok{import}\NormalTok{ spacy}
 
-\CommentTok{\# Carrega um modelo pequeno de lingua inglesa e o atribui a variavel \textquotesingle{}nlp\textquotesingle{}}
+\CommentTok{\# Carrega um modelo pequeno de língua inglesa e o atribui a variável \textquotesingle{}nlp\textquotesingle{}}
 \NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{)}
 
-\CommentTok{\# Chama a variavel para examinar o objeto}
+\CommentTok{\# Chama a variável para examinar o objeto}
 \NormalTok{nlp}
 \end{Highlighting}
 \end{Shaded}
@@ -336,8 +336,8 @@ excluir, ao inicializar o objeto \texttt{Language} com a função
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de}
-\CommentTok{\# entidades nomeadas (\textquotesingle{}ner\textquotesingle{}) e a analise de dependencias sintaticas (\textquotesingle{}parser\textquotesingle{}).}
+\CommentTok{\# Carrega um modelo pequeno de língua inglesa, mas exclui o reconhecimento de}
+\CommentTok{\# entidades nomeadas (\textquotesingle{}ner\textquotesingle{}) e a análise de dependências sintáticas (\textquotesingle{}parser\textquotesingle{}).}
 \NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{, exclude}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}ner\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}parser\textquotesingle{}}\NormalTok{])}
 
 \CommentTok{\# Examina os componentes ativos no objeto Language \textquotesingle{}nlp\textquotesingle{}}
@@ -368,7 +368,7 @@ anotações que produzem:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Analisa o pipeline e guarda a analise na variavel \textquotesingle{}pipe\_analysis\textquotesingle{}}
+\CommentTok{\# Analisa o pipeline e guarda a análise na variável \textquotesingle{}pipe\_analysis\textquotesingle{}}
 \NormalTok{pipe\_analysis }\OperatorTok{=}\NormalTok{ nlp.analyze\_pipes(pretty}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -422,11 +422,11 @@ verdadeira (ou seja, se houver algum problema), o Python levanta um
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os pares chave/valor do dicionario. Atribui a chave e o valor}
-\CommentTok{\# as variaveis \textquotesingle{}component\_name\textquotesingle{} e \textquotesingle{}problem\_list\textquotesingle{}.}
+\CommentTok{\# Percorre os pares chave/valor do dicionário. Atribui a chave e o valor}
+\CommentTok{\# as variáveis \textquotesingle{}component\_name\textquotesingle{} e \textquotesingle{}problem\_list\textquotesingle{}.}
 \ControlFlowTok{for}\NormalTok{ component\_name, problem\_list }\KeywordTok{in}\NormalTok{ pipe\_analysis[}\StringTok{\textquotesingle{}problems\textquotesingle{}}\NormalTok{].items():}
 
-    \CommentTok{\# Usa \textquotesingle{}assert\textquotesingle{} para checar a lista de problemas; levanta Error se necessario.}
+    \CommentTok{\# Usa \textquotesingle{}assert\textquotesingle{} para checar a lista de problemas; levanta Error se necessário.}
     \ControlFlowTok{assert} \BuiltInTok{len}\NormalTok{(problem\_list) }\OperatorTok{==} \DecValTok{0}\NormalTok{, }\SpecialStringTok{f"There is a problem with }\SpecialCharTok{\{}\NormalTok{component\_name}\SpecialCharTok{\}}\SpecialStringTok{: }\SpecialCharTok{\{}\NormalTok{problem\_list}\SpecialCharTok{\}}\SpecialStringTok{!"}
 \end{Highlighting}
 \end{Shaded}
@@ -451,8 +451,8 @@ da Wikipédia em inglês:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Reinicializa o modelo de linguagem, pois precisamos da analise de}
-\CommentTok{\# dependencias nas proximas secoes.}
+\CommentTok{\# Reinicializa o modelo de linguagem, pois precisamos da análise de}
+\CommentTok{\# dependências nas próximas seções.}
 \NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{\textquotesingle{}en\_core\_web\_sm\textquotesingle{}}\NormalTok{)}
 
 \CommentTok{\# Define uma lista de frases de exemplo}
@@ -460,7 +460,7 @@ da Wikipédia em inglês:
          \StringTok{"The \textquotesingle{}Complex Modernization\textquotesingle{} initiative expanded two existing nuclear sites to produce new bomb parts."}\NormalTok{,}
          \StringTok{"The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y{-}12 facility in Oak Ridge, Tennessee."}\NormalTok{]}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{sents}
 \end{Highlighting}
 \end{Shaded}
@@ -476,10 +476,10 @@ O método \texttt{pipe()} recebe uma lista como entrada e retorna um
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Alimenta a lista de frases ao metodo pipe()}
+\CommentTok{\# Alimenta a lista de frases ao método pipe()}
 \NormalTok{docs }\OperatorTok{=}\NormalTok{ nlp.pipe(sents)}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{docs}
 \end{Highlighting}
 \end{Shaded}
@@ -501,7 +501,7 @@ como uma estrutura capaz de coletar a saída do gerador para exame:
 \CommentTok{\# Converte o gerador pipe em uma lista}
 \NormalTok{docs }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(docs)}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{docs}
 \end{Highlighting}
 \end{Shaded}
@@ -530,11 +530,11 @@ módulo \texttt{tokens} do spaCy:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Importa o objeto Doc do modulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
+\CommentTok{\# Importa o objeto Doc do módulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
 \ImportTok{from}\NormalTok{ spacy.tokens }\ImportTok{import}\NormalTok{ Doc}
 
 \CommentTok{\# Adiciona dois atributos personalizados ao objeto Doc, \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{},}
-\CommentTok{\# usando o metodo set\_extension().}
+\CommentTok{\# usando o método set\_extension().}
 \NormalTok{Doc.set\_extension(}\StringTok{"age"}\NormalTok{, default}\OperatorTok{=}\VariableTok{None}\NormalTok{)}
 \NormalTok{Doc.set\_extension(}\StringTok{"location"}\NormalTok{, default}\OperatorTok{=}\VariableTok{None}\NormalTok{)}
 \end{Highlighting}
@@ -560,8 +560,8 @@ como as estruturas de dados do Python costumam ser \textbf{aninhadas}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Cria um dicionario cujos valores sao outros dicionarios}
-\CommentTok{\# com tres chaves: \textquotesingle{}age\textquotesingle{}, \textquotesingle{}location\textquotesingle{} e \textquotesingle{}text\textquotesingle{}.}
+\CommentTok{\# Cria um dicionário cujos valores são outros dicionários}
+\CommentTok{\# com três chaves: \textquotesingle{}age\textquotesingle{}, \textquotesingle{}location\textquotesingle{} e \textquotesingle{}text\textquotesingle{}.}
 \NormalTok{sents\_dict }\OperatorTok{=}\NormalTok{ \{}\DecValTok{0}\NormalTok{: \{}\StringTok{"age"}\NormalTok{: }\DecValTok{23}\NormalTok{,}
                   \StringTok{"location"}\NormalTok{: }\StringTok{"Helsinki"}\NormalTok{,}
                   \StringTok{"text"}\NormalTok{: }\StringTok{"The Senate Square is by far the most important landmark in Helsinki."}
@@ -587,17 +587,17 @@ exemplos e adicionar os atributos personalizados aos objetos
 \CommentTok{\# Prepara uma lista vazia para guardar os textos processados}
 \NormalTok{docs }\OperatorTok{=}\NormalTok{ []}
 
-\CommentTok{\# Percorre os pares de chave e valor do dicionario \textquotesingle{}sents\_dict\textquotesingle{}.}
-\CommentTok{\# Os pares chave/valor ficam disponiveis pelo metodo items().}
+\CommentTok{\# Percorre os pares de chave e valor do dicionário \textquotesingle{}sents\_dict\textquotesingle{}.}
+\CommentTok{\# Os pares chave/valor ficam disponiveis pelo método items().}
 \CommentTok{\# Chamamos essas chaves e valores de \textquotesingle{}key\textquotesingle{} e \textquotesingle{}data\textquotesingle{}; ou seja, usamos}
-\CommentTok{\# a variavel \textquotesingle{}data\textquotesingle{} para se referir ao dicionario aninhado.}
+\CommentTok{\# a variável \textquotesingle{}data\textquotesingle{} para se referir ao dicionário aninhado.}
 \ControlFlowTok{for}\NormalTok{ key, data }\KeywordTok{in}\NormalTok{ sents\_dict.items():}
 
-    \CommentTok{\# Recupera o valor da chave \textquotesingle{}text\textquotesingle{} do dicionario aninhado.}
+    \CommentTok{\# Recupera o valor da chave \textquotesingle{}text\textquotesingle{} do dicionário aninhado.}
     \CommentTok{\# Alimenta esse texto ao modelo em \textquotesingle{}nlp\textquotesingle{} e guarda o resultado em \textquotesingle{}doc\textquotesingle{}.}
 \NormalTok{    doc }\OperatorTok{=}\NormalTok{ nlp(data[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{])}
 
-    \CommentTok{\# Recupera os valores de \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{} do dicionario aninhado.}
+    \CommentTok{\# Recupera os valores de \textquotesingle{}age\textquotesingle{} e \textquotesingle{}location\textquotesingle{} do dicionário aninhado.}
     \CommentTok{\# Atribui esses valores aos atributos personalizados do objeto Doc.}
     \CommentTok{\# Lembre{-}se: atributos personalizados ficam sob o pseudo{-}atributo \textquotesingle{}\_\textquotesingle{}!}
 \NormalTok{    doc.\_.age }\OperatorTok{=}\NormalTok{ data[}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{]}
@@ -661,7 +661,7 @@ como um laço \texttt{for} declarado ``na hora'', entre colchetes
 \CommentTok{\# \textquotesingle{}age\textquotesingle{} tenha valor abaixo de 40.}
 \NormalTok{under\_forty }\OperatorTok{=}\NormalTok{ [doc }\ControlFlowTok{for}\NormalTok{ doc }\KeywordTok{in}\NormalTok{ docs }\ControlFlowTok{if}\NormalTok{ doc.\_.get(}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{) }\OperatorTok{\textless{}} \DecValTok{40}\NormalTok{]}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{under\_forty}
 \end{Highlighting}
 \end{Shaded}
@@ -692,7 +692,7 @@ armazenar objetos \texttt{Doc} com suas anotações linguísticas:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Importa o objeto DocBin do modulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
+\CommentTok{\# Importa o objeto DocBin do módulo \textquotesingle{}tokens\textquotesingle{} do spaCy}
 \ImportTok{from}\NormalTok{ spacy.tokens }\ImportTok{import}\NormalTok{ DocBin}
 
 \CommentTok{\# Inicializa um objeto DocBin e adiciona os Docs de \textquotesingle{}docs\textquotesingle{}}
@@ -714,7 +714,7 @@ examinando a saída do método \texttt{\_\_len\_\_()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Obtem o numero de Docs no DocBin}
+\CommentTok{\# Obtem o número de Docs no DocBin}
 \NormalTok{docbin.}\FunctionTok{\_\_len\_\_}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
@@ -765,10 +765,10 @@ um \texttt{DocBin} vazio com \texttt{DocBin()} e use o método
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Inicializa um novo DocBin e usa \textquotesingle{}from\_disk\textquotesingle{} para carregar os dados do disco.}
-\CommentTok{\# Atribui o resultado a variavel \textquotesingle{}docbin\_loaded\textquotesingle{}.}
+\CommentTok{\# Atribui o resultado a variável \textquotesingle{}docbin\_loaded\textquotesingle{}.}
 \NormalTok{docbin\_loaded }\OperatorTok{=}\NormalTok{ DocBin().from\_disk(path}\OperatorTok{=}\StringTok{\textquotesingle{}data/docbin.spacy\textquotesingle{}}\NormalTok{)}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{docbin\_loaded}
 \end{Highlighting}
 \end{Shaded}
@@ -792,7 +792,7 @@ reconstruir a informação armazenada no \texttt{DocBin}:
 \CommentTok{\# Converte o gerador resultante em uma lista para exame.}
 \NormalTok{docs\_loaded }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(docbin\_loaded.get\_docs(nlp.vocab))}
 
-\CommentTok{\# Chama a variavel para examinar a saida}
+\CommentTok{\# Chama a variável para examinar a saída}
 \NormalTok{docs\_loaded}
 \end{Highlighting}
 \end{Shaded}
@@ -863,7 +863,7 @@ ao pipeline com o método \texttt{add\_pipe}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Adiciona o componente que mescla sintagmas nominais em Tokens unicos}
+\CommentTok{\# Adiciona o componente que mescla sintagmas nominais em Tokens únicos}
 \NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}merge\_noun\_chunks\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -937,7 +937,7 @@ termina:
 \CommentTok{\# Percorre os sintagmas nominais do primeiro Doc [0] na lista \textquotesingle{}docs\textquotesingle{}}
 \ControlFlowTok{for}\NormalTok{ noun\_chunk }\KeywordTok{in}\NormalTok{ docs[}\DecValTok{0}\NormalTok{].noun\_chunks:}
 
-    \CommentTok{\# Imprime o sintagma, seu tipo, e os indices onde comeca e termina}
+    \CommentTok{\# Imprime o sintagma, seu tipo, e os índices onde começa e termina}
     \BuiltInTok{print}\NormalTok{(noun\_chunk, }\BuiltInTok{type}\NormalTok{(noun\_chunk), noun\_chunk.start, noun\_chunk.end)}
 \end{Highlighting}
 \end{Shaded}
@@ -961,7 +961,7 @@ removemos a função \texttt{merge\_noun\_chunks} do pipeline com o método
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Remove a funcao \textquotesingle{}merge\_noun\_chunks\textquotesingle{} do pipeline em \textquotesingle{}nlp\textquotesingle{}}
+\CommentTok{\# Remove a função \textquotesingle{}merge\_noun\_chunks\textquotesingle{} do pipeline em \textquotesingle{}nlp\textquotesingle{}}
 \NormalTok{nlp.remove\_pipe(}\StringTok{\textquotesingle{}merge\_noun\_chunks\textquotesingle{}}\NormalTok{)}
 
 \CommentTok{\# Processa as frases originais novamente}
@@ -975,7 +975,7 @@ componente. Em seguida, adicionamos o componente
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Adiciona a funcao \textquotesingle{}merge\_entities\textquotesingle{} ao pipeline}
+\CommentTok{\# Adiciona a função \textquotesingle{}merge\_entities\textquotesingle{} ao pipeline}
 \NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}merge\_entities\textquotesingle{}}\NormalTok{)}
 
 \CommentTok{\# Processa os dados novamente}

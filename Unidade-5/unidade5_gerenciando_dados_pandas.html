@@ -228,7 +228,7 @@ Corpus</em> (SOCC), que reúne artigos de opinião do jornal canadense
 <em>The Globe and Mail</em>. Usamos a função <code>read_csv()</code>,
 que recebe uma <em>string</em> com o <strong>caminho</strong> do
 arquivo:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Le o arquivo CSV e atribui a saida a variavel &#39;socc&#39;</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lê o arquivo CSV e atribui a saída a variável &#39;socc&#39;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>socc <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/socc_gnm_articles.csv&#39;</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Examina o tipo do objeto guardado em &#39;socc&#39;</span></span>
@@ -317,10 +317,10 @@ para carregar. Primeiro, coletamos os arquivos com a classe
 <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a classe Path</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um objeto Path que aponta para o diretorio com os dados</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um objeto Path que aponta para o diretório com os dados</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>corpus_dir <span class="op">=</span> Path(<span class="st">&#39;data&#39;</span>)</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta todos os arquivos .txt no diretorio do corpus</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta todos os arquivos .txt no diretório do corpus</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>corpus_files <span class="op">=</span> <span class="bu">list</span>(corpus_dir.glob(<span class="st">&#39;*.txt&#39;</span>))</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica os arquivos do corpus</span></span>
@@ -335,10 +335,10 @@ linhas (<code>index</code>) e os nomes das colunas
 <code>range()</code>, entre 0 e a quantidade de arquivos (obtida com
 <code>len()</code>). Para as colunas, passamos uma lista de
 <em>strings</em> ao argumento <code>columns</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um DataFrame e atribui o resultado a variavel &#39;df&#39;</span></span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um DataFrame e atribui o resultado a variável &#39;df&#39;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(index<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(corpus_files)), columns<span class="op">=</span>[<span class="st">&#39;filename&#39;</span>, <span class="st">&#39;text&#39;</span>])</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para inspecionar a saida</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para inspecionar a saída</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div>
 <table>
 <thead>
@@ -372,15 +372,15 @@ linhas (<code>index</code>) e os nomes das colunas
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os arquivos do corpus e conta cada volta com enumerate()</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, f <span class="kw">in</span> <span class="bu">enumerate</span>(corpus_files):</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Le o conteudo do arquivo</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Lê o conteúdo do arquivo</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> f.read_text(encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pega o nome do arquivo do objeto Path</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    filename <span class="op">=</span> f.name</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Atribui o texto do arquivo ao indice &#39;i&#39; na coluna &#39;text&#39; usando</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Atribui o texto do arquivo ao índice &#39;i&#39; na coluna &#39;text&#39; usando</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># o acessador .at -- isso modifica o DataFrame &quot;no lugar&quot; (in place);</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># nao e preciso atribuir o resultado a uma variavel</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># não e preciso atribuir o resultado a uma variável</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    df.at[i, <span class="st">&#39;text&#39;</span>] <span class="op">=</span> text</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Faz o mesmo com o nome do arquivo</span></span>
@@ -434,7 +434,7 @@ organizada em <strong>colunas</strong>, acessíveis pelo atributo
 <p>Uma coluna inteira é acessada com colchetes <code>[]</code>,
 colocando o nome da coluna como <em>string</em> — como as chaves de um
 dicionário. Vamos recuperar a coluna <code>author</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera o conteudo da coluna &#39;author&#39; no DataFrame &#39;socc&#39;</span></span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recupera o conteúdo da coluna &#39;author&#39; no DataFrame &#39;socc&#39;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;author&#39;</span>]</span></code></pre></div>
 <pre class="text"><code>0         GLOBE EDITORIAL
 1        Konrad Yakabuski
@@ -466,7 +466,7 @@ trabalhar com milhares de linhas.</p>
 </div>
 <p>O método <code>value_counts()</code> conta os valores únicos de uma
 <code>Series</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conta os valores unicos na coluna &#39;author&#39;</span></span>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conta os valores únicos na coluna &#39;author&#39;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;author&#39;</span>].value_counts()</span></code></pre></div>
 <pre class="text"><code>GLOBE EDITORIAL                   2712
 Jeffrey Simpson                    649
@@ -521,7 +521,7 @@ Usamos o acessador <code>.loc</code> para selecionar linhas com base em
 seus valores. Como <code>=</code> é reservado para atribuição, a
 comparação “é igual a” usa <strong>dois</strong> sinais
 (<code>==</code>):</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega as linhas sem comentarios de nivel superior</span></span>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega as linhas sem comentários de nível superior</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>socc.loc[socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>]</span></code></pre></div>
 <pre class="text"><code>[... 2542 rows x 8 columns ...]</code></pre>
 <p>Isso retorna 2 542 linhas em que <code>ntop_level_comments</code> é
@@ -530,7 +530,7 @@ zero. Para visões mais complexas, combinamos critérios com o operador
 ficar entre <strong>parênteses</strong> <code>()</code>. Vamos verificar
 se o primeiro autor do resultado (Hayden King) escreveu outros artigos
 com zero comentários:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Numero de comentarios de nivel superior para o autor Hayden King</span></span>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Número de comentários de nível superior para o autor Hayden King</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>socc.loc[(socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (socc[<span class="st">&#39;author&#39;</span>] <span class="op">==</span> <span class="st">&#39;Hayden King&#39;</span>)]</span></code></pre></div>
 <p>Isso retorna apenas a linha de índice 7797 — o único artigo dele sem
 comentários.</p>
@@ -546,8 +546,8 @@ o tipo <code>None</code>:</p>
 <p>Vamos <strong>preencher</strong> a coluna calculando a proporção de
 comentários de nível superior (comentários sobre o artigo) em relação a
 todos os comentários — basta dividir uma coluna pela outra:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preenche a coluna &#39;comments_ratio&#39; com a razao entre comentarios de</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nivel superior e o total de comentarios</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preenche a coluna &#39;comments_ratio&#39; com a razao entre comentários de</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nível superior e o total de comentários</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>socc[<span class="st">&#39;comments_ratio&#39;</span>] <span class="op">=</span> socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">/</span> socc[<span class="st">&#39;ncomments&#39;</span>]</span></code></pre></div>
 <p>Os acessadores de coluna podem ser usados de forma muito flexível
 para acessar e manipular dados, como nesta divisão. Uma amostra do
@@ -584,7 +584,7 @@ resultado:</p>
 </table>
 <p>Mas alguns artigos <strong>não</strong> receberam comentários —
 nesses casos, teríamos dividido zero por zero:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime os cinco primeiros artigos sem comentarios de nivel superior</span></span>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime os cinco primeiros artigos sem comentários de nível superior</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>socc.loc[socc[<span class="st">&#39;ntop_level_comments&#39;</span>] <span class="op">==</span> <span class="dv">0</span>].head(<span class="dv">5</span>)</span></code></pre></div>
 <p>Para essas linhas, <code>comments_ratio</code> fica marcada como
 <strong><code>NaN</code></strong> (<em>not a number</em>, “não é um
@@ -636,11 +636,11 @@ profunda</strong> (<em>deep copy</em>) do recorte com o método
 linha da coluna. Passamos o modelo <code>nlp</code> — ou seja, aplicamos
 o modelo aos títulos (que são <em>strings</em>) da coluna
 <code>title</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica o modelo de linguagem &#39;nlp&#39; ao conteudo da coluna &#39;title&#39;</span></span>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica o modelo de linguagem &#39;nlp&#39; ao conteúdo da coluna &#39;title&#39;</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>talk[<span class="st">&#39;processed_title&#39;</span>] <span class="op">=</span> talk[<span class="st">&#39;title&#39;</span>].<span class="bu">apply</span>(nlp)</span></code></pre></div>
 <p>Cada célula da coluna <code>processed_title</code> agora contém um
 objeto <strong><code>Doc</code></strong> do spaCy:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega o valor da coluna &#39;processed_title&#39; na linha de indice 2</span></span>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega o valor da coluna &#39;processed_title&#39; na linha de índice 2</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>talk.at[<span class="dv">2</span>, <span class="st">&#39;processed_title&#39;</span>]</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verifica o tipo do objeto contido</span></span>
@@ -652,8 +652,8 @@ a própria função e aplicando com <code>apply()</code></h3>
 <p>Vamos definir nossa própria função para buscar os <strong>lemas de
 cada substantivo</strong> do título. Funções em Python são definidas com
 <code>def</code>, seguido do nome e dos parâmetros entre parênteses:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma funcao &#39;get_nouns&#39; que recebe um unico objeto como entrada.</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Referimo-nos a essa entrada pela variavel &#39;nlp_text&#39;.</span></span>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma função &#39;get_nouns&#39; que recebe um único objeto como entrada.</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Referimo-nos a essa entrada pela variável &#39;nlp_text&#39;.</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_nouns(nlp_text):</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Primeiro garantimos que a entrada e do tipo correto,</span></span>
@@ -676,7 +676,7 @@ cada substantivo</strong> do título. Funções em Python são definidas com
 <span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> lemmas</span></code></pre></div>
 <p>Aplicamos a função com <code>apply()</code>, criando a coluna
 <code>nouns</code> automaticamente pela atribuição:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a funcao &#39;get_nouns&#39; a coluna &#39;processed_title&#39;</span></span>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a função &#39;get_nouns&#39; a coluna &#39;processed_title&#39;</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>talk[<span class="st">&#39;nouns&#39;</span>] <span class="op">=</span> talk[<span class="st">&#39;processed_title&#39;</span>].<span class="bu">apply</span>(get_nouns)</span></code></pre></div>
 <p>Uma amostra dos títulos processados e seus substantivos:</p>
 <table>
@@ -747,7 +747,7 @@ dados para estruturas nativas do Python</h3>
 <p>Para plotar os 10 substantivos mais frequentes, convertemos
 <code>final_list</code> em uma <code>Series</code>, contamos com
 <code>value_counts()</code> e plotamos:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte a lista em uma pandas Series, conta os substantivos unicos com</span></span>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte a lista em uma pandas Series, conta os substantivos únicos com</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># value_counts(), pega os 10 mais frequentes [:10] e plota em barras.</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>pd.Series(final_list).value_counts()[:<span class="dv">10</span>].plot(kind<span class="op">=</span><span class="st">&#39;bar&#39;</span>)</span></code></pre></div>
 <hr />
@@ -776,7 +776,7 @@ formatos que não executam código, como <strong>CSV</strong>,
 <code>to_parquet</code>/<code>read_parquet</code>).</p>
 </div>
 <p>Verificamos lendo de volta com <code>read_pickle()</code>:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Le o DataFrame serializado e atribui o resultado a &#39;df_2&#39;</span></span>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lê o DataFrame serializado e atribui o resultado a &#39;df_2&#39;</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>df_2 <span class="op">=</span> pd.read_pickle(<span class="st">&#39;data/pickled_df.pkl&#39;</span>)</span></code></pre></div>
 <p>Comparando os dois <code>DataFrame</code>s com <code>==</code>,
 obtemos um valor booleano (<code>True</code>/<code>False</code>) para

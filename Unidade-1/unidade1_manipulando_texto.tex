@@ -521,9 +521,17 @@ texto:
 \begin{itemize}
 \tightlist
 \item
-  A sequência \texttt{﻿} é apenas uma declaração explícita (uma
-  ``assinatura'') de que o arquivo foi codificado em UTF‑8. Nem todo
-  arquivo UTF‑8 contém essa sequência.
+  A sequência \texttt{﻿} (código \texttt{U+FEFF}) é o \textbf{BOM}
+  (\emph{byte order mark}, ``marca de ordem de bytes''). Ele foi criado
+  para indicar a ordem dos bytes em codificações como UTF‑16; \textbf{em
+  UTF‑8 não há ordem de bytes}, então o BOM é \textbf{desnecessário} e
+  seu uso é \textbf{desaconselhado} pelo próprio padrão Unicode. Ainda
+  assim, alguns programas e editores (especialmente no Windows) o
+  adicionam no início do arquivo como uma espécie de ``assinatura'' de
+  UTF‑8. É por isso que ele aparece aqui como um caractere fantasma no
+  começo do texto --- e, se não for removido, pode causar bugs (por
+  exemplo, a primeira palavra deixa de casar em comparações). Nem todo
+  arquivo UTF‑8 contém essa marca.
 \item
   As sequências \texttt{\textbackslash{}n} indicam \textbf{quebra de
   linha}.
@@ -726,7 +734,7 @@ Em cada tupla, colocamos o caractere a ser substituído na primeira
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Define uma lista com quatro tuplas, cada uma com duas strings: o caractere}
-\CommentTok{\# a ser substituido e o seu substituto.}
+\CommentTok{\# a ser substituído e o seu substituto.}
 \NormalTok{pipeline }\OperatorTok{=}\NormalTok{ [(}\StringTok{\textquotesingle{}“\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}´´\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}”\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{), (}\StringTok{\textquotesingle{}’’\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}"\textquotesingle{}}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
@@ -743,11 +751,11 @@ linha esteja \textbf{indentada} (use a tecla \texttt{Tab\ ↹}):
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Percorre as tuplas da lista \textquotesingle{}pipeline\textquotesingle{}. Cada tupla tem dois valores, que}
-\CommentTok{\# atribuimos as variaveis \textquotesingle{}old\textquotesingle{} e \textquotesingle{}new\textquotesingle{} automaticamente!}
+\CommentTok{\# atribuímos as variáveis \textquotesingle{}old\textquotesingle{} e \textquotesingle{}new\textquotesingle{} automaticamente!}
 \ControlFlowTok{for}\NormalTok{ old, new }\KeywordTok{in}\NormalTok{ pipeline:}
 
-    \CommentTok{\# Usa o metodo replace() para substituir a string da variavel \textquotesingle{}old\textquotesingle{}}
-    \CommentTok{\# pela string da variavel \textquotesingle{}new\textquotesingle{}}
+    \CommentTok{\# Usa o método replace() para substituir a string da variável \textquotesingle{}old\textquotesingle{}}
+    \CommentTok{\# pela string da variável \textquotesingle{}new\textquotesingle{}}
 \NormalTok{    processed\_text }\OperatorTok{=}\NormalTok{ processed\_text.replace(old, new)}
 \end{Highlighting}
 \end{Shaded}
@@ -779,7 +787,7 @@ obtidos:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Percorre os itens da variavel \textquotesingle{}pipeline\textquotesingle{}}
+\CommentTok{\# Percorre os itens da variável \textquotesingle{}pipeline\textquotesingle{}}
 \ControlFlowTok{for}\NormalTok{ our\_tuple }\KeywordTok{in}\NormalTok{ pipeline:}
 
     \CommentTok{\# Imprime o objeto retornado}
@@ -840,13 +848,13 @@ o resultado:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Define o caminho do arquivo e o abre para leitura (r) com codificacao utf{-}8}
+\CommentTok{\# Define o caminho do arquivo e o abre para leitura (r) com codificação utf{-}8}
 \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\BuiltInTok{file}\OperatorTok{=}\StringTok{\textquotesingle{}data/WP\_1990{-}08{-}10{-}25A.txt\textquotesingle{}}\NormalTok{, mode}\OperatorTok{=}\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as} \BuiltInTok{file}\NormalTok{:}
 
-    \CommentTok{\# Le o conteudo do arquivo com o metodo .read()}
+    \CommentTok{\# Lê o conteúdo do arquivo com o método .read()}
 \NormalTok{    text }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read()}
 
-\CommentTok{\# Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero}
+\CommentTok{\# Pega os *últimos* 2000 caracteres — note o sinal de menos antes do número}
 \NormalTok{extract }\OperatorTok{=}\NormalTok{ text[}\OperatorTok{{-}}\DecValTok{2000}\NormalTok{:]}
 
 \CommentTok{\# Imprime o resultado}
@@ -866,10 +874,10 @@ ao Python para guardar a \emph{string} em formato ``bruto''
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Compila uma expressao regular e a atribui a variavel \textquotesingle{}stops\textquotesingle{}}
+\CommentTok{\# Compila uma expressão regular e a atribui a variável \textquotesingle{}stops\textquotesingle{}}
 \NormalTok{stops }\OperatorTok{=}\NormalTok{ re.}\BuiltInTok{compile}\NormalTok{(}\VerbatimStringTok{r\textquotesingle{}}\CharTok{\textbackslash{}.}\OperatorTok{\{2,\}}\VerbatimStringTok{\textquotesingle{}}\NormalTok{)}
 
-\CommentTok{\# Vamos verificar o tipo da expressao regular!}
+\CommentTok{\# Vamos verificar o tipo da expressão regular!}
 \BuiltInTok{type}\NormalTok{(stops)}
 \end{Highlighting}
 \end{Shaded}
@@ -919,8 +927,8 @@ O método retorna a \emph{string} modificada:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Aplica a expressao regular ao texto em \textquotesingle{}extract\textquotesingle{} e salva a saida}
-\CommentTok{\# na mesma variavel, essencialmente sobrescrevendo o texto antigo.}
+\CommentTok{\# Aplica a expressão regular ao texto em \textquotesingle{}extract\textquotesingle{} e salva a saída}
+\CommentTok{\# na mesma variável, essencialmente sobrescrevendo o texto antigo.}
 \NormalTok{extract }\OperatorTok{=}\NormalTok{ stops.sub(repl}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, string}\OperatorTok{=}\NormalTok{extract)}
 
 \CommentTok{\# Imprime o texto para examinar o resultado}
@@ -939,7 +947,7 @@ Podemos tornar a expressão mais poderosa acrescentando
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Compila uma expressao regular e a atribui a variavel \textquotesingle{}punct\textquotesingle{}}
+\CommentTok{\# Compila uma expressão regular e a atribui a variável \textquotesingle{}punct\textquotesingle{}}
 \NormalTok{punct }\OperatorTok{=}\NormalTok{ re.}\BuiltInTok{compile}\NormalTok{(}\VerbatimStringTok{r\textquotesingle{}}\KeywordTok{(}\CharTok{\textbackslash{}.}\ControlFlowTok{|}\VerbatimStringTok{,}\KeywordTok{)}\OperatorTok{\{2,\}}\VerbatimStringTok{\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -957,10 +965,10 @@ sobrescrevendo as edições anteriores:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# "Reinicia" a variavel extract pegando os ultimos 2000 caracteres da string original}
+\CommentTok{\# "Reinicia" a variável extract pegando os últimos 2000 caracteres da string original}
 \NormalTok{extract }\OperatorTok{=}\NormalTok{ text[}\OperatorTok{{-}}\DecValTok{2000}\NormalTok{:]}
 
-\CommentTok{\# Aplica a expressao regular}
+\CommentTok{\# Aplica a expressão regular}
 \NormalTok{extract }\OperatorTok{=}\NormalTok{ punct.sub(repl}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, string}\OperatorTok{=}\NormalTok{extract)}
 
 \CommentTok{\# Imprime o resultado}
@@ -1027,8 +1035,8 @@ arquivos de texto que viemos usando. Vamos inicializar um objeto
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Cria um objeto Path que aponta para o diretorio \textquotesingle{}data\textquotesingle{} e o atribui}
-\CommentTok{\# a variavel \textquotesingle{}corpus\_dir\textquotesingle{}}
+\CommentTok{\# Cria um objeto Path que aponta para o diretório \textquotesingle{}data\textquotesingle{} e o atribui}
+\CommentTok{\# a variável \textquotesingle{}corpus\_dir\textquotesingle{}}
 \NormalTok{corpus\_dir }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1039,7 +1047,7 @@ retorna um valor \textbf{booleano} (\texttt{True} ou \texttt{False}):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Usa o metodo exists() para verificar se o caminho e valido}
+\CommentTok{\# Usa o método exists() para verificar se o caminho é válido}
 \NormalTok{corpus\_dir.exists()}
 \end{Highlighting}
 \end{Shaded}
@@ -1056,7 +1064,7 @@ arquivo com \texttt{is\_file()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Usa o metodo is\_dir() para verificar se o caminho aponta para um diretorio}
+\CommentTok{\# Usa o método is\_dir() para verificar se o caminho aponta para um diretório}
 \NormalTok{corpus\_dir.is\_dir()}
 \end{Highlighting}
 \end{Shaded}
@@ -1069,7 +1077,7 @@ arquivo com \texttt{is\_file()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Usa o metodo is\_file() para verificar se o caminho aponta para um arquivo}
+\CommentTok{\# Usa o método is\_file() para verificar se o caminho aponta para um arquivo}
 \NormalTok{corpus\_dir.is\_file()}
 \end{Highlighting}
 \end{Shaded}
@@ -1092,7 +1100,7 @@ lista com \texttt{list()}, podemos percorrê‑lo facilmente:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Coleta todos os arquivos com sufixo .txt no diretorio \textquotesingle{}corpus\_dir\textquotesingle{} e converte o resultado em uma lista}
+\CommentTok{\# Coleta todos os arquivos com sufixo .txt no diretório \textquotesingle{}corpus\_dir\textquotesingle{} e converte o resultado em uma lista}
 \NormalTok{files }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(corpus\_dir.glob(pattern}\OperatorTok{=}\StringTok{\textquotesingle{}*.txt\textquotesingle{}}\NormalTok{))}
 
 \CommentTok{\# Mostra o resultado}
@@ -1117,16 +1125,16 @@ arquivo:
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Percorre a lista de objetos Path em \textquotesingle{}files\textquotesingle{}. Refere{-}se a cada arquivo}
-\CommentTok{\# pela variavel \textquotesingle{}file\textquotesingle{}.}
+\CommentTok{\# pela variável \textquotesingle{}file\textquotesingle{}.}
 \ControlFlowTok{for} \BuiltInTok{file} \KeywordTok{in}\NormalTok{ files:}
 
-    \CommentTok{\# Usa o metodo read\_text() de um objeto Path para ler o conteudo do arquivo.}
-    \CommentTok{\# Passa o valor \textquotesingle{}utf{-}8\textquotesingle{} ao argumento \textquotesingle{}encoding\textquotesingle{} para declarar a codificacao.}
-    \CommentTok{\# Guarda o resultado na variavel \textquotesingle{}text\textquotesingle{}.}
+    \CommentTok{\# Usa o método read\_text() de um objeto Path para ler o conteúdo do arquivo.}
+    \CommentTok{\# Passa o valor \textquotesingle{}utf{-}8\textquotesingle{} ao argumento \textquotesingle{}encoding\textquotesingle{} para declarar a codificação.}
+    \CommentTok{\# Guarda o resultado na variável \textquotesingle{}text\textquotesingle{}.}
 \NormalTok{    text }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read\_text(encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
 
-    \CommentTok{\# Aplica a expressao regular definida acima para remover a pontuacao}
-    \CommentTok{\# excessiva do texto. Guarda o resultado na variavel \textquotesingle{}mod\_text\textquotesingle{}.}
+    \CommentTok{\# Aplica a expressão regular definida acima para remover a pontuacao}
+    \CommentTok{\# excessiva do texto. Guarda o resultado na variável \textquotesingle{}mod\_text\textquotesingle{}.}
 \NormalTok{    mod\_text }\OperatorTok{=}\NormalTok{ punct.sub(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, text)}
 
     \CommentTok{\# Define um novo nome de arquivo com o prefixo \textquotesingle{}mod\_\textquotesingle{} criando uma nova string.}
@@ -1135,16 +1143,16 @@ arquivo:
 \NormalTok{    new\_filename }\OperatorTok{=} \StringTok{\textquotesingle{}mod\_\textquotesingle{}} \OperatorTok{+} \BuiltInTok{file}\NormalTok{.name}
 
     \CommentTok{\# Define um novo objeto Path que aponta para o novo arquivo. O objeto Path}
-    \CommentTok{\# junta automaticamente o diretorio e o nome do arquivo para nos.}
+    \CommentTok{\# junta automaticamente o diretório e o nome do arquivo para nos.}
 \NormalTok{    new\_path }\OperatorTok{=}\NormalTok{ Path(}\StringTok{\textquotesingle{}data\textquotesingle{}}\NormalTok{, new\_filename)}
 
     \CommentTok{\# Imprime uma mensagem de status usando formatacao de string. Ao adicionar}
     \CommentTok{\# o prefixo \textquotesingle{}f\textquotesingle{} a uma string, podemos usar chaves \{\} para inserir uma}
-    \CommentTok{\# variavel dentro da string. Aqui inserimos o caminho atual do arquivo.}
+    \CommentTok{\# variável dentro da string. Aqui inserimos o caminho atual do arquivo.}
     \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f\textquotesingle{}Writing modified text to }\SpecialCharTok{\{}\NormalTok{new\_path}\SpecialCharTok{\}}\SpecialStringTok{\textquotesingle{}}\NormalTok{)}
 
-    \CommentTok{\# Usa o metodo write\_text() para escrever o texto modificado de \textquotesingle{}mod\_text\textquotesingle{}}
-    \CommentTok{\# no arquivo, com codificacao UTF{-}8.}
+    \CommentTok{\# Usa o método write\_text() para escrever o texto modificado de \textquotesingle{}mod\_text\textquotesingle{}}
+    \CommentTok{\# no arquivo, com codificação UTF{-}8.}
 \NormalTok{    new\_path.write\_text(mod\_text, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}

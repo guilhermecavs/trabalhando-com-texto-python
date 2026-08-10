@@ -213,14 +213,14 @@ tokens únicos.</li>
 <p>Vamos começar importando a biblioteca spaCy e o módulo
 <code>displacy</code>, usado para desenhar árvores de dependência, e
 carregando um modelo de linguagem para o inglês:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a biblioteca spaCy e o modulo displacy</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa a biblioteca spaCy e o módulo displacy</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de lingua inglesa e o atribui a variavel &#39;nlp&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de língua inglesa e o atribui a variável &#39;nlp&#39;</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar o objeto</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar o objeto</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nlp</span></code></pre></div>
 <pre class="text"><code>&lt;spacy.lang.en.English at 0x294522f10&gt;</code></pre>
 <hr />
@@ -279,8 +279,8 @@ mais lento.</p>
 com uma <em>string</em> (ou uma lista) contendo os nomes dos componentes
 a excluir, ao inicializar o objeto <code>Language</code> com a função
 <code>load()</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de lingua inglesa, mas exclui o reconhecimento de</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># entidades nomeadas (&#39;ner&#39;) e a analise de dependencias sintaticas (&#39;parser&#39;).</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carrega um modelo pequeno de língua inglesa, mas exclui o reconhecimento de</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># entidades nomeadas (&#39;ner&#39;) e a análise de dependências sintáticas (&#39;parser&#39;).</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>, exclude<span class="op">=</span>[<span class="st">&#39;ner&#39;</span>, <span class="st">&#39;parser&#39;</span>])</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Examina os componentes ativos no objeto Language &#39;nlp&#39;</span></span>
@@ -298,7 +298,7 @@ pipeline com <code>analyze_pipes()</code></h3>
 de suas interações. Definindo o atributo <code>pretty</code> como
 <code>True</code>, o spaCy imprime uma tabela com os componentes e as
 anotações que produzem:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analisa o pipeline e guarda a analise na variavel &#39;pipe_analysis&#39;</span></span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analisa o pipeline e guarda a análise na variável &#39;pipe_analysis&#39;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pipe_analysis <span class="op">=</span> nlp.analyze_pipes(pretty<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 <pre class="text"><code>============================= Pipeline Overview =============================
 
@@ -331,11 +331,11 @@ operador de comparação <code>==</code> para checar que a lista tem
 tamanho <code>0</code>. Se essa afirmação <strong>não</strong> for
 verdadeira (ou seja, se houver algum problema), o Python levanta um
 <code>AssertionError</code> e para:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares chave/valor do dicionario. Atribui a chave e o valor</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># as variaveis &#39;component_name&#39; e &#39;problem_list&#39;.</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares chave/valor do dicionário. Atribui a chave e o valor</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># as variáveis &#39;component_name&#39; e &#39;problem_list&#39;.</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> component_name, problem_list <span class="kw">in</span> pipe_analysis[<span class="st">&#39;problems&#39;</span>].items():</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa &#39;assert&#39; para checar a lista de problemas; levanta Error se necessario.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa &#39;assert&#39; para checar a lista de problemas; levanta Error se necessário.</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(problem_list) <span class="op">==</span> <span class="dv">0</span>, <span class="ss">f&quot;There is a problem with </span><span class="sc">{</span>component_name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>problem_list<span class="sc">}</span><span class="ss">!&quot;</span></span></code></pre></div>
 <p>Aqui também imprimimos uma mensagem de erro usando uma
 <em>f‑string</em>: o <code>f</code> antes das aspas declara que a
@@ -351,8 +351,8 @@ eficiência</h2>
 processá‑los da forma mais eficiente possível. Para ilustrar as boas
 práticas, vamos definir um exemplo com uma <strong>lista</strong> de
 três frases da Wikipédia em inglês:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reinicializa o modelo de linguagem, pois precisamos da analise de</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dependencias nas proximas secoes.</span></span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reinicializa o modelo de linguagem, pois precisamos da análise de</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dependências nas próximas seções.</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">&#39;en_core_web_sm&#39;</span>)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma lista de frases de exemplo</span></span>
@@ -360,7 +360,7 @@ três frases da Wikipédia em inglês:</p>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;The &#39;Complex Modernization&#39; initiative expanded two existing nuclear sites to produce new bomb parts.&quot;</span>,</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;The administration built new plutonium pits at the Los Alamos lab in New Mexico and expanded enriched uranium processing at the Y-12 facility in Oak Ridge, Tennessee.&quot;</span>]</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>sents</span></code></pre></div>
 <p>Os objetos <code>Language</code> do spaCy têm um método específico,
 <code>pipe()</code>, para processar textos guardados em uma
@@ -370,10 +370,10 @@ vez de individualmente, o que o torna mais rápido do que processar cada
 item com um laço <code>for</code>.</p>
 <p>O método <code>pipe()</code> recebe uma lista como entrada e retorna
 um <strong>gerador</strong> (<em>generator</em>) do Python:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alimenta a lista de frases ao metodo pipe()</span></span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alimenta a lista de frases ao método pipe()</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> nlp.pipe(sents)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>docs</span></code></pre></div>
 <pre class="text"><code>&lt;generator object Language.pipe at 0x296d0b580&gt;</code></pre>
 <p>Geradores são objetos do Python que contêm outros objetos. Quando
@@ -385,7 +385,7 @@ exame:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte o gerador pipe em uma lista</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> <span class="bu">list</span>(docs)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>docs</span></code></pre></div>
 <p>Isso nos dá uma lista de objetos <code>Doc</code> do spaCy prontos
 para processamento posterior.</p>
@@ -405,11 +405,11 @@ com o método <code>set_extension()</code>. Como esses atributos são
 adicionados a <strong>todos</strong> os objetos <code>Doc</code> (e não
 a um <code>Doc</code> individual), primeiro importamos o objeto
 <code>Doc</code> genérico do módulo <code>tokens</code> do spaCy:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto Doc do modulo &#39;tokens&#39; do spaCy</span></span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto Doc do módulo &#39;tokens&#39; do spaCy</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> Doc</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona dois atributos personalizados ao objeto Doc, &#39;age&#39; e &#39;location&#39;,</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># usando o metodo set_extension().</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># usando o método set_extension().</span></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>Doc.set_extension(<span class="st">&quot;age&quot;</span>, default<span class="op">=</span><span class="va">None</span>)</span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>Doc.set_extension(<span class="st">&quot;location&quot;</span>, default<span class="op">=</span><span class="va">None</span>)</span></code></pre></div>
 <p>Usamos o argumento <code>default</code> para definir um valor padrão
@@ -426,8 +426,8 @@ e <code>2</code>), cujos valores são, por sua vez, dicionários com três
 chaves: <code>age</code>, <code>location</code> e <code>text</code>.
 Isso mostra como as estruturas de dados do Python costumam ser
 <strong>aninhadas</strong>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um dicionario cujos valores sao outros dicionarios</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># com tres chaves: &#39;age&#39;, &#39;location&#39; e &#39;text&#39;.</span></span>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um dicionário cujos valores são outros dicionários</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># com três chaves: &#39;age&#39;, &#39;location&#39; e &#39;text&#39;.</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>sents_dict <span class="op">=</span> {<span class="dv">0</span>: {<span class="st">&quot;age&quot;</span>: <span class="dv">23</span>,</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;location&quot;</span>: <span class="st">&quot;Helsinki&quot;</span>,</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;text&quot;</span>: <span class="st">&quot;The Senate Square is by far the most important landmark in Helsinki.&quot;</span></span>
@@ -447,17 +447,17 @@ os exemplos e adicionar os atributos personalizados aos objetos
 <div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepara uma lista vazia para guardar os textos processados</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> []</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares de chave e valor do dicionario &#39;sents_dict&#39;.</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Os pares chave/valor ficam disponiveis pelo metodo items().</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os pares de chave e valor do dicionário &#39;sents_dict&#39;.</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Os pares chave/valor ficam disponiveis pelo método items().</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Chamamos essas chaves e valores de &#39;key&#39; e &#39;data&#39;; ou seja, usamos</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># a variavel &#39;data&#39; para se referir ao dicionario aninhado.</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># a variável &#39;data&#39; para se referir ao dicionário aninhado.</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, data <span class="kw">in</span> sents_dict.items():</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera o valor da chave &#39;text&#39; do dicionario aninhado.</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera o valor da chave &#39;text&#39; do dicionário aninhado.</span></span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Alimenta esse texto ao modelo em &#39;nlp&#39; e guarda o resultado em &#39;doc&#39;.</span></span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    doc <span class="op">=</span> nlp(data[<span class="st">&#39;text&#39;</span>])</span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera os valores de &#39;age&#39; e &#39;location&#39; do dicionario aninhado.</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recupera os valores de &#39;age&#39; e &#39;location&#39; do dicionário aninhado.</span></span>
 <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Atribui esses valores aos atributos personalizados do objeto Doc.</span></span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Lembre-se: atributos personalizados ficam sob o pseudo-atributo &#39;_&#39;!</span></span>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    doc._.age <span class="op">=</span> data[<span class="st">&#39;age&#39;</span>]</span>
@@ -498,7 +498,7 @@ abaixo de 40.</li>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &#39;age&#39; tenha valor abaixo de 40.</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>under_forty <span class="op">=</span> [doc <span class="cf">for</span> doc <span class="kw">in</span> docs <span class="cf">if</span> doc._.get(<span class="st">&#39;age&#39;</span>) <span class="op">&lt;</span> <span class="dv">40</span>]</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>under_forty</span></code></pre></div>
 <pre class="text"><code>[The Senate Square is by far the most important landmark in Helsinki.,
  The Old Town, for sure.]</code></pre>
@@ -515,7 +515,7 @@ consome tempo e recursos.</p>
 <p>O spaCy oferece um tipo de objeto especial, o <code>DocBin</code>,
 para armazenar objetos <code>Doc</code> com suas anotações
 linguísticas:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto DocBin do modulo &#39;tokens&#39; do spaCy</span></span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa o objeto DocBin do módulo &#39;tokens&#39; do spaCy</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> DocBin</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inicializa um objeto DocBin e adiciona os Docs de &#39;docs&#39;</span></span>
@@ -530,7 +530,7 @@ personalizados</strong> a <code>Doc</code>s, <code>Span</code>s ou
 <p>Podemos verificar que os três <code>Doc</code>s entraram no
 <code>DocBin</code> examinando a saída do método
 <code>__len__()</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtem o numero de Docs no DocBin</span></span>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtem o número de Docs no DocBin</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>docbin.<span class="fu">__len__</span>()</span></code></pre></div>
 <pre class="text"><code>3</code></pre>
 <p>O método <code>add()</code> permite adicionar mais objetos
@@ -553,10 +553,10 @@ gravar o <code>DocBin</code> em um arquivo chamado
 primeiro inicialize um <code>DocBin</code> vazio com
 <code>DocBin()</code> e use o método <code>from_disk()</code>:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inicializa um novo DocBin e usa &#39;from_disk&#39; para carregar os dados do disco.</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui o resultado a variavel &#39;docbin_loaded&#39;.</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Atribui o resultado a variável &#39;docbin_loaded&#39;.</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>docbin_loaded <span class="op">=</span> DocBin().from_disk(path<span class="op">=</span><span class="st">&#39;data/docbin.spacy&#39;</span>)</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>docbin_loaded</span></code></pre></div>
 <pre class="text"><code>&lt;spacy.tokens._serialize.DocBin at 0x2953a4c40&gt;</code></pre>
 <p>Por fim, para acessar os objetos <code>Doc</code> guardados no
@@ -570,7 +570,7 @@ armazenada no <code>DocBin</code>:</p>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Converte o gerador resultante em uma lista para exame.</span></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>docs_loaded <span class="op">=</span> <span class="bu">list</span>(docbin_loaded.get_docs(nlp.vocab))</span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variavel para examinar a saida</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Chama a variável para examinar a saída</span></span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>docs_loaded</span></code></pre></div>
 <pre class="text"><code>[The Senate Square is by far the most important landmark in Helsinki.,
  The Old Town, for sure.,
@@ -612,7 +612,7 @@ Södermalm</code></pre>
 <p>Para <strong>mesclar</strong> os sintagmas nominais em um único
 token, o spaCy oferece a função <code>merge_noun_chunks</code>, que pode
 ser adicionada ao pipeline com o método <code>add_pipe</code>:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona o componente que mescla sintagmas nominais em Tokens unicos</span></span>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona o componente que mescla sintagmas nominais em Tokens únicos</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>nlp.add_pipe(<span class="st">&#39;merge_noun_chunks&#39;</span>)</span></code></pre></div>
 <div class="nota">
 <p><strong>Nota:</strong> não é preciso reatribuir o objeto
@@ -660,7 +660,7 @@ O spaCy os guarda como objetos <code>Span</code>, cujos atributos
 <div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os sintagmas nominais do primeiro Doc [0] na lista &#39;docs&#39;</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> noun_chunk <span class="kw">in</span> docs[<span class="dv">0</span>].noun_chunks:</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o sintagma, seu tipo, e os indices onde comeca e termina</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o sintagma, seu tipo, e os índices onde começa e termina</span></span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(noun_chunk, <span class="bu">type</span>(noun_chunk), noun_chunk.start, noun_chunk.end)</span></code></pre></div>
 <pre class="text"><code>October &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 1 2
 the Obama administration &lt;class &#39;spacy.tokens.span.Span&#39;&gt; 6 7
@@ -672,7 +672,7 @@ nomeadas</h3>
 <code>merge_entities</code> ao método <code>add_pipe()</code>. Primeiro,
 removemos a função <code>merge_noun_chunks</code> do pipeline com o
 método <code>remove_pipe()</code>:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove a funcao &#39;merge_noun_chunks&#39; do pipeline em &#39;nlp&#39;</span></span>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove a função &#39;merge_noun_chunks&#39; do pipeline em &#39;nlp&#39;</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>nlp.remove_pipe(<span class="st">&#39;merge_noun_chunks&#39;</span>)</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Processa as frases originais novamente</span></span>
@@ -680,7 +680,7 @@ método <code>remove_pipe()</code>:</p>
 <p>O método retorna uma tupla com o nome do componente removido e o
 próprio componente. Em seguida, adicionamos o componente
 <code>merge_entities</code>:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona a funcao &#39;merge_entities&#39; ao pipeline</span></span>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adiciona a função &#39;merge_entities&#39; ao pipeline</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>nlp.add_pipe(<span class="st">&#39;merge_entities&#39;</span>)</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Processa os dados novamente</span></span>

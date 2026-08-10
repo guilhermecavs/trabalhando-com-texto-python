@@ -354,13 +354,13 @@ número de concordâncias pelo número de itens (10):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Substitua o numero abaixo pelo numero de itens em que voces concordaram}
+\CommentTok{\# Substitua o número abaixo pelo número de itens em que voces concordaram}
 \NormalTok{agreement }\OperatorTok{=} \DecValTok{0}
 
-\CommentTok{\# Divide a contagem pelo numero de tweets}
+\CommentTok{\# Divide a contagem pelo número de tweets}
 \NormalTok{agreement }\OperatorTok{=}\NormalTok{ agreement }\OperatorTok{/} \DecValTok{10}
 
-\CommentTok{\# Imprime a variavel}
+\CommentTok{\# Imprime a variável}
 \NormalTok{agreement}
 \end{Highlighting}
 \end{Shaded}
@@ -397,7 +397,7 @@ dividindo pelo total de \emph{tweets}:
 \NormalTok{neutral }\OperatorTok{=}\NormalTok{ neutral }\OperatorTok{/} \DecValTok{10}
 \NormalTok{negative }\OperatorTok{=}\NormalTok{ negative }\OperatorTok{/} \DecValTok{10}
 
-\CommentTok{\# Chama cada variavel para examinar a saida}
+\CommentTok{\# Chama cada variável para examinar a saída}
 \NormalTok{positive, neutral, negative}
 \end{Highlighting}
 \end{Shaded}
@@ -533,10 +533,10 @@ e calcula o κ entre elas:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Importa a funcao cohen\_kappa\_score do modulo \textquotesingle{}metrics\textquotesingle{} da scikit{-}learn}
+\CommentTok{\# Importa a função cohen\_kappa\_score do módulo \textquotesingle{}metrics\textquotesingle{} da scikit{-}learn}
 \ImportTok{from}\NormalTok{ sklearn.metrics }\ImportTok{import}\NormalTok{ cohen\_kappa\_score}
 
-\CommentTok{\# Define duas listas, \textquotesingle{}a1\textquotesingle{} e \textquotesingle{}a2\textquotesingle{}, com anotacoes de classes gramaticais}
+\CommentTok{\# Define duas listas, \textquotesingle{}a1\textquotesingle{} e \textquotesingle{}a2\textquotesingle{}, com anotações de classes gramaticais}
 \NormalTok{a1 }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{]}
 \NormalTok{a2 }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{]}
 
@@ -577,7 +577,7 @@ e as previsões de um modelo na lista \texttt{predictions}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Define a lista \textquotesingle{}gold\_standard\textquotesingle{} (padrao{-}ouro anotado por humanos)}
+\CommentTok{\# Define a lista \textquotesingle{}gold\_standard\textquotesingle{} (padrão{-}ouro anotado por humanos)}
 \NormalTok{gold\_standard }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}VERB\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AUX\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NOUN\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ADJ\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}DET\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}PRON\textquotesingle{}}\NormalTok{]}
 
 \CommentTok{\# Define a lista \textquotesingle{}predictions\textquotesingle{} (previsoes do modelo de linguagem)}
@@ -594,10 +594,10 @@ manualmente:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Importa o modulo \textquotesingle{}metrics\textquotesingle{} da biblioteca scikit{-}learn (sklearn)}
+\CommentTok{\# Importa o módulo \textquotesingle{}metrics\textquotesingle{} da biblioteca scikit{-}learn (sklearn)}
 \ImportTok{from}\NormalTok{ sklearn }\ImportTok{import}\NormalTok{ metrics}
 
-\CommentTok{\# Usa a funcao accuracy\_score() do modulo \textquotesingle{}metrics\textquotesingle{}}
+\CommentTok{\# Usa a função accuracy\_score() do módulo \textquotesingle{}metrics\textquotesingle{}}
 \NormalTok{metrics.accuracy\_score(gold\_standard, predictions)}
 \end{Highlighting}
 \end{Shaded}
@@ -624,7 +624,7 @@ Coletamos as categorias únicas com a função \texttt{set()} --- um
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Coleta as classes gramaticais unicas em um conjunto, combinando as duas listas}
+\CommentTok{\# Coleta as classes gramaticais únicas em um conjunto, combinando as duas listas}
 \NormalTok{pos\_tags }\OperatorTok{=} \BuiltInTok{set}\NormalTok{(gold\_standard }\OperatorTok{+}\NormalTok{ predictions)}
 
 \CommentTok{\# Ordena o conjunto alfabeticamente e converte o resultado em lista}
@@ -720,7 +720,7 @@ A scikit‑learn gera matrizes de confusão automaticamente com
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Calcula a matriz de confusao para as duas listas e imprime o resultado}
+\CommentTok{\# Calcula a matriz de confusão para as duas listas e imprime o resultado}
 \BuiltInTok{print}\NormalTok{(metrics.confusion\_matrix(gold\_standard, predictions))}
 \end{Highlighting}
 \end{Shaded}
@@ -751,10 +751,10 @@ casos, a precisão é 0):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Calcula a precisao entre as duas listas, para cada classe (classe gramatical)}
+\CommentTok{\# Calcula a precisão entre as duas listas, para cada classe (classe gramatical)}
 \NormalTok{precision }\OperatorTok{=}\NormalTok{ metrics.precision\_score(gold\_standard, predictions, average}\OperatorTok{=}\VariableTok{None}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-\CommentTok{\# Chama a variavel para examinar o resultado}
+\CommentTok{\# Chama a variável para examinar o resultado}
 \NormalTok{precision}
 \end{Highlighting}
 \end{Shaded}
@@ -773,7 +773,7 @@ visualizar, convertemos com \texttt{dict()}:
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Combina o conjunto \textquotesingle{}pos\_tags\textquotesingle{} com o array \textquotesingle{}precision\textquotesingle{} usando zip();}
-\CommentTok{\# converte o resultado em um dicionario}
+\CommentTok{\# converte o resultado em um dicionário}
 \BuiltInTok{dict}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(pos\_tags, precision))}
 \end{Highlighting}
 \end{Shaded}
@@ -791,10 +791,10 @@ quantas instâncias ela tem:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Calcula a precisao entre as duas listas e tira a media (macro)}
+\CommentTok{\# Calcula a precisão entre as duas listas e tira a média (macro)}
 \NormalTok{macro\_precision }\OperatorTok{=}\NormalTok{ metrics.precision\_score(gold\_standard, predictions, average}\OperatorTok{=}\StringTok{\textquotesingle{}macro\textquotesingle{}}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-\CommentTok{\# Chama a variavel para examinar o resultado}
+\CommentTok{\# Chama a variável para examinar o resultado}
 \NormalTok{macro\_precision}
 \end{Highlighting}
 \end{Shaded}
@@ -810,8 +810,8 @@ classes --- dá para verificar manualmente:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Calcula a media macro manualmente: soma as precisoes e divide}
-\CommentTok{\# pelo numero de classes em \textquotesingle{}precision\textquotesingle{}}
+\CommentTok{\# Calcula a média macro manualmente: soma as precisões e divide}
+\CommentTok{\# pelo número de classes em \textquotesingle{}precision\textquotesingle{}}
 \BuiltInTok{sum}\NormalTok{(precision) }\OperatorTok{/} \BuiltInTok{len}\NormalTok{(precision)}
 \end{Highlighting}
 \end{Shaded}
@@ -830,7 +830,7 @@ A \textbf{revocação} é calculada do mesmo modo, com
 \CommentTok{\# Calcula a revocacao entre as duas listas, para cada classe}
 \NormalTok{recall }\OperatorTok{=}\NormalTok{ metrics.recall\_score(gold\_standard, predictions, average}\OperatorTok{=}\VariableTok{None}\NormalTok{, zero\_division}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 
-\CommentTok{\# Combina \textquotesingle{}pos\_tags\textquotesingle{} com o array \textquotesingle{}recall\textquotesingle{} e converte em dicionario}
+\CommentTok{\# Combina \textquotesingle{}pos\_tags\textquotesingle{} com o array \textquotesingle{}recall\textquotesingle{} e converte em dicionário}
 \BuiltInTok{dict}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(pos\_tags, recall))}
 \end{Highlighting}
 \end{Shaded}

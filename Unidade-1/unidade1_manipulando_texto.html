@@ -401,9 +401,18 @@ o <code>:</code> antes do número instrui o Python a recuperar
 como <code>﻿</code> bem no início e vários <code>\n</code> ao longo do
 texto:</p>
 <ul>
-<li>A sequência <code>﻿</code> é apenas uma declaração explícita (uma
-“assinatura”) de que o arquivo foi codificado em UTF‑8. Nem todo arquivo
-UTF‑8 contém essa sequência.</li>
+<li>A sequência <code>﻿</code> (código <code>U+FEFF</code>) é o
+<strong>BOM</strong> (<em>byte order mark</em>, “marca de ordem de
+bytes”). Ele foi criado para indicar a ordem dos bytes em codificações
+como UTF‑16; <strong>em UTF‑8 não há ordem de bytes</strong>, então o
+BOM é <strong>desnecessário</strong> e seu uso é
+<strong>desaconselhado</strong> pelo próprio padrão Unicode. Ainda
+assim, alguns programas e editores (especialmente no Windows) o
+adicionam no início do arquivo como uma espécie de “assinatura” de
+UTF‑8. É por isso que ele aparece aqui como um caractere fantasma no
+começo do texto — e, se não for removido, pode causar bugs (por exemplo,
+a primeira palavra deixa de casar em comparações). Nem todo arquivo
+UTF‑8 contém essa marca.</li>
 <li>As sequências <code>\n</code> indicam <strong>quebra de
 linha</strong>.</li>
 </ul>
@@ -531,7 +540,7 @@ recebe duas <em>strings</em>, combinamos cada par em uma
 parênteses <code>( )</code>. Em cada tupla, colocamos o caractere a ser
 substituído na primeira <em>string</em> e o substituto na segunda:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define uma lista com quatro tuplas, cada uma com duas strings: o caractere</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a ser substituido e o seu substituto.</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a ser substituído e o seu substituto.</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> [(<span class="st">&#39;“&#39;</span>, <span class="st">&#39;&quot;&#39;</span>), (<span class="st">&#39;´´&#39;</span>, <span class="st">&#39;&quot;&#39;</span>), (<span class="st">&#39;”&#39;</span>, <span class="st">&#39;&quot;&#39;</span>), (<span class="st">&#39;’’&#39;</span>, <span class="st">&#39;&quot;&#39;</span>)]</span></code></pre></div>
 <p>Isso ilustra como diferentes estruturas de dados costumam ser
 <strong>aninhadas</strong> no Python: a lista contém tuplas, e as tuplas
@@ -542,11 +551,11 @@ item é uma tupla com duas <em>strings</em>. Para entrar no laço, o
 Python espera que a próxima linha esteja <strong>indentada</strong> (use
 a tecla <code>Tab ↹</code>):</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre as tuplas da lista &#39;pipeline&#39;. Cada tupla tem dois valores, que</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># atribuimos as variaveis &#39;old&#39; e &#39;new&#39; automaticamente!</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># atribuímos as variáveis &#39;old&#39; e &#39;new&#39; automaticamente!</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> old, new <span class="kw">in</span> pipeline:</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o metodo replace() para substituir a string da variavel &#39;old&#39;</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pela string da variavel &#39;new&#39;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o método replace() para substituir a string da variável &#39;old&#39;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pela string da variável &#39;new&#39;</span></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    processed_text <span class="op">=</span> processed_text.replace(old, new)</span></code></pre></div>
 <p>O que acontece dentro do laço é exatamente o que fizemos antes com
 <code>replace()</code>, mas, em vez de definir manualmente as
@@ -565,7 +574,7 @@ atribuída à lista inteira.</p>
 <p>Para entender melhor, vejamos o que acontece se definirmos
 <strong>apenas uma</strong> variável, <code>our_tuple</code>, para os
 itens obtidos:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens da variavel &#39;pipeline&#39;</span></span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre os itens da variável &#39;pipeline&#39;</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> our_tuple <span class="kw">in</span> pipeline:</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime o objeto retornado</span></span>
@@ -603,13 +612,13 @@ sequências repetidas) e muito mais.</p>
 <p>Vamos carregar um arquivo, ler seu conteúdo, atribuir os
 <strong>últimos</strong> 2000 caracteres à variável <code>extract</code>
 e imprimir o resultado:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define o caminho do arquivo e o abre para leitura (r) com codificacao utf-8</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define o caminho do arquivo e o abre para leitura (r) com codificação utf-8</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="bu">file</span><span class="op">=</span><span class="st">&#39;data/WP_1990-08-10-25A.txt&#39;</span>, mode<span class="op">=</span><span class="st">&#39;r&#39;</span>, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Le o conteudo do arquivo com o metodo .read()</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Lê o conteúdo do arquivo com o método .read()</span></span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="bu">file</span>.read()</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega os *ultimos* 2000 caracteres — note o sinal de menos antes do numero</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pega os *últimos* 2000 caracteres — note o sinal de menos antes do número</span></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>extract <span class="op">=</span> text[<span class="op">-</span><span class="dv">2000</span>:]</span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime o resultado</span></span>
@@ -622,10 +631,10 @@ busca sequências de dois ou mais pontos finais, com a função
 <em>string</em> como entrada. Note o prefixo <code>r</code> antes da
 <em>string</em>: ele diz ao Python para guardar a <em>string</em> em
 formato “bruto” (<em>raw</em>), ou seja, exatamente como aparece.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compila uma expressao regular e a atribui a variavel &#39;stops&#39;</span></span>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compila uma expressão regular e a atribui a variável &#39;stops&#39;</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>stops <span class="op">=</span> re.<span class="bu">compile</span>(<span class="vs">r&#39;</span><span class="ch">\.</span><span class="op">{2,}</span><span class="vs">&#39;</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos verificar o tipo da expressao regular!</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos verificar o tipo da expressão regular!</span></span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(stops)</span></code></pre></div>
 <pre class="text"><code>re.Pattern</code></pre>
 <p>Vamos destrinchar essa expressão:</p>
@@ -655,8 +664,8 @@ pontos finais</strong>.</p>
 ocorrências.</li>
 </ul>
 <p>O método retorna a <em>string</em> modificada:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a expressao regular ao texto em &#39;extract&#39; e salva a saida</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># na mesma variavel, essencialmente sobrescrevendo o texto antigo.</span></span>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a expressão regular ao texto em &#39;extract&#39; e salva a saída</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># na mesma variável, essencialmente sobrescrevendo o texto antigo.</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>extract <span class="op">=</span> stops.sub(repl<span class="op">=</span><span class="st">&#39;&#39;</span>, string<span class="op">=</span>extract)</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime o texto para examinar o resultado</span></span>
@@ -667,7 +676,7 @@ regular</h3>
 <p>Podemos tornar a expressão mais poderosa acrescentando
 <strong>alternativas</strong>. Vamos compilar outra e guardá‑la em
 <code>punct</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compila uma expressao regular e a atribui a variavel &#39;punct&#39;</span></span>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compila uma expressão regular e a atribui a variável &#39;punct&#39;</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>punct <span class="op">=</span> re.<span class="bu">compile</span>(<span class="vs">r&#39;</span><span class="kw">(</span><span class="ch">\.</span><span class="cf">|</span><span class="vs">,</span><span class="kw">)</span><span class="op">{2,}</span><span class="vs">&#39;</span>)</span></code></pre></div>
 <p>A novidade são os <strong>parênteses</strong> <code>( )</code> e a
 <strong>barra vertical</strong> <code>|</code> entre eles, que separa o
@@ -678,10 +687,10 @@ de <strong>dois ou mais pontos finais ou vírgulas</strong>.</p>
 <p>Para garantir que o padrão funcione como esperado, recuperamos o
 texto original de <code>text</code> e o reatribuímos a
 <code>extract</code>, sobrescrevendo as edições anteriores:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># &quot;Reinicia&quot; a variavel extract pegando os ultimos 2000 caracteres da string original</span></span>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># &quot;Reinicia&quot; a variável extract pegando os últimos 2000 caracteres da string original</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>extract <span class="op">=</span> text[<span class="op">-</span><span class="dv">2000</span>:]</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a expressao regular</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplica a expressão regular</span></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>extract <span class="op">=</span> punct.sub(repl<span class="op">=</span><span class="st">&#39;&#39;</span>, string<span class="op">=</span>extract)</span>
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime o resultado</span></span>
@@ -727,23 +736,23 @@ diferentes.</p>
 os arquivos de texto que viemos usando. Vamos inicializar um objeto
 <code>Path</code> apontando para esse diretório e atribuí‑lo à variável
 <code>corpus_dir</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um objeto Path que aponta para o diretorio &#39;data&#39; e o atribui</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a variavel &#39;corpus_dir&#39;</span></span>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cria um objeto Path que aponta para o diretório &#39;data&#39; e o atribui</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a variável &#39;corpus_dir&#39;</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>corpus_dir <span class="op">=</span> Path(<span class="st">&#39;data&#39;</span>)</span></code></pre></div>
 <p>O objeto <code>Path</code> tem vários métodos e atributos úteis.
 Podemos, por exemplo, verificar se o caminho é válido com
 <code>exists()</code>, que retorna um valor <strong>booleano</strong>
 (<code>True</code> ou <code>False</code>):</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o metodo exists() para verificar se o caminho e valido</span></span>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o método exists() para verificar se o caminho é válido</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>corpus_dir.exists()</span></code></pre></div>
 <pre class="text"><code>True</code></pre>
 <p>Também podemos checar se o caminho é um diretório com
 <code>is_dir()</code>, e garantir que ele <strong>não</strong> aponta
 para um arquivo com <code>is_file()</code>:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o metodo is_dir() para verificar se o caminho aponta para um diretorio</span></span>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o método is_dir() para verificar se o caminho aponta para um diretório</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>corpus_dir.is_dir()</span></code></pre></div>
 <pre class="text"><code>True</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o metodo is_file() para verificar se o caminho aponta para um arquivo</span></span>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa o método is_file() para verificar se o caminho aponta para um arquivo</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>corpus_dir.is_file()</span></code></pre></div>
 <pre class="text"><code>False</code></pre>
 <p>Sabendo que o caminho aponta para um diretório, usamos o método
@@ -756,7 +765,7 @@ usando curingas. O <code>glob()</code> exige o argumento
 sequência de caracteres antes de <code>.txt</code> (sufixo comum de
 arquivos de texto simples). Convertendo o resultado em lista com
 <code>list()</code>, podemos percorrê‑lo facilmente:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta todos os arquivos com sufixo .txt no diretorio &#39;corpus_dir&#39; e converte o resultado em uma lista</span></span>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coleta todos os arquivos com sufixo .txt no diretório &#39;corpus_dir&#39; e converte o resultado em uma lista</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> <span class="bu">list</span>(corpus_dir.glob(pattern<span class="op">=</span><span class="st">&#39;*.txt&#39;</span>))</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostra o resultado</span></span>
@@ -770,16 +779,16 @@ manipular o texto de cada um. No bloco abaixo, iteramos sobre cada
 arquivo, lemos e modificamos seu conteúdo e o gravamos em um novo
 arquivo:</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Percorre a lista de objetos Path em &#39;files&#39;. Refere-se a cada arquivo</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pela variavel &#39;file&#39;.</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pela variável &#39;file&#39;.</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> files:</span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o metodo read_text() de um objeto Path para ler o conteudo do arquivo.</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Passa o valor &#39;utf-8&#39; ao argumento &#39;encoding&#39; para declarar a codificacao.</span></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Guarda o resultado na variavel &#39;text&#39;.</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o método read_text() de um objeto Path para ler o conteúdo do arquivo.</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Passa o valor &#39;utf-8&#39; ao argumento &#39;encoding&#39; para declarar a codificação.</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Guarda o resultado na variável &#39;text&#39;.</span></span>
 <span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="bu">file</span>.read_text(encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>)</span>
 <span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Aplica a expressao regular definida acima para remover a pontuacao</span></span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># excessiva do texto. Guarda o resultado na variavel &#39;mod_text&#39;.</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Aplica a expressão regular definida acima para remover a pontuacao</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># excessiva do texto. Guarda o resultado na variável &#39;mod_text&#39;.</span></span>
 <span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    mod_text <span class="op">=</span> punct.sub(<span class="st">&#39;&#39;</span>, text)</span>
 <span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define um novo nome de arquivo com o prefixo &#39;mod_&#39; criando uma nova string.</span></span>
@@ -788,16 +797,16 @@ arquivo:</p>
 <span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    new_filename <span class="op">=</span> <span class="st">&#39;mod_&#39;</span> <span class="op">+</span> <span class="bu">file</span>.name</span>
 <span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define um novo objeto Path que aponta para o novo arquivo. O objeto Path</span></span>
-<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># junta automaticamente o diretorio e o nome do arquivo para nos.</span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># junta automaticamente o diretório e o nome do arquivo para nos.</span></span>
 <span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>    new_path <span class="op">=</span> Path(<span class="st">&#39;data&#39;</span>, new_filename)</span>
 <span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Imprime uma mensagem de status usando formatacao de string. Ao adicionar</span></span>
 <span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># o prefixo &#39;f&#39; a uma string, podemos usar chaves {} para inserir uma</span></span>
-<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># variavel dentro da string. Aqui inserimos o caminho atual do arquivo.</span></span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># variável dentro da string. Aqui inserimos o caminho atual do arquivo.</span></span>
 <span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;Writing modified text to </span><span class="sc">{</span>new_path<span class="sc">}</span><span class="ss">&#39;</span>)</span>
 <span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o metodo write_text() para escrever o texto modificado de &#39;mod_text&#39;</span></span>
-<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># no arquivo, com codificacao UTF-8.</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usa o método write_text() para escrever o texto modificado de &#39;mod_text&#39;</span></span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># no arquivo, com codificação UTF-8.</span></span>
 <span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>    new_path.write_text(mod_text, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>)</span></code></pre></div>
 <pre class="text"><code>Writing modified text to data/mod_WP_1990-08-10-25A.txt
 Writing modified text to data/mod_NYT_1991-01-16-A15.txt
