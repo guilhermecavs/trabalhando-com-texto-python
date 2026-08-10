@@ -102,6 +102,8 @@ doc
 
 Embora a saída se pareça com uma *string* comum do Python, o objeto `Doc` contém uma **riqueza de informações** sobre a estrutura linguística do texto, geradas pelo spaCy ao processar a frase através do seu *pipeline* de PLN. Vamos agora examinar, uma a uma, as tarefas realizadas "nos bastidores".
 
+![O *pipeline* de PLN do spaCy: chamar `nlp(texto)` passa o texto por vários componentes (tokenizer, tagger, parser, lematizador, NER) e devolve um objeto `Doc` já anotado.](img/pipeline-spacy.svg)
+
 ### 2.1 Tokenização
 
 A primeira tarefa realizada é conhecida como **tokenização**: ela quebra o texto em unidades analíticas que serão processadas posteriormente.

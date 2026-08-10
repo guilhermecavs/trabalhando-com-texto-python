@@ -80,6 +80,21 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.15,0.68,0.68}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.85,0.27,0.33}{#1}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
 \ifLuaTeX
 \usepackage[bidi=basic,shorthands=off]{babel}
 \else
@@ -107,6 +122,9 @@
 \tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
 \usepackage{enumitem}
+% quebra linhas longas nos blocos de codigo (evita vazar a margem)
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
 
 % -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
@@ -385,6 +403,15 @@ Embora a saída se pareça com uma \emph{string} comum do Python, o objeto
 estrutura linguística do texto, geradas pelo spaCy ao processar a frase
 através do seu \emph{pipeline} de PLN. Vamos agora examinar, uma a uma,
 as tarefas realizadas ``nos bastidores''.
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={O pipeline de PLN do spaCy: chamar nlp(texto) passa o texto por vários componentes (tokenizer, tagger, parser, lematizador, NER) e devolve um objeto Doc já anotado.}]{img/pipeline-spacy.pdf}}
+\caption{O \emph{pipeline} de PLN do spaCy: chamar
+\protect\texttt{nlp(texto)} passa o texto por vários componentes
+(tokenizer, tagger, parser, lematizador, NER) e devolve um objeto
+\protect\texttt{Doc} já anotado.}
+\end{figure}
 
 \subsubsection{2.1 Tokenização}\label{tokenizauxe7uxe3o}
 

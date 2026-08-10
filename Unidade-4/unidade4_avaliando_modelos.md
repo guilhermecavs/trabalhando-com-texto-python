@@ -266,6 +266,8 @@ Encontramos a linha `ADJ` e a coluna `NOUN` e somamos 1 àquela célula. A tabel
 
 As previsões corretas formam uma **linha aproximadamente diagonal** na tabela. A partir dela, derivamos duas métricas por classe: **precisão** (*precision*) e **revocação** (*recall*).
 
+![Precisão e revocação: os **relevantes** são o padrão-ouro; os **recuperados** são as previsões do modelo. A **precisão** olha para os recuperados (quantos acertou); a **revocação** olha para os relevantes (quantos encontrou).](img/precisao-revocacao.svg)
+
 - **Precisão** é a proporção de previsões corretas **por classe** — quantas das previsões daquela classe estavam certas. Por exemplo, a coluna `VERB` soma `2`, mas só `1` previsão está correta (na linha `VERB`); logo, a precisão de `VERB` é 1/2 = **0,5**. O mesmo vale para `NOUN`.
 - **Revocação** é a proporção de previsões corretas dentre **todos os exemplos reais** daquela classe — quantas instâncias reais o modelo conseguiu "encontrar". Por exemplo, a linha `ADJ` soma `3` (há três adjetivos no padrão‑ouro), mas só `2` estão na coluna `ADJ`; logo, a revocação de `ADJ` é 2/3 ≈ **0,66**. Para `NOUN`, a revocação é 1/2 = 0,5.
 

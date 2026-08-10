@@ -15,13 +15,21 @@ build_one() {
   DIR="$(cd "$(dirname "$SRC")" && pwd)"
   BASE="$(basename "$SRC" .md)"
   ( cd "$DIR"
-    # HTML autossuficiente (CSS embutido, math via MathML — funciona offline)
+    # HTML autossuficiente (CSS embutido, SVG embutido, math via MathML — offline)
     pandoc "$BASE.md" -s --embed-resources --standalone \
       --css "$ASSETS/estilo.css" --lua-filter "$ASSETS/callouts.lua" \
       --highlight-style breezedark --mathml --toc --toc-depth=2 \
       -o "$BASE.html"
+    # Converte os diagramas SVG -> PDF (o pdflatex nao le SVG diretamente)
+    if [ -d img ]; then
+      for svg in img/*.svg; do
+        [ -e "$svg" ] && rsvg-convert -f pdf -o "${svg%.svg}.pdf" "$svg"
+      done
+    fi
+    # md temporario com as imagens .svg trocadas por .pdf para o LaTeX
+    sed 's#\(img/[A-Za-z0-9._-]*\)\.svg#\1.pdf#g' "$BASE.md" > /tmp/tex_md.md
     # LaTeX + PDF
-    pandoc "$BASE.md" -s --lua-filter "$ASSETS/callouts.lua" \
+    pandoc /tmp/tex_md.md -s --lua-filter "$ASSETS/callouts.lua" \
       -H "$ASSETS/cabecalho.tex" --highlight-style breezedark \
       -V documentclass=article -V fontsize=11pt -V geometry:margin=2.4cm \
       -V colorlinks=true -V linkcolor=accent -V urlcolor=cyan \

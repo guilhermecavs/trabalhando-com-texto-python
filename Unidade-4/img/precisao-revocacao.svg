@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 390" font-family="Helvetica, Arial, sans-serif">
+  <text x="235" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#10b981">Relevantes</text>
+  <text x="235" y="47" text-anchor="middle" font-size="11" fill="#5b6472">(padrão-ouro)</text>
+  <text x="485" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#6c4cf1">Recuperados</text>
+  <text x="485" y="47" text-anchor="middle" font-size="11" fill="#5b6472">(previsões do modelo)</text>
+
+  <circle cx="290" cy="175" r="120" fill="#10b981" fill-opacity="0.14" stroke="#10b981" stroke-width="2"/>
+  <circle cx="430" cy="175" r="120" fill="#6c4cf1" fill-opacity="0.14" stroke="#6c4cf1" stroke-width="2"/>
+
+  <text x="210" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#0e9e70">FN</text>
+  <text x="210" y="190" text-anchor="middle" font-size="10" fill="#5b6472">falsos negativos</text>
+  <text x="360" y="172" text-anchor="middle" font-size="16" font-weight="800" fill="#2b3242">VP</text>
+  <text x="360" y="190" text-anchor="middle" font-size="10" fill="#5b6472">verdadeiros positivos</text>
+  <text x="510" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#6c4cf1">FP</text>
+  <text x="510" y="190" text-anchor="middle" font-size="10" fill="#5b6472">falsos positivos</text>
+
+  <line x1="70" y1="322" x2="650" y2="322" stroke="#e6e8ef" stroke-width="1"/>
+  <text x="255" y="352" text-anchor="end" font-size="14" font-weight="700" fill="#6c4cf1">Precisão</text>
+  <text x="270" y="352" text-anchor="start" font-family="monospace" font-size="14" fill="#2b3242">= VP / (VP + FP)</text>
+  <text x="255" y="380" text-anchor="end" font-size="14" font-weight="700" fill="#10b981">Revocação</text>
+  <text x="270" y="380" text-anchor="start" font-family="monospace" font-size="14" fill="#2b3242">= VP / (VP + FN)</text>
+</svg>

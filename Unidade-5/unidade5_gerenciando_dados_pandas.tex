@@ -93,6 +93,21 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
 \ifLuaTeX
 \usepackage[bidi=basic,shorthands=off]{babel}
 \else
@@ -120,6 +135,9 @@
 \tcbuselibrary{skins,breakable}
 \usepackage{titlesec}
 \usepackage{enumitem}
+% quebra linhas longas nos blocos de codigo (evita vazar a margem)
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
 
 % -------- paleta --------
 \definecolor{accent}{HTML}{6C4CF1}
@@ -516,6 +534,15 @@ os números à esquerda são o índice. Cada coluna de um \texttt{DataFrame}
 é, na verdade, um objeto \textbf{\texttt{Series}} --- pense no
 \texttt{DataFrame} como a tabela inteira, cujas colunas são
 \texttt{Series}:
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Anatomia de um DataFrame: a tabela inteira é um DataFrame, cada coluna é uma Series, cada linha é um registro e a coluna cinza à esquerda é o índice.}]{img/dataframe.pdf}}
+\caption{Anatomia de um \protect\texttt{DataFrame}: a tabela inteira é
+um \protect\texttt{DataFrame}, cada \textbf{coluna} é uma
+\protect\texttt{Series}, cada \textbf{linha} é um registro e a coluna
+cinza à esquerda é o \textbf{índice}.}
+\end{figure}
 
 \begin{Shaded}
 \begin{Highlighting}[]

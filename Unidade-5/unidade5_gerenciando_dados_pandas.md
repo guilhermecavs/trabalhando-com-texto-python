@@ -175,6 +175,8 @@ Name: author, Length: 10339, dtype: object
 
 A coluna contém 10 339 objetos (veja `Length` e `dtype`); os números à esquerda são o índice. Cada coluna de um `DataFrame` é, na verdade, um objeto **`Series`** — pense no `DataFrame` como a tabela inteira, cujas colunas são `Series`:
 
+![Anatomia de um `DataFrame`: a tabela inteira é um `DataFrame`, cada **coluna** é uma `Series`, cada **linha** é um registro e a coluna cinza à esquerda é o **índice**.](img/dataframe.svg)
+
 ```python
 # Verifica o tipo de 'socc' e de 'socc['author']'
 type(socc), type(socc['author'])

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 350" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+
+  <!-- indice (coluna cinza) -->
+  <rect x="150" y="96" width="54" height="150" fill="#eef0f5" stroke="#e6e8ef"/>
+  <!-- cabecalho das colunas -->
+  <rect x="204" y="96" width="150" height="34" fill="#efe9ff" stroke="#e6e8ef"/>
+  <rect x="354" y="96" width="120" height="34" fill="#efe9ff" stroke="#e6e8ef"/>
+  <rect x="474" y="96" width="120" height="34" fill="#efe9ff" stroke="#e6e8ef"/>
+  <text x="279" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#5a34d6">filename</text>
+  <text x="414" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#5a34d6">ncomments</text>
+  <text x="534" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#5a34d6">author</text>
+
+  <!-- linhas -->
+  <g font-size="11.5" fill="#2b3242">
+    <rect x="204" y="130" width="390" height="38" fill="#ffffff" stroke="#e6e8ef"/>
+    <rect x="204" y="168" width="390" height="38" fill="#f8f9fc" stroke="#e6e8ef"/>
+    <rect x="204" y="206" width="390" height="38" fill="#ffffff" stroke="#e6e8ef"/>
+    <text x="177" y="153" text-anchor="middle" font-weight="700" fill="#5b6472">0</text>
+    <text x="177" y="191" text-anchor="middle" font-weight="700" fill="#5b6472">1</text>
+    <text x="177" y="229" text-anchor="middle" font-weight="700" fill="#5b6472">2</text>
+    <text x="215" y="153">WP_1990.txt</text><text x="414" y="153" text-anchor="middle">2187.0</text><text x="534" y="153" text-anchor="middle">GLOBE ED.</text>
+    <text x="215" y="191">NYT_1991.txt</text><text x="414" y="191" text-anchor="middle">1103.0</text><text x="534" y="191" text-anchor="middle">K. Yakabuski</text>
+    <text x="215" y="229">WP_1991.txt</text><text x="414" y="229" text-anchor="middle">1164.0</text><text x="534" y="229" text-anchor="middle">J. Simpson</text>
+  </g>
+
+  <!-- rotulos -->
+  <text x="177" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#5b6472">índice</text>
+
+  <!-- coluna = Series (destaque na coluna ncomments) -->
+  <rect x="354" y="96" width="120" height="148" fill="none" stroke="#00b4d8" stroke-width="2.5" rx="4"/>
+  <line x1="414" y1="96" x2="414" y2="60" stroke="#00b4d8" stroke-width="1.5" marker-end="url(#a5)"/>
+  <text x="414" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#00b4d8">uma coluna = Series</text>
+
+  <!-- linha -->
+  <line x1="594" y1="187" x2="636" y2="187" stroke="#5b6472" stroke-width="1.5" marker-end="url(#a5)"/>
+  <text x="640" y="184" font-size="11.5" font-weight="700" fill="#2b3242">linha</text>
+  <text x="640" y="199" font-size="10" fill="#5b6472">(um registro)</text>
+
+  <!-- rotulo DataFrame -->
+  <text x="360" y="286" text-anchor="middle" font-size="12" fill="#5b6472">A tabela inteira é um <tspan font-weight="700" fill="#5a34d6" font-family="monospace">DataFrame</tspan>; cada coluna é uma <tspan font-weight="700" fill="#00b4d8" font-family="monospace">Series</tspan>.</text>
+</svg>
